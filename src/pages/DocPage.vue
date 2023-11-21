@@ -3,8 +3,8 @@
     <div ref="scrollTargetRef" class="q-pa-md fit" style="max-height: calc(100vh - 50px ); overflow: auto;">
       <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">
 
-        <div v-for="(item, index) in items" :key="index" class="caption doc-content">
-          <q-card flat>
+        <div v-for="(item, index) in items" :key="index" class="caption doc-content q-pa-sm">
+          <q-card flat bordered>
             <q-card-section>
               <div class="row items-center no-wrap">
                 <div class="col">
@@ -12,7 +12,9 @@
                 </div>
 
                 <div class="col-auto">
-                  <q-btn color="grey-7" round flat icon="more_vert">
+                  <q-btn round size="sm" flat icon="smart_toy"/>
+
+                  <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                     <q-menu cover auto-close>
                       <q-list>
                         <q-item clickable>
@@ -27,6 +29,8 @@
                       </q-list>
                     </q-menu>
                   </q-btn>
+
+
                 </div>
               </div>
             </q-card-section>
@@ -35,6 +39,13 @@
               <!--TODO: 修改v-html，安全性-->
               <div v-html="content"/>
             </q-card-section>
+            <!--
+                        <q-separator/>
+
+                        <q-card-actions>
+                          <q-btn flat>Action 1</q-btn>
+                          <q-btn flat>Action 2</q-btn>
+                        </q-card-actions> -->
           </q-card>
 
 
@@ -69,7 +80,7 @@ export default defineComponent({
       items,
       onLoad(index: any, done: any) {
         setTimeout(() => {
-          items.value.push({}, {}, {},{}, {}, {},{}, {}, {})
+          items.value.push({}, {}, {}, {}, {}, {}, {}, {}, {})
           done()
         }, 500)
       }
@@ -81,7 +92,7 @@ export default defineComponent({
 <style>
 
 .doc-content .q-card__section--vert {
-    padding: 3px 16px;
+  padding: 3px 16px;
 }
 
 </style>
