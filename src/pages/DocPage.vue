@@ -87,6 +87,10 @@ export default defineComponent({
         '1) The distance measurement of the return point is not zero.\n' +
         '2) The number of valid neighbor points reaches the threshold value or there is at least one high-quality adjacent point.',
       comment: ''
+    }, {
+      summary: 'collect info for INNO_LIDAR_IN_FAULT_EXCESSIVE_BLOOMING',
+      description: 'when fault INNO_LIDAR_IN_FAULT_EXCESSIVE_BLOOMING occured, the software shall collect the information on the angle of the high reflection area, reference light intensity, and duration.',
+      comment: ''
     }])
     let splitterModel = ref(50)
     let content = ref('')
