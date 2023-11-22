@@ -41,13 +41,15 @@
               <!--TODO: 修改v-html，安全性-->
               <div v-html="content"/>
             </q-card-section>
-            <!--
-                        <q-separator/>
 
-                        <q-card-actions>
-                          <q-btn flat>Action 1</q-btn>
-                          <q-btn flat>Action 2</q-btn>
-                        </q-card-actions> -->
+            <q-slide-transition>
+              <div v-show="expanded">
+                <q-separator />
+                <q-card-section class="text-subtitle2">
+                  {{ result }}
+                </q-card-section>
+              </div>
+            </q-slide-transition>
           </q-card>
 
 
@@ -75,6 +77,8 @@ export default defineComponent({
     const items = ref([{}, {}, {}, {}, {}, {}, {}, {}, {}])
     let splitterModel = ref(50)
     let content = ref('In calibration mode, the software shall not perform the operation of noise filtering.')
+    let expanded = ref(false)
+    let result = ref('')
 
 
     async function GetAnalysis() {
@@ -100,9 +104,9 @@ export default defineComponent({
 
       while (true) {
         const {value, done} = await detailReader.read()
-
+        expanded.value = true
         if (value) {
-          content.value = content.value + detailDecoder.decode(value)
+          result.value = result.value + detailDecoder.decode(value)
         }
 
         if (done) {
@@ -117,8 +121,10 @@ export default defineComponent({
     return {
       scrollTargetRef,
       content,
+      result,
       splitterModel,
       items,
+      expanded,
       GetAnalysis,
       onLoad(index: any, done: any) {
         setTimeout(() => {
