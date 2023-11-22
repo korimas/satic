@@ -31,9 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
 * 按以下格式输出：
 """
 评分：0-100分
-
 评语：说明不足和优点
-
 改进后的描述：针对上述不足的地方，对原需求进行优化后的描述
 """
 `
