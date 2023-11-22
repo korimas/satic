@@ -14,10 +14,16 @@
               </div>
 
               <div class="col-auto">
-                <q-btn v-if="item.openEdit === false" round size="sm" flat icon="draw" @click="OpenEdit(item)"/>
-                <q-btn v-else round size="sm" flat icon="save" @click="CloseEdit(item)"/>
+                <q-btn v-if="item.openEdit === false" round size="sm" flat icon="draw" @click="OpenEdit(item)">
+                  <q-tooltip class="bg-grey-3 text-black">Edit</q-tooltip>
+                </q-btn>
+                <q-btn v-else round size="sm" flat icon="save" @click="CloseEdit(item)">
+                  <q-tooltip class="bg-grey-3 text-black">Save</q-tooltip>
+                </q-btn>
 
-                <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis(item)"/>
+                <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis(item)">
+                  <q-tooltip class="bg-grey-3 text-black">AI分析</q-tooltip>
+                </q-btn>
 
                 <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                   <q-menu cover auto-close>
