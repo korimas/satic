@@ -4,7 +4,7 @@
 <!--      <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">-->
 
         <div v-for="(item, index) in items" :key="index" class="caption doc-content">
-          <q-card flat class="q-hoverable" >
+          <q-card flat class="q-hoverable" style="white-space: pre-wrap;" >
             <span class="q-focus-helper"></span>
 
             <q-card-section>
