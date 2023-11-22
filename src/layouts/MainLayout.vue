@@ -10,12 +10,12 @@
             <div class="text-h5" style="margin-left: 8px">SATIC</div>
           </div>
         </q-toolbar-title>
-        <div>v0.01</div>
+        <div>v0.1</div>
       </q-toolbar>
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered :width="drawerWidth">
-      <DocSide @doubleClick="openFieldDrawer"></DocSide>
+      <DocSide @addClick="openFieldDrawer"></DocSide>
       <div v-touch-pan.preserveCursor.prevent.mouse.horizontal="resizeDrawer" class="q-drawer__resizer"></div>
     </q-drawer>
 
@@ -23,17 +23,37 @@
               overlay
               v-model="rightDrawerOpen"
               bordered
-              :width="($q.screen.width > 600) ? 600: $q.screen.width "
-              :breakpoint="600"
+              :width="($q.screen.width > 800) ? 800: $q.screen.width "
+              :breakpoint="800"
     >
       <div class="q-pa-sm q-gutter-sm row" style="height: 56px">
-        <div class="text-h6">详细</div>
+        <div class="text-h6">Create Requirement</div>
         <q-space></q-space>
         <q-btn unelevated size="sm" icon="clear" color="red" @click="rightDrawerOpen = !rightDrawerOpen"/>
       </div>
       <q-separator/>
       <div class="column q-pa-md">
-        <q-editor v-model="editContent" min-height="5rem"/>
+
+        <q-form
+          @submit="onSubmit"
+          @reset="onReset"
+          class="q-gutter-md"
+        >
+          <q-input
+            filled
+            v-model="editSummary"
+            label="Summary"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type something']"
+          />
+
+          <q-editor v-model="editDescription" min-height="5rem"/>
+
+          <div>
+            <q-btn label="Submit" type="submit" color="primary"/>
+          </div>
+        </q-form>
+
 
       </div>
 
@@ -85,7 +105,8 @@ export default {
     const rightDrawerOpen = ref(false)
     let drawerInitWidth = 300
     let drawerWidth = ref(drawerInitWidth)
-    let editContent = ref('<p>I’m running Tiptap with Vue.js. 🎉</p>')
+    let editDescription = ref('')
+    let editSummary = ref('')
 
     function resizeDrawer(ev) {
       if (ev.isFirst === true) {
@@ -103,7 +124,8 @@ export default {
 
     return {
       openFieldDrawer,
-      editContent,
+      editDescription,
+      editSummary,
       resizeDrawer,
       drawerWidth,
       leftDrawerOpen,

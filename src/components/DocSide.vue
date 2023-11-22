@@ -1,7 +1,7 @@
 <template>
   <div class="column">
     <div class="row full-width q-pa-xs q-gutter-xs">
-      <q-btn unelevated round size="sm" icon="add">
+      <q-btn unelevated round size="sm" icon="add" @click="addClick">
         <q-tooltip class="bg-grey-3 text-black">创建</q-tooltip>
       </q-btn>
       <q-btn unelevated round size="sm" icon="task_alt">
@@ -35,10 +35,6 @@
     <MiTree :nodes="nodes" @doubleClick="doubleClick"/>
   </div>
 
-
-
-
-
 </template>
 
 <script>
@@ -48,7 +44,7 @@ import MiTree from 'components/base/MiTree.vue';
 export default defineComponent({
   name: 'DocSide',
   components: {MiTree},
-  emits: ['doubleClick'],
+  emits: ['doubleClick', 'addClick'],
 
   setup(props, {emit}) {
     let nodes = ref([])
@@ -84,9 +80,14 @@ export default defineComponent({
       emit('doubleClick', nodeKey)
     }
 
+    function addClick() {
+      emit('addClick')
+    }
+
     return {
       rightDrawerOpen,
       doubleClick,
+      addClick,
       nodes
     }
   }
