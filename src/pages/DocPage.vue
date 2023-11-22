@@ -1,7 +1,7 @@
 <template>
   <q-page class="row items-center">
     <div ref="scrollTargetRef" class="q-pa-md fit" style="max-height: calc(100vh - 50px ); overflow: auto;">
-      <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">
+<!--      <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">-->
 
         <div v-for="(item, index) in items" :key="index" class="caption doc-content">
           <q-card flat class="q-hoverable" >
@@ -10,11 +10,11 @@
             <q-card-section>
               <div class="row items-center no-wrap">
                 <div class="col">
-                  <div class="text-h6">Our Planet</div>
+                  <div class="text-h6">{{item.summary}}</div>
                 </div>
 
                 <div class="col-auto">
-                  <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis"/>
+                  <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis(item)"/>
 
                   <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                     <q-menu cover auto-close>
@@ -39,14 +39,14 @@
 
             <q-card-section>
               <!--TODO: 修改v-html，安全性-->
-              <div v-html="content"/>
+              <div v-html="item.description"/>
             </q-card-section>
 
             <q-slide-transition>
-              <div v-show="expanded">
+              <div v-show="item.comment !=='' ">
                 <q-separator />
                 <q-card-section class="text-subtitle2">
-                  {{ result }}
+                  {{ item.comment }}
                 </q-card-section>
               </div>
             </q-slide-transition>
@@ -55,13 +55,12 @@
 
         </div>
 
-        <template v-slot:loading>
-          <div class="row justify-center q-my-md">
-            <q-spinner-dots color="primary" size="40px"/>
-          </div>
-        </template>
-
-      </q-infinite-scroll>
+<!--        <template v-slot:loading>-->
+<!--          <div class="row justify-center q-my-md">-->
+<!--            <q-spinner-dots color="primary" size="40px"/>-->
+<!--          </div>-->
+<!--        </template>-->
+<!--      </q-infinite-scroll>-->
 
     </div>
   </q-page>
@@ -74,14 +73,21 @@ export default defineComponent({
   name: 'DocPage',
   setup() {
     const scrollTargetRef = ref()
-    const items = ref([{}, {}, {}, {}, {}, {}, {}, {}, {}])
+    const items = ref([{
+      summary: 'Survival priority',
+      description: 'During the runtime of the software, it shall ensure that the state machine for mode switching is always in an active stat unless the software crashes',
+      comment: ''
+    }, {
+      summary:'Disable noise filtering in calibration mode',
+      description:'In calibration mode, the software shall not perform the operation of noise filtering.',
+      comment: ''
+    }])
     let splitterModel = ref(50)
-    let content = ref('In calibration mode, the software shall not perform the operation of noise filtering.')
+    let content = ref('')
     let expanded = ref(false)
-    let result = ref('')
 
 
-    async function GetAnalysis() {
+    async function GetAnalysis(item: any) {
       const detailResp = await fetch('/api/stream-requirement', {
         method: 'POST',
         headers: {
@@ -106,7 +112,7 @@ export default defineComponent({
         const {value, done} = await detailReader.read()
         expanded.value = true
         if (value) {
-          result.value = result.value + detailDecoder.decode(value)
+          item.comment = item.comment + detailDecoder.decode(value)
         }
 
         if (done) {
@@ -121,17 +127,16 @@ export default defineComponent({
     return {
       scrollTargetRef,
       content,
-      result,
       splitterModel,
       items,
       expanded,
       GetAnalysis,
-      onLoad(index: any, done: any) {
-        setTimeout(() => {
-          items.value.push({}, {}, {}, {}, {}, {}, {}, {}, {})
-          done()
-        }, 500)
-      }
+      // onLoad(index: any, done: any) {
+      //   setTimeout(() => {
+      //     items.value.push({}, {}, {}, {}, {}, {}, {}, {}, {})
+      //     done()
+      //   }, 500)
+      // }
     };
   }
 });
