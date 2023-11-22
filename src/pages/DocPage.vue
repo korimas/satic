@@ -87,7 +87,7 @@ export default defineComponent({
         body: JSON.stringify({
           // 'model': store.model,
           'requirement': content.value,
-          'temperature': 1.7,
+          'temperature': 0.7,
         })
       })
 
