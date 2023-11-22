@@ -26,6 +26,14 @@ const handler = async (req: Request): Promise<Response> => {
     * 考虑异常处理和错误恢复，明确地包括对异常情况的处理。
     * 如果需求有任何约束条件，例如时间、预算、技术等，必须在需求描述中明确说明。
     * 不能包含太多复杂的内容，他们应该被拆分成多条软件需求。
+
+# Output:
+* 按以下格式输出：
+"""
+评分：
+评语：
+改进后的描述：
+"""
 `
 
     const GoodMessage: GPTAPIMessage[] = [
