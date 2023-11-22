@@ -108,6 +108,7 @@ export default defineComponent({
         return
       };
 
+      item.comment = ""
       while (true) {
         const {value, done} = await detailReader.read()
         expanded.value = true
