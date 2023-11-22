@@ -102,7 +102,7 @@ export default defineComponent({
           //'Authorization': 'Bearer ' + Password.value
         },
         body: JSON.stringify({
-          // 'model': store.model,
+          'model': 'gpt-4',
           'requirement': item.description,
           'temperature': 0.7,
         })
