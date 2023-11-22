@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="col-auto">
-                  <q-btn round size="sm" flat icon="smart_toy"/>
+                  <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis"/>
 
                   <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                     <q-menu cover auto-close>
@@ -75,11 +75,51 @@ export default defineComponent({
     const items = ref([{}, {}, {}, {}, {}, {}, {}, {}, {}])
     let splitterModel = ref(50)
     let content = ref('<p>I’m running Tiptap with Vue.js. 🎉</p>')
+
+
+    async function GetAnalysis() {
+      const detailResp = await fetch('/api/stream-requirement', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          //'Authorization': 'Bearer ' + Password.value
+        },
+        body: JSON.stringify({
+          // 'model': store.model,
+          'requirement': content.value,
+          'temperature': 1.7,
+        })
+      })
+
+      const detailReader = detailResp.body!.getReader()
+      const detailDecoder = new TextDecoder('utf-8')
+      let oldConsoleLog = window.console.log;
+      window.console.log = function () {
+        return
+      };
+
+      while (true) {
+        const {value, done} = await detailReader.read()
+
+        if (value) {
+          content.value = content.value + detailDecoder.decode(value)
+        }
+
+        if (done) {
+          break
+        }
+      }
+
+      window.console.log = oldConsoleLog
+
+    }
+
     return {
       scrollTargetRef,
       content,
       splitterModel,
       items,
+      GetAnalysis,
       onLoad(index: any, done: any) {
         setTimeout(() => {
           items.value.push({}, {}, {}, {}, {}, {}, {}, {}, {})
