@@ -74,7 +74,7 @@ export default defineComponent({
     const scrollTargetRef = ref()
     const items = ref([{}, {}, {}, {}, {}, {}, {}, {}, {}])
     let splitterModel = ref(50)
-    let content = ref('<p>I’m running Tiptap with Vue.js. 🎉</p>')
+    let content = ref('In calibration mode, the software shall not perform the operation of noise filtering.')
 
 
     async function GetAnalysis() {
