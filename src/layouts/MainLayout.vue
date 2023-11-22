@@ -92,6 +92,9 @@ export default {
         drawerInitWidth = drawerWidth.value
       }
       drawerWidth.value = drawerInitWidth + ev.offset.x
+      if (drawerWidth.value < 280) {
+        drawerWidth.value = 280
+      }
     }
 
     function openFieldDrawer(nodeKey) {

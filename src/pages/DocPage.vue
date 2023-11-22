@@ -3,8 +3,10 @@
     <div ref="scrollTargetRef" class="q-pa-md fit" style="max-height: calc(100vh - 50px ); overflow: auto;">
       <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">
 
-        <div v-for="(item, index) in items" :key="index" class="caption doc-content q-pa-sm">
-          <q-card flat bordered>
+        <div v-for="(item, index) in items" :key="index" class="caption doc-content">
+          <q-card flat class="q-hoverable" >
+            <span class="q-focus-helper"></span>
+
             <q-card-section>
               <div class="row items-center no-wrap">
                 <div class="col">
