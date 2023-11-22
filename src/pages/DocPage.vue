@@ -85,7 +85,6 @@ export default defineComponent({
       summary: 'Not noise',
       description: 'During the noise reduction process, if the following conditions are simultaneously met, the point is considered not to be noise:\n' +
         '1) The distance measurement of the return point is not zero.\n' +
-        '\n' +
         '2) The number of valid neighbor points reaches the threshold value or there is at least one high-quality adjacent point.',
       comment: ''
     }])
