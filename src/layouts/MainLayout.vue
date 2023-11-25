@@ -6,9 +6,8 @@
         <!--        <q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
         <q-toolbar-title>
           <div class="row q-gutter-xs">
-            <q-btn dense flat round icon="polymer" class="text-primary"/>
-            <div class="text-h7 text-grey-9" style="margin-left: 16px; margin-right: 26px">SATIC</div>
-
+            <q-btn dense flat label="SaticTool" icon="polymer" class="text-capitalize text-primary"
+                   style="width: 120px"/>
             <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Project
               <q-menu style="width: 100%; width: 200px">
                 <q-list dense bordered padding class="rounded-borders">
