@@ -197,8 +197,13 @@
           />
 
           <q-editor v-model="editDescription" placeholder="Description" min-height="10rem"/>
-
-          <q-editor v-model="editDescription" placeholder="Verification Standards" min-height="10rem"/>
+          <q-input
+            dense
+            v-model="text"
+            outlined
+            type="textarea"
+            label="Verification Standards"
+          />
 
           <div>
             <q-btn unelevated label="Submit" type="submit" color="primary"/>
