@@ -22,21 +22,39 @@
                 <q-chat-message
                   name="me"
                   avatar="https://cdn.quasar.dev/img/avatar1.jpg"
-                  :text="['hey, how are you?']"
+                  :text="['UDS是什么?']"
                   sent
                 />
                 <q-chat-message
                   name="Satic AI"
                   avatar="https://cdn.quasar.dev/img/avatar2.jpg"
-                  :text="['doing fine, how r you?']"
+                  :text="['UDS是Unified Diagnostic Services（统一诊断服务）的缩写。它是一种用于车辆诊断的通信协议，用于...']"
                 />
               </div>
-              <q-input outlined placeholder="输入任何问题，与AI互动回答...">
+              <q-input dense outlined placeholder="输入任何问题，与AI互动回答...">
 
                 <template v-slot:append>
                   <q-btn round dense flat icon="send"/>
                 </template>
               </q-input>
+
+              <div class="text-grey-6" style="margin-top:10px; width: 100%; width: 400px">
+                <div>看看大家在问什么：</div>
+                <q-chip square>
+                  <q-avatar color="red" text-color="white">1</q-avatar>
+                  什么是polygon？
+                </q-chip>
+
+                <q-chip square>
+                  <q-avatar color="red" text-color="white">2</q-avatar>
+                  工作模式有哪些？
+                </q-chip>
+
+                <q-chip square>
+                  <q-avatar color="red" text-color="white">3</q-avatar>
+                  什么情况下会进入Protection模式？
+                </q-chip>
+              </div>
             </div>
           </q-menu>
         </q-btn>
