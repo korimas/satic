@@ -131,6 +131,10 @@
             </div>
           </q-menu>
         </q-btn>
+
+        <q-btn dense round flat icon="g_translate" class="text-grey-8">
+          <q-tooltip class="bg-grey-3 text-black">翻译</q-tooltip>
+        </q-btn>
         <q-btn dense flat round icon="search" class="text-grey-8"/>
         <q-btn dense flat round icon="notifications" class="text-grey-8"/>
         <q-btn dense flat round icon="settings" class="text-grey-8"/>

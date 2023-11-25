@@ -22,8 +22,13 @@
                 </q-btn>
 
                 <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis(item)">
-                  <q-tooltip class="bg-grey-3 text-black">AI分析</q-tooltip>
+                  <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
                 </q-btn>
+
+                <q-btn round size="sm" flat icon="bug_report">
+                  <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
+                </q-btn>
+
 
                 <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                   <q-menu cover auto-close>
