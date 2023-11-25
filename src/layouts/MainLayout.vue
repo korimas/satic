@@ -10,10 +10,61 @@
             <div class="text-h7 text-grey-9" style="margin-left: 16px">SATIC</div>
           </div>
         </q-toolbar-title>
+        <q-btn dense flat round icon="assistant" class="text-pink-2">
+          <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
+          <q-menu>
+            <div class="q-pa-md justify-center">
+              <div class="row">
+                <q-icon name="assistant" size="sm" class="text-pink-2"/>
+                AI助手
+              </div>
+              <div style="width: 100%; width: 400px">
+                <q-chat-message
+                  name="me"
+                  avatar="https://cdn.quasar.dev/img/avatar1.jpg"
+                  :text="['hey, how are you?']"
+                  sent
+                />
+                <q-chat-message
+                  name="Satic AI"
+                  avatar="https://cdn.quasar.dev/img/avatar2.jpg"
+                  :text="['doing fine, how r you?']"
+                />
+              </div>
+              <q-input outlined placeholder="输入任何问题，与AI互动回答...">
+
+                <template v-slot:append>
+                  <q-btn round dense flat icon="send"/>
+                </template>
+              </q-input>
+            </div>
+          </q-menu>
+        </q-btn>
         <q-btn dense flat round icon="search" class="text-grey-8"/>
         <q-btn dense flat round icon="notifications" class="text-grey-8"/>
         <q-btn dense flat round icon="settings" class="text-grey-8"/>
-        <q-btn dense flat round icon="account_circle" class="text-primary"/>
+        <q-btn dense flat round icon="account_circle" class="text-primary">
+          <q-menu>
+            <div class="row no-wrap q-pa-md">
+
+              <div class="column items-center">
+                <q-avatar size="72px">
+                  <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+                </q-avatar>
+
+                <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+
+                <q-btn
+                  color="primary"
+                  label="Logout"
+                  push
+                  size="sm"
+                  v-close-popup
+                />
+              </div>
+            </div>
+          </q-menu>
+        </q-btn>
 
       </q-toolbar>
     </q-header>
@@ -30,10 +81,10 @@
               :width="($q.screen.width > 800) ? 800: $q.screen.width "
               :breakpoint="800"
     >
-      <div class="q-pa-sm q-gutter-sm row" style="height: 56px">
+      <div class="q-pa-sm q-gutter-sm row bg-grey-2" style="height: 56px">
         <div class="text-h6">Create Requirement</div>
         <q-space></q-space>
-        <q-btn unelevated size="sm" icon="clear" color="red" @click="rightDrawerOpen = !rightDrawerOpen"/>
+        <q-btn unelevated size="sm" icon="clear" color="red-4" @click="rightDrawerOpen = !rightDrawerOpen"/>
       </div>
       <q-separator/>
       <div class="column q-pa-md">
@@ -45,15 +96,17 @@
         >
           <q-input
             dense
-            filled
+            outlined
             v-model="editSummary"
             label="Summary"
           />
 
-          <q-editor v-model="editDescription" min-height="10rem"/>
+          <q-editor v-model="editDescription" placeholder="Description" min-height="10rem"/>
+
+          <q-editor v-model="editDescription" placeholder="Verification Standards" min-height="10rem"/>
 
           <div>
-            <q-btn unelevated  label="Submit" type="submit" color="blue-6"/>
+            <q-btn unelevated label="Submit" type="submit" color="blue-6"/>
           </div>
         </q-form>
 
