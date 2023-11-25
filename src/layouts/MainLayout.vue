@@ -5,11 +5,82 @@
       <q-toolbar>
         <!--        <q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
         <q-toolbar-title>
-          <div class="row">
+          <div class="row q-gutter-xs">
             <q-btn dense flat round icon="polymer" class="text-primary"/>
-            <div class="text-h7 text-grey-9" style="margin-left: 16px">SATIC</div>
+            <div class="text-h7 text-grey-9" style="margin-left: 16px; margin-right: 26px">SATIC</div>
+
+            <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Project
+              <q-menu style="width: 100%; width: 200px">
+                <q-list dense bordered padding class="rounded-borders">
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="join_right"/>
+                    </q-item-section>
+                    <q-item-section>
+                      Falcon I
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="view_cozy"/>
+                    </q-item-section>
+                    <q-item-section>
+                      Falcon G
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="join_left"/>
+                    </q-item-section>
+                    <q-item-section>
+                      Falcon 10K
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+
+            <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Tracker
+              <q-menu style="width: 100%; width: 200px">
+                <q-list dense bordered padding class="rounded-borders">
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="join_right"/>
+                    </q-item-section>
+                    <q-item-section>
+                      System Requirement
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="view_cozy"/>
+                    </q-item-section>
+                    <q-item-section>
+                      Software Requirement
+                    </q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-close-popup>
+                    <q-item-section avatar>
+                      <q-icon name="join_left"/>
+                    </q-item-section>
+                    <q-item-section>
+                      Software Architecture
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+
+            <q-btn unelevated label="Create" color="primary" class="text-capitalize"/>
+
           </div>
         </q-toolbar-title>
+
+
         <q-btn dense flat round icon="assistant" class="text-pink-2">
           <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
           <q-menu>
@@ -124,7 +195,7 @@
           <q-editor v-model="editDescription" placeholder="Verification Standards" min-height="10rem"/>
 
           <div>
-            <q-btn unelevated label="Submit" type="submit" color="blue-6"/>
+            <q-btn unelevated label="Submit" type="submit" color="primary"/>
           </div>
         </q-form>
 
