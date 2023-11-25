@@ -1,6 +1,6 @@
 <template>
   <q-page class="row items-center">
-    <div ref="scrollTargetRef" class="q-pa-md fit" style="max-height: calc(100vh - 50px ); overflow: auto;">
+    <div ref="scrollTargetRef" class="q-pa-md fit" style="max-height: calc(100vh - 51px ); overflow: auto;">
       <!--      <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">-->
 
       <div v-for="(item, index) in items" :key="index" class="caption doc-content">
@@ -242,9 +242,4 @@ export default defineComponent({
 </script>
 
 <style>
-
-.doc-content .q-card__section--vert {
-  padding: 3px 16px;
-}
-
 </style>

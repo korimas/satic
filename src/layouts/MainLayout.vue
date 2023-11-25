@@ -1,16 +1,20 @@
 <template>
   <q-layout view="hHh Lpr fFf">
 
-    <q-header elevated class="bg-primary text-white">
+    <q-header bordered class="bg-white">
       <q-toolbar>
-        <q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer"/>
+        <!--        <q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
         <q-toolbar-title>
           <div class="row">
-            <q-icon name="polymer" size="30px"/>
-            <div class="text-h5" style="margin-left: 8px">SATIC</div>
+            <q-btn dense flat round icon="polymer" class="text-primary"/>
+            <div class="text-h7 text-grey-9" style="margin-left: 16px">SATIC</div>
           </div>
         </q-toolbar-title>
-        <div>v0.1</div>
+        <q-btn dense flat round icon="search" class="text-grey-8"/>
+        <q-btn dense flat round icon="notifications" class="text-grey-8"/>
+        <q-btn dense flat round icon="settings" class="text-grey-8"/>
+        <q-btn dense flat round icon="account_circle" class="text-primary"/>
+
       </q-toolbar>
     </q-header>
 
@@ -40,17 +44,16 @@
           class="q-gutter-md"
         >
           <q-input
+            dense
             filled
             v-model="editSummary"
             label="Summary"
-            lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
           />
 
-          <q-editor v-model="editDescription" min-height="5rem"/>
+          <q-editor v-model="editDescription" min-height="10rem"/>
 
           <div>
-            <q-btn label="Submit" type="submit" color="primary"/>
+            <q-btn unelevated  label="Submit" type="submit" color="blue-6"/>
           </div>
         </q-form>
 
@@ -73,7 +76,7 @@
   top: 0;
   bottom: 0;
   right: -2px;
-  width: 1px;
+  width: 0;
   background-color: lightgray;
   cursor: ew-resize;
 }
