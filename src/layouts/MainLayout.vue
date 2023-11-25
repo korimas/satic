@@ -7,7 +7,10 @@
         <q-toolbar-title>
           <div class="row q-gutter-xs">
             <q-btn dense flat label="SaticTool" icon="polymer" class="text-capitalize text-primary"
-                   style="width: 120px"/>
+                   style="width: 130px">
+
+            </q-btn>
+            <!--                          <q-badge style="margin-left: 2px" class="text-lowercase" color="primary" >v1.0.0</q-badge>-->
             <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Project
               <q-menu style="width: 100%; width: 200px">
                 <q-list dense bordered padding class="rounded-borders">
@@ -42,7 +45,7 @@
             </q-btn>
 
             <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Tracker
-              <q-menu style="width: 100%; width: 200px">
+              <q-menu style="width: 100%; width: 250px">
                 <q-list dense bordered padding class="rounded-borders">
                   <q-item clickable v-close-popup>
                     <q-item-section avatar>
@@ -74,7 +77,7 @@
               </q-menu>
             </q-btn>
 
-            <q-btn unelevated label="Create" color="primary" class="text-capitalize"/>
+            <!--            <q-btn unelevated label="Create" color="primary" class="text-capitalize"/>-->
 
           </div>
         </q-toolbar-title>
