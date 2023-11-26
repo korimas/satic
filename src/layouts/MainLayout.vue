@@ -101,14 +101,15 @@
                   :sent=msg.sent
                 />
               </div>
-              <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答...">
+              <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
+              style="margin-top:10px; margin-bottom: 10px">
 
                 <template v-slot:append>
-                  <q-btn round dense flat icon="send"/>
+                  <q-btn round dense flat icon="send" @click="StreamChat"/>
                 </template>
               </q-input>
 
-              <div class="text-grey-6" style="margin-top:10px; width: 100%; width: 400px">
+              <div class="text-grey-6" style="width: 100%; width: 400px">
                 <div>看看大家在问什么：</div>
                 <q-chip square>
                   <q-avatar color="red" text-color="white">1</q-avatar>
