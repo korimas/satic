@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md justify-center" style="height: 500px">
+  <div class="q-pa-md justify-center" style="max-height: 500px">
     <div class="row">
       <q-icon name="assistant" size="sm" class="text-pink-2"/>
       AI助手
