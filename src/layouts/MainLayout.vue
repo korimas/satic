@@ -208,7 +208,7 @@
 <script lang="ts">
 import {ref} from 'vue'
 import DocSide from 'components/DocSide.vue';
-import AIAssistant from "components/AIAssistant.vue";
+import AIAssistant from 'components/AIAssistant.vue';
 
 export default {
   components: {

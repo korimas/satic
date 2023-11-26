@@ -13,6 +13,13 @@
         :avatar='msg.sent ? meImg: aiImg'
         :sent=msg.sent
       />
+      <q-chat-message
+        style="white-space: pre-wrap;"
+        v-if="Waiting"
+        name="AI"
+        :avatar="aiImg"
+        :text=[waitText]
+      />
     </div>
     <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
              style="margin-top:10px; margin-bottom: 10px">
@@ -79,12 +86,12 @@ export default defineComponent({
       })
 
       GptMessages.value.push({
-        role: "user",
+        role: 'user',
         content: InputText.value
       })
 
-      InputText.value = ""
-      waitText.value = ""
+      InputText.value = ''
+      waitText.value = ''
 
       // 流式聊天
       Loading.value = true
@@ -94,10 +101,10 @@ export default defineComponent({
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          "model": "gpt-3.5-turbo",
+          'model': 'gpt-3.5-turbo',
           // "model": "gpt-4",
-          "messages": GptMessages.value,
-          "temperature": 0.7,
+          'messages': GptMessages.value,
+          'temperature': 0.7,
         })
       })
 
@@ -117,7 +124,7 @@ export default defineComponent({
         if (done) {
           Waiting.value = false
           GptMessages.value?.push({
-            role: "assistant",
+            role: 'assistant',
             content: waitText.value
           })
           DisplayMessages.value.push({
