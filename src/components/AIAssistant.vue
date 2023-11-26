@@ -2,13 +2,13 @@
   <div class="q-pa-md justify-center" style="max-height: 500px">
     <div class="row">
       <q-icon name="assistant" size="sm" class="text-pink-2"/>
-      AI助手
+      Seyond AI助手
     </div>
     <div style="width: 100%; width: 400px; padding-right: 8px; padding-left: 8px">
       <q-chat-message
         style="white-space: pre-wrap;"
         v-for="(msg, index) in DisplayMessages" :key="index"
-        :name='msg.sent ? "Me": "AI"'
+        :name='msg.sent ? "Me": "Seyond AI"'
         :text=[msg.text]
         :avatar='msg.sent ? meImg: aiImg'
         :sent=msg.sent
@@ -17,7 +17,7 @@
       <q-chat-message
         style="white-space: pre-wrap;"
         v-if="Waiting"
-        name="AI"
+        name="Seyond AI"
         :avatar="aiImg"
         :text=[waitText]
         bg-color="grey-3"

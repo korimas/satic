@@ -6,7 +6,7 @@
         <!--<q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
         <q-toolbar-title>
           <div class="row q-gutter-xs">
-            <q-btn dense flat label="SaticTool" icon="polymer" class="text-capitalize text-primary"
+            <q-btn dense flat label="SaticTool" icon="polymer" class="text-capitalize text-primary text-bold"
                    style="width: 130px">
 
             </q-btn>
@@ -89,9 +89,9 @@
           </q-menu>
         </q-btn>
 
-        <q-btn dense round flat icon="g_translate" class="text-grey-8">
-          <q-tooltip class="bg-grey-3 text-black">翻译</q-tooltip>
-        </q-btn>
+<!--        <q-btn dense round flat icon="g_translate" class="text-grey-8">-->
+<!--          <q-tooltip class="bg-grey-3 text-black">翻译</q-tooltip>-->
+<!--        </q-btn>-->
         <q-btn dense flat round icon="search" class="text-grey-8"/>
         <q-btn dense flat round icon="notifications" class="text-grey-8"/>
         <q-btn dense flat round icon="settings" class="text-grey-8"/>
