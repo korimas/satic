@@ -102,7 +102,7 @@
                 />
               </div>
               <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
-              style="margin-top:10px; margin-bottom: 10px">
+                       style="margin-top:10px; margin-bottom: 10px">
 
                 <template v-slot:append>
                   <q-btn round dense flat icon="send" @click="StreamChat"/>
@@ -303,6 +303,11 @@ export default {
       DisplayMessages.value.push({
         sent: true,
         text: InputText.value
+      })
+
+      GptMessages.value.push({
+        role: "user",
+        content: InputText.value
       })
 
       InputText.value = ""
