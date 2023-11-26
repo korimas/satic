@@ -85,56 +85,7 @@
         <q-btn dense flat round icon="assistant" class="text-pink-2">
           <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
           <q-menu>
-            <div class="q-pa-md justify-center">
-              <div class="row">
-                <q-icon name="assistant" size="sm" class="text-pink-2"/>
-                AI助手
-              </div>
-              <div style="width: 100%; width: 400px">
-
-                <q-chat-message
-                  style="white-space: pre-wrap;"
-                  v-for="(msg, index) in DisplayMessages" :key="index"
-                  :name='msg.sent ? "Me": "AI"'
-                  :text=[msg.text]
-                  :avatar='msg.sent ? meImg: aiImg'
-                  :sent=msg.sent
-                />
-
-                <q-chat-message
-                  style="white-space: pre-wrap;"
-                  v-if="Waiting"
-                  name="AI"
-                  :avatar="aiImg"
-                  :text=[waitText]
-                />
-              </div>
-              <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
-                       style="margin-top:10px; margin-bottom: 10px">
-
-                <template v-slot:append>
-                  <q-btn round dense flat icon="send" @click="StreamChat"/>
-                </template>
-              </q-input>
-
-              <div class="text-grey-6" style="width: 100%; width: 400px">
-                <div>看看大家在问什么：</div>
-                <q-chip square>
-                  <q-avatar color="red" text-color="white">1</q-avatar>
-                  什么是polygon？
-                </q-chip>
-
-                <q-chip square>
-                  <q-avatar color="red" text-color="white">2</q-avatar>
-                  工作模式有哪些？
-                </q-chip>
-
-                <q-chip square>
-                  <q-avatar color="red" text-color="white">3</q-avatar>
-                  什么情况下会进入Protection模式？
-                </q-chip>
-              </div>
-            </div>
+            <AIAssistant></AIAssistant>
           </q-menu>
         </q-btn>
 
@@ -257,19 +208,12 @@
 <script lang="ts">
 import {ref} from 'vue'
 import DocSide from 'components/DocSide.vue';
+import AIAssistant from "components/AIAssistant.vue";
 
-type Message = {
-  text: string;
-  sent: boolean;
-}
-
-type GptMessage = {
-  role: string;
-  content: string
-}
 export default {
   components: {
-    DocSide
+    DocSide,
+    AIAssistant
   },
   setup() {
     const leftDrawerOpen = ref(false)
@@ -279,15 +223,6 @@ export default {
     let editDescription = ref('')
     let editSummary = ref('')
 
-    // ai asistant
-    let DisplayMessages = ref<Message[]>([])
-    let GptMessages = ref<GptMessage[]>([])
-    let InputText = ref('')
-    let waitText = ref('')
-    let Loading = ref(false)
-    let Waiting = ref(false)
-    const meImg = './imgs/me.jpg'
-    const aiImg = './imgs/ai.png'
 
     function resizeDrawer(ev: any) {
       if (ev.isFirst === true) {
@@ -303,69 +238,6 @@ export default {
       rightDrawerOpen.value = true
     }
 
-    async function StreamChat() {
-      if (InputText.value == '') {
-        return
-      }
-
-      DisplayMessages.value.push({
-        sent: true,
-        text: InputText.value
-      })
-
-      GptMessages.value.push({
-        role: "user",
-        content: InputText.value
-      })
-
-      InputText.value = ""
-      waitText.value = ""
-
-      // 流式聊天
-      Loading.value = true
-      const response = await fetch('/api/stream-api', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          "model": "gpt-3.5-turbo",
-          // "model": "gpt-4",
-          "messages": GptMessages.value,
-          "temperature": 0.7,
-        })
-      })
-
-      const reader = response.body!.getReader()
-      const decoder = new TextDecoder('utf-8')
-
-      while (true) {
-        const {value, done} = await reader.read()
-        Loading.value = false
-        Waiting.value = true
-
-        if (value) {
-          let text = decoder.decode(value)
-          waitText.value = waitText.value + text
-        }
-
-        if (done) {
-          Waiting.value = false
-          GptMessages.value?.push({
-            role: "assistant",
-            content: waitText.value
-          })
-          DisplayMessages.value.push({
-            sent: false,
-            text: waitText.value
-          })
-          // await nextTick()
-          // inputCom.value.focus()
-          break
-        }
-      }
-    }
-
     return {
       openFieldDrawer,
       editDescription,
@@ -374,13 +246,7 @@ export default {
       drawerWidth,
       leftDrawerOpen,
       rightDrawerOpen,
-      meImg,
-      aiImg,
-      DisplayMessages,
-      InputText,
-      waitText,
-      Waiting,
-      StreamChat,
+
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       }
