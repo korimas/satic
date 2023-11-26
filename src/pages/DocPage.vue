@@ -21,11 +21,11 @@
                   <q-tooltip class="bg-grey-3 text-black">Save</q-tooltip>
                 </q-btn>
 
-                <q-btn round size="sm" flat icon="smart_toy" @click="GetAnalysis(item)">
+                <q-btn round size="sm" flat icon="smart_toy" @click="GetReqAnalysis(item)">
                   <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
                 </q-btn>
 
-                <q-btn round size="sm" flat icon="bug_report">
+                <q-btn round size="sm" flat icon="bug_report" @click="GetTestAnalysis(item)">
                   <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
                 </q-btn>
 
@@ -187,8 +187,46 @@ export default defineComponent({
       }, 500)
     }
 
-    async function GetAnalysis(item: any) {
+    async function GetReqAnalysis(item: any) {
       const detailResp = await fetch('/api/stream-requirement', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          //'Authorization': 'Bearer ' + Password.value
+        },
+        body: JSON.stringify({
+          'model': 'gpt-4',
+          'requirement': item.description,
+          'temperature': 0.7,
+        })
+      })
+
+      const detailReader = detailResp.body!.getReader()
+      const detailDecoder = new TextDecoder('utf-8')
+      let oldConsoleLog = window.console.log;
+      window.console.log = function () {
+        return
+      };
+
+      item.comment = ""
+      while (true) {
+        const {value, done} = await detailReader.read()
+        expanded.value = true
+        if (value) {
+          item.comment = item.comment + detailDecoder.decode(value)
+        }
+
+        if (done) {
+          break
+        }
+      }
+
+      window.console.log = oldConsoleLog
+
+    }
+
+    async function GetTestAnalysis(item: any) {
+      const detailResp = await fetch('/api/stream-testpoint', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -228,6 +266,7 @@ export default defineComponent({
     function OpenEdit(item: any) {
       item.openEdit = true
     }
+
     function CloseEdit(item: any) {
       item.openEdit = false
     }
@@ -237,7 +276,8 @@ export default defineComponent({
       splitterModel,
       items,
       expanded,
-      GetAnalysis,
+      GetReqAnalysis,
+      GetTestAnalysis,
       OpenEdit,
       CloseEdit,
       onLoad
