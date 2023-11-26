@@ -1,10 +1,10 @@
 <template>
-  <div class="q-pa-md justify-center">
+  <div class="q-pa-md justify-center" style="height: 500px">
     <div class="row">
       <q-icon name="assistant" size="sm" class="text-pink-2"/>
       AI助手
     </div>
-    <div style="width: 100%; width: 400px">
+    <div style="width: 100%; width: 400px; padding-right: 8px; padding-left: 8px">
       <q-chat-message
         style="white-space: pre-wrap;"
         v-for="(msg, index) in DisplayMessages" :key="index"
