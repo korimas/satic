@@ -100,6 +100,14 @@
                   :avatar='msg.sent ? meImg: aiImg'
                   :sent=msg.sent
                 />
+
+                <q-chat-message
+                  style="white-space: pre-wrap;"
+                  v-if="Waiting"
+                  name="AI"
+                  :avatar="aiImg"
+                  :text=[waitText]
+                />
               </div>
               <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
                        style="margin-top:10px; margin-bottom: 10px">
@@ -370,6 +378,8 @@ export default {
       aiImg,
       DisplayMessages,
       InputText,
+      waitText,
+      Waiting,
       StreamChat,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
