@@ -78,37 +78,6 @@ export default defineComponent({
     const meImg = './imgs/me.jpg'
     const aiImg = './imgs/ai.png'
 
-    DisplayMessages.value.push({
-      sent: true,
-      text: 'sdfsdfsdfsdf'
-    })
-
-    DisplayMessages.value.push({
-      sent: false,
-      text: 'sdfsdfsdfsdf'
-    })
-
-    DisplayMessages.value.push({
-      sent: true,
-      text: 'sdfsdfsdfsdf'
-    })
-
-    DisplayMessages.value.push({
-      sent: false,
-      text: 'sdfsdfsdfsdf'
-    })
-
-    DisplayMessages.value.push({
-      sent: true,
-      text: 'sdfsdfsdfsdf'
-    })
-
-    DisplayMessages.value.push({
-      sent: false,
-      text: 'sdfsdfsdfsdf'
-    })
-
-
     async function StreamChat() {
       if (InputText.value == '') {
         return
