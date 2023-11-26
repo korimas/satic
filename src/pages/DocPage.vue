@@ -1,7 +1,7 @@
 <template>
   <q-page class="row items-center">
     <div ref="scrollTargetRef" class="q-pa-md fit" style="max-height: calc(100vh - 51px ); overflow: auto;">
-      <!--      <q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">-->
+      <!--<q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">-->
 
       <div v-for="(item, index) in items" :key="index" class="caption doc-content">
         <q-card flat class="q-hoverable" style="white-space: pre-wrap; min-height: 120px">
@@ -32,7 +32,7 @@
 
                 <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                   <q-menu cover auto-close>
-                    <q-list>
+                    <q-list dense>
                       <q-item clickable>
                         <q-item-section>Remove</q-item-section>
                       </q-item>

@@ -20,12 +20,20 @@
       <q-btn unelevated round size="sm" icon="more_vert">
         <q-tooltip class="bg-grey-3 text-black">更多</q-tooltip>
         <q-menu cover auto-close>
-          <q-list dense style="margin: 5px 0">
+          <q-list dense>
             <q-item clickable>
               <q-item-section avatar>
                 <q-icon name="share"/>
               </q-item-section>
               <q-item-section>分享链接</q-item-section>
+            </q-item>
+
+
+            <q-item clickable>
+              <q-item-section avatar>
+                <q-icon name="settings"/>
+              </q-item-section>
+              <q-item-section>设置</q-item-section>
             </q-item>
 
           </q-list>
@@ -40,6 +48,7 @@
 <script>
 import {defineComponent, ref} from 'vue'
 import MiTree from 'components/base/MiTree.vue';
+import {useDocumentStore} from 'stores/document'
 
 export default defineComponent({
   name: 'DocSide',
@@ -49,32 +58,9 @@ export default defineComponent({
   setup(props, {emit}) {
     let nodes = ref([])
     const rightDrawerOpen = ref(false)
-    nodes.value = [
-      {
-        key: 'SWRS-1',
-        label: 'Overview',
-        icon: 'folder',
-        lazy: true
-      },
-      {
-        key: 'SWRS-2',
-        label: 'Work Mode',
-        icon: 'folder',
-        lazy: true
-      },
-      {
-        key: 'SWRS-3',
-        label: 'Network Management',
-        icon: 'folder',
-        lazy: true
-      },
-      {
-        key: 'SWRS-4',
-        label: 'Point Cloud Service',
-        icon: 'folder',
-        lazy: true
-      }
-    ]
+    const store = useDocumentStore();
+
+    nodes.value = store.DocTree
 
     function doubleClick(nodeKey) {
       emit('doubleClick', nodeKey)

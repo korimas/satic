@@ -1,0 +1,131 @@
+<template>
+  <q-toolbar>
+    <!--<q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
+    <q-toolbar-title>
+      <div class="row q-gutter-xs">
+        <q-btn dense flat label="SaticTool" icon="polymer" class="text-capitalize text-primary text-bold"
+               style="width: 130px">
+
+        </q-btn>
+        <!--<q-badge style="margin-left: 2px" class="text-lowercase" color="primary" >v1.0.0</q-badge>-->
+        <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Project
+          <q-menu style="width: 100%; width: 200px">
+            <q-list dense bordered padding class="rounded-borders">
+              <q-item clickable v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="join_right"/>
+                </q-item-section>
+                <q-item-section>
+                  Falcon I
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="view_cozy"/>
+                </q-item-section>
+                <q-item-section>
+                  Falcon G
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="join_left"/>
+                </q-item-section>
+                <q-item-section>
+                  Falcon 10K
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+
+        <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Tracker
+          <q-menu style="width: 100%; width: 250px">
+            <q-list dense bordered padding class="rounded-borders">
+              <q-item clickable v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="join_right"/>
+                </q-item-section>
+                <q-item-section>
+                  System Requirement
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="view_cozy"/>
+                </q-item-section>
+                <q-item-section>
+                  Software Requirement
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-close-popup>
+                <q-item-section avatar>
+                  <q-icon name="join_left"/>
+                </q-item-section>
+                <q-item-section>
+                  Software Architecture
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+
+        <!--<q-btn unelevated label="Create" color="primary" class="text-capitalize"/>-->
+
+      </div>
+    </q-toolbar-title>
+
+    <q-btn dense flat round icon="assistant" class="text-pink-2">
+      <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
+      <q-menu>
+        <AIAssistant></AIAssistant>
+      </q-menu>
+    </q-btn>
+
+    <!--        <q-btn dense round flat icon="g_translate" class="text-grey-8">-->
+    <!--          <q-tooltip class="bg-grey-3 text-black">翻译</q-tooltip>-->
+    <!--        </q-btn>-->
+    <q-btn dense flat round icon="search" class="text-grey-8"/>
+    <q-btn dense flat round icon="notifications" class="text-grey-8"/>
+    <q-btn dense flat round icon="settings" class="text-grey-8"/>
+    <q-btn dense flat round icon="account_circle" class="text-primary">
+      <q-menu>
+        <div class="row no-wrap q-pa-md">
+
+          <div class="column items-center">
+            <q-avatar size="72px">
+              <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+            </q-avatar>
+
+            <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+
+            <q-btn
+              color="primary"
+              label="Logout"
+              push
+              size="sm"
+              v-close-popup
+            />
+          </div>
+        </div>
+      </q-menu>
+    </q-btn>
+
+  </q-toolbar>
+</template>
+
+
+<script setup lang="ts">
+
+import AIAssistant from 'components/AIAssistant.vue';
+
+</script>
+
+
+<style scoped>
+
+</style>

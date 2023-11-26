@@ -52,8 +52,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref} from 'vue'
+<script setup lang="ts">
+import {ref} from 'vue'
+import {useAIAssistantStore} from "stores/aiassistant";
 
 type Message = {
   text: string;
@@ -65,94 +66,80 @@ type GptMessage = {
   content: string
 }
 
-export default defineComponent({
-  name: 'AIAssistant',
-  setup() {
-    // ai asistant
-    let DisplayMessages = ref<Message[]>([])
-    let GptMessages = ref<GptMessage[]>([])
-    let InputText = ref('')
-    let waitText = ref('')
-    let Loading = ref(false)
-    let Waiting = ref(false)
-    const meImg = './imgs/me.jpg'
-    const aiImg = './imgs/ai.png'
+const store = useAIAssistantStore()
+let DisplayMessages = ref<Message[]>(store.DisplayMessages)
+let GptMessages = ref<GptMessage[]>(store.GPTMessages)
 
-    async function StreamChat() {
-      if (InputText.value == '') {
-        return
-      }
+let InputText = ref('')
+let waitText = ref('')
+let Loading = ref(false)
+let Waiting = ref(false)
+const meImg = './imgs/me.jpg'
+const aiImg = './imgs/ai.png'
 
-      DisplayMessages.value.push({
-        sent: true,
-        text: InputText.value
-      })
+async function StreamChat() {
+  if (InputText.value == '') {
+    return
+  }
 
-      GptMessages.value.push({
-        role: 'user',
-        content: InputText.value
-      })
+  DisplayMessages.value.push({
+    sent: true,
+    text: InputText.value
+  })
 
-      InputText.value = ''
-      waitText.value = ''
+  GptMessages.value.push({
+    role: 'user',
+    content: InputText.value
+  })
 
-      // 流式聊天
-      Loading.value = true
-      const response = await fetch('/api/stream-api', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          'model': 'gpt-3.5-turbo',
-          // "model": "gpt-4",
-          'messages': GptMessages.value,
-          'temperature': 0.7,
-        })
-      })
+  InputText.value = ''
+  waitText.value = ''
 
-      const reader = response.body!.getReader()
-      const decoder = new TextDecoder('utf-8')
+  // 流式聊天
+  Loading.value = true
+  const response = await fetch('/api/stream-api', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      'model': 'gpt-3.5-turbo',
+      // "model": "gpt-4",
+      'messages': GptMessages.value,
+      'temperature': 0.7,
+    })
+  })
 
-      while (true) {
-        const {value, done} = await reader.read()
-        Loading.value = false
-        Waiting.value = true
+  const reader = response.body!.getReader()
+  const decoder = new TextDecoder('utf-8')
 
-        if (value) {
-          let text = decoder.decode(value)
-          waitText.value = waitText.value + text
-        }
+  while (true) {
+    const {value, done} = await reader.read()
+    Loading.value = false
+    Waiting.value = true
 
-        if (done) {
-          Waiting.value = false
-          GptMessages.value?.push({
-            role: 'assistant',
-            content: waitText.value
-          })
-          DisplayMessages.value.push({
-            sent: false,
-            text: waitText.value
-          })
-          // await nextTick()
-          // inputCom.value.focus()
-          break
-        }
-      }
+    if (value) {
+      let text = decoder.decode(value)
+      waitText.value = waitText.value + text
     }
 
-
-    return {
-      meImg,
-      aiImg,
-      DisplayMessages,
-      InputText,
-      waitText,
-      Waiting,
-      StreamChat,
+    if (done) {
+      Waiting.value = false
+      GptMessages.value?.push({
+        role: 'assistant',
+        content: waitText.value
+      })
+      DisplayMessages.value.push({
+        sent: false,
+        text: waitText.value
+      })
+      // await nextTick()
+      // inputCom.value.focus()
+      break
     }
   }
-})
+}
+
 </script>
 
 
