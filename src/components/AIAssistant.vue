@@ -12,6 +12,7 @@
         :text=[msg.text]
         :avatar='msg.sent ? meImg: aiImg'
         :sent=msg.sent
+        :bg-color='msg.sent ? "blue-3": "grey-3"'
       />
       <q-chat-message
         style="white-space: pre-wrap;"
@@ -19,6 +20,8 @@
         name="AI"
         :avatar="aiImg"
         :text=[waitText]
+        bg-color="grey-3"
+
       />
     </div>
     <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
@@ -74,6 +77,37 @@ export default defineComponent({
     let Waiting = ref(false)
     const meImg = './imgs/me.jpg'
     const aiImg = './imgs/ai.png'
+
+    DisplayMessages.value.push({
+      sent: true,
+      text: 'sdfsdfsdfsdf'
+    })
+
+    DisplayMessages.value.push({
+      sent: false,
+      text: 'sdfsdfsdfsdf'
+    })
+
+    DisplayMessages.value.push({
+      sent: true,
+      text: 'sdfsdfsdfsdf'
+    })
+
+    DisplayMessages.value.push({
+      sent: false,
+      text: 'sdfsdfsdfsdf'
+    })
+
+    DisplayMessages.value.push({
+      sent: true,
+      text: 'sdfsdfsdfsdf'
+    })
+
+    DisplayMessages.value.push({
+      sent: false,
+      text: 'sdfsdfsdfsdf'
+    })
+
 
     async function StreamChat() {
       if (InputText.value == '') {
