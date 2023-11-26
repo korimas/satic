@@ -91,7 +91,7 @@ import {ref, nextTick} from 'vue'
 import DocSide from 'components/DocSide.vue';
 import HeaderBar from 'components/HeaderBar.vue';
 import DocCreate from 'components/DocCreate.vue';
-import DocDetail from "components/DocDetail.vue";
+import DocDetail from 'components/DocDetail.vue';
 
 const DocSideShow = ref(false)
 const DocCreateShow = ref(false)
