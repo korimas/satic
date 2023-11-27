@@ -31,7 +31,7 @@
 
 
                 <q-btn color="grey-7" round flat size="sm" icon="more_vert">
-                  <q-menu cover auto-close>
+                  <q-menu auto-close>
                     <q-list dense>
                       <q-item clickable>
                         <q-item-section>Remove</q-item-section>
