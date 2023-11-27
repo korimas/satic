@@ -92,6 +92,16 @@ export default defineComponent({
     const scrollTargetRef = ref()
     const items = ref([
       {
+        summary: 'memory cache',
+        description: 'When encountering frequently accessed data, the software uses memory caching techniques to store the data in memory, which speeds up the data access speed.',
+        comment: '',
+        openEdit: false
+      }, {
+        summary: 'memory pool',
+        description: 'In processes that require frequent memory allocation and deallocation, software shall optimize memory usage and reduce memory fragmentation by using memory pool technology, thereby improving memory allocation efficiency..',
+        comment: '',
+        openEdit: false
+      }, {
         summary: 'Survival priority',
         description: 'During the runtime of the software, it shall ensure that the state machine for mode switching is always in an active stat unless the software crashes',
         comment: '',
