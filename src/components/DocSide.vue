@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <div class="row full-width q-pa-xs q-gutter-xs bg-grey-2">
+    <div class="row full-width q-pa-xs q-gutter-xs bg-grey-3">
       <q-btn unelevated round size="sm" icon="add" @click="addClick">
         <q-tooltip class="bg-grey-3 text-black">创建</q-tooltip>
       </q-btn>

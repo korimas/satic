@@ -3,7 +3,9 @@
 
     <!--header-->
     <q-header bordered class="bg-white">
-      <HeaderBar></HeaderBar>
+      <div class="column">
+        <HeaderBar></HeaderBar>
+      </div>
     </q-header>
 
     <!--doc side drawer-->

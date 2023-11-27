@@ -28,7 +28,7 @@
              style="margin-top:10px; margin-bottom: 10px">
 
       <template v-slot:append>
-        <q-btn round dense flat icon="send" @click="StreamChat"/>
+        <q-btn dense flat icon="send" @click="StreamChat"/>
       </template>
     </q-input>
 
