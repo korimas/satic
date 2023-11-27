@@ -3,12 +3,12 @@
     <!--<q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
     <q-toolbar-title>
       <div class="row q-gutter-xs">
-        <q-btn dense flat label="SaticTool" icon="polymer" class="text-capitalize text-primary text-bold"
-               style="width: 130px">
-
+        <q-btn dense flat class="text-capitalize" color="grey-9"  style="width: 130px; margin-right: 10px; font-size: 16px; font-weight: normal">
+          <q-icon size="sm" name="polymer" color="primary" style="margin-right: 10px"/>
+          SaticBoard
         </q-btn>
         <!--<q-badge style="margin-left: 2px" class="text-lowercase" color="primary" >v1.0.0</q-badge>-->
-        <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Project
+        <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-7">Project
           <q-menu style="width: 100%; width: 200px">
             <q-list dense bordered padding class="rounded-borders">
               <q-item clickable v-close-popup>
@@ -41,7 +41,7 @@
           </q-menu>
         </q-btn>
 
-        <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-8">Tracker
+        <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-7">Tracker
           <q-menu style="width: 100%; width: 250px">
             <q-list dense bordered padding class="rounded-borders">
               <q-item clickable v-close-popup>
@@ -79,16 +79,14 @@
       </div>
     </q-toolbar-title>
 
-    <q-btn dense flat round icon="assistant" class="text-pink-2">
+    <q-btn dense flat round icon="assistant" class="text-light-blue-6">
       <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
       <q-menu>
         <AIAssistant></AIAssistant>
       </q-menu>
     </q-btn>
 
-    <!--        <q-btn dense round flat icon="g_translate" class="text-grey-8">-->
-    <!--          <q-tooltip class="bg-grey-3 text-black">翻译</q-tooltip>-->
-    <!--        </q-btn>-->
+
     <q-btn dense flat round icon="search" class="text-grey-8"/>
     <q-btn dense flat round icon="notifications" class="text-grey-8"/>
     <q-btn dense flat round icon="settings" class="text-grey-8"/>

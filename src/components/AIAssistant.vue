@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md justify-center" style="max-height: 500px">
     <div class="row">
-      <q-icon name="assistant" size="sm" class="text-pink-2"/>
+      <q-icon name="assistant" size="sm" class="text-light-blue-6"/>
       Seyond AI助手
     </div>
     <div style="width: 100%; width: 400px; padding-right: 8px; padding-left: 8px">
@@ -35,17 +35,17 @@
     <div class="text-grey-6" style="width: 100%; width: 400px">
       <div>看看大家在问什么：</div>
       <q-chip square>
-        <q-avatar color="red" text-color="white">1</q-avatar>
+        <q-avatar color="light-blue-5" text-color="white">1</q-avatar>
         什么是polygon？
       </q-chip>
 
       <q-chip square>
-        <q-avatar color="red" text-color="white">2</q-avatar>
+        <q-avatar color="light-blue-5" text-color="white">2</q-avatar>
         工作模式有哪些？
       </q-chip>
 
       <q-chip square>
-        <q-avatar color="red" text-color="white">3</q-avatar>
+        <q-avatar color="light-blue-5" text-color="white">3</q-avatar>
         什么情况下会进入Protection模式？
       </q-chip>
     </div>
