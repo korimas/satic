@@ -92,6 +92,11 @@ export default defineComponent({
     const scrollTargetRef = ref()
     const items = ref([
       {
+        summary: 'PHY mode configuration',
+        description: 'The software must possess the capability to designate the radar\'s PHY mode as either Master or Slave, allowing for customization during the factory setting based on the client\'s requirements.',
+        comment: '',
+        openEdit: false
+      }, {
         summary: 'memory cache',
         description: 'When encountering frequently accessed data, the software uses memory caching techniques to store the data in memory, which speeds up the data access speed.',
         comment: '',
