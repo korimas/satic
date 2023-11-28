@@ -30,7 +30,6 @@ const handler = async (req: Request): Promise<Response> => {
 # Output:
 * 按以下格式输出：
 """
-checklist：你评审检查点
 评审意见：
 修改建议：
 """
