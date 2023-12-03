@@ -30,6 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
 
 # Output:
 * 你只需输出优化后的软件需求描述，不要加任何前置说明，例如：优化后的描述如下。
+* 输出不需要用双引号括起来。
 `
 
     const GoodMessage: GPTAPIMessage[] = [
