@@ -40,9 +40,16 @@
       />
 
       <q-card v-show="AIGeneratingContent" flat bordered class="bg-grey-2">
-        <q-card-section>
-          {{ AIGeneratingContent }}
+        <q-card-section horizontal style="width: 100%">
+          <div class="q-ma-md col">
+            {{ AIGeneratingContent }}
+          </div>
+
+          <q-card-actions vertical class="justify-around q-px-md col-auto">
+            <q-btn :disable="!AIGenerating" flat round color="grey-8" icon="publish" @click="Publish"/>
+          </q-card-actions>
         </q-card-section>
+
       </q-card>
 
       <div class="row q-gutter-md">
@@ -64,7 +71,7 @@ const emit = defineEmits(['close'])
 let editSummary = ref('')
 let editDescription = ref('')
 let AIGenerating = ref(false)
-let AIGeneratingContent = ref('')
+let AIGeneratingContent = ref('sss')
 
 // let VerificationStandards = ref('')
 
@@ -77,6 +84,7 @@ async function AIGenerate() {
     return
   }
 
+  AIGenerating.value = true
   const detailResp = await fetch('/api/stream-gen-req', {
     method: 'POST',
     headers: {
@@ -108,7 +116,7 @@ async function AIGenerate() {
       break
     }
   }
-
+  AIGenerating.value = false
   window.console.log = oldConsoleLog
 }
 
@@ -123,6 +131,11 @@ function onReset() {
   editDescription.value = ''
   AIGeneratingContent.value = ''
 }
+
+function Publish() {
+  editDescription.value = AIGeneratingContent.value
+}
+
 </script>
 
 
