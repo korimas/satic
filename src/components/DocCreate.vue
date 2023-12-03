@@ -1,53 +1,122 @@
 <template>
-    <div class="q-pa-sm q-gutter-sm row bg-grey-2" style="height: 56px">
-        <div class="text-h6">Create Requirement</div>
-        <q-space></q-space>
-        <q-btn unelevated size="sm" icon="clear" color="red-4" @click="close"/>
+  <div class="q-pa-sm q-gutter-sm row bg-grey-2" style="height: 56px">
+    <div class="text-h6">Add Requirement</div>
+    <q-space></q-space>
+    <q-btn unelevated size="sm" icon="clear" color="red-4" @click="close"/>
+  </div>
+  <q-separator/>
+  <div class="column q-pa-md">
+
+    <q-form
+      @submit="onSubmit"
+      @reset="onReset"
+      class="q-gutter-md"
+    >
+      <q-input
+        dense
+        outlined
+        v-model="editSummary"
+        label="Summary"
+      />
+
+      <q-editor v-model="editDescription" placeholder="Description" min-height="10rem"
+                :definitions="{
+                    AI: {
+                      tip: 'AI生成',
+                      icon: 'assistant',
+                      label: 'AI生成',
+                      handler: AIGenerate
+                    }
+                  }"
+                :toolbar="[
+                    ['removeFormat'],
+                    ['undo', 'redo'],
+                    ['left','center','right','justify'],
+                    ['ordered','unordered'],
+                    ['bold', 'italic', 'strike', 'underline'],
+                    ['link', 'image'],
+                    ['AI']
+                  ]"
+      />
+
+      <div class="row q-gutter-md">
+        <q-space/>
+        <q-btn unelevated label="Submit" type="submit" color="primary"/>
       </div>
-      <q-separator/>
-      <div class="column q-pa-md">
-
-        <q-form
-          @submit="onSubmit"
-          @reset="onReset"
-          class="q-gutter-md"
-        >
-          <q-input
-            dense
-            outlined
-            v-model="editSummary"
-            label="Summary"
-          />
-
-          <q-editor v-model="editDescription" placeholder="Description" min-height="10rem"/>
-          <q-input
-            dense
-            v-model="text"
-            outlined
-            type="textarea"
-            label="Verification Standards"
-          />
-
-          <div>
-            <q-btn unelevated label="Submit" type="submit" color="primary"/>
-          </div>
-        </q-form>
+    </q-form>
 
 
-      </div>
+  </div>
 
 </template>
 
 <script setup lang="ts">
 
-import {defineEmits} from 'vue'
+import {defineEmits, ref} from 'vue'
 
 const emit = defineEmits(['close'])
+let editSummary = ref('')
+let editDescription = ref('')
+let AIGenerating = ref(false)
+let AIGeneratingContent = ref('')
+
+// let VerificationStandards = ref('')
 
 function close() {
   emit('close')
 }
 
+async function AIGenerate() {
+  if (AIGenerating.value || editDescription.value === '') {
+    return
+  }
+
+  const detailResp = await fetch('/api/stream-gen-req', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      //'Authorization': 'Bearer ' + Password.value
+    },
+    body: JSON.stringify({
+      'model': 'gpt-4',
+      'requirement': editDescription.value,
+      'temperature': 0.7,
+    })
+  })
+
+  const detailReader = detailResp.body!.getReader()
+  const detailDecoder = new TextDecoder('utf-8')
+  let oldConsoleLog = window.console.log;
+  window.console.log = function () {
+    return
+  };
+
+  AIGeneratingContent.value = ""
+  while (true) {
+    const {value, done} = await detailReader.read()
+    if (value) {
+      AIGeneratingContent.value = AIGeneratingContent.value + detailDecoder.decode(value)
+    }
+
+    if (done) {
+      break
+    }
+  }
+
+  window.console.log = oldConsoleLog
+}
+
+function onSubmit() {
+  console.log(editSummary.value)
+  console.log(editDescription.value)
+  console.log(AIGeneratingContent.value)
+}
+
+function onReset() {
+  editSummary.value = ''
+  editDescription.value = ''
+  AIGeneratingContent.value = ''
+}
 </script>
 
 
