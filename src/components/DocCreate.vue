@@ -134,6 +134,7 @@ function onReset() {
 
 function Publish() {
   editDescription.value = AIGeneratingContent.value
+  AIGeneratingContent.value = ''
 }
 
 </script>
