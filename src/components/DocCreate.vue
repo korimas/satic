@@ -39,6 +39,12 @@
                   ]"
       />
 
+      <q-card v-show="AIGeneratingContent" flat bordered class="bg-grey-2">
+        <q-card-section>
+          {{ AIGeneratingContent }}
+        </q-card-section>
+      </q-card>
+
       <div class="row q-gutter-md">
         <q-space/>
         <q-btn unelevated label="Submit" type="submit" color="primary"/>
