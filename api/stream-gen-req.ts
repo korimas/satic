@@ -28,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
     * 不能包含太多复杂的内容，他们应该被拆分成多条软件需求。
 
 # Output:
-* 你需要直接输出你优化后的结果。
+* 你只需输出优化后的软件需求描述，不要加任何前置说明，例如：优化后的描述如下。
 `
 
     const GoodMessage: GPTAPIMessage[] = [
