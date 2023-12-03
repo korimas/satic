@@ -46,7 +46,7 @@
           </div>
 
           <q-card-actions vertical class="justify-around q-px-md col-auto">
-            <q-btn :disable="!AIGenerating" flat round color="grey-8" icon="publish" @click="Publish"/>
+            <q-btn :disable="AIGenerating" flat round color="grey-8" icon="publish" @click="Publish"/>
           </q-card-actions>
         </q-card-section>
 
