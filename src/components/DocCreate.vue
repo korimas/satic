@@ -71,7 +71,7 @@ const emit = defineEmits(['close'])
 let editSummary = ref('')
 let editDescription = ref('')
 let AIGenerating = ref(false)
-let AIGeneratingContent = ref('sss')
+let AIGeneratingContent = ref('')
 
 // let VerificationStandards = ref('')
 
