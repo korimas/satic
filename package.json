@@ -2,7 +2,7 @@
   "name": "satic-ui",
   "version": "0.0.1",
   "description": "UI for Satic Project",
-  "productName": "Satic UI",
+  "productName": "SaticBoard",
   "author": "Korimas",
   "private": true,
   "scripts": {
