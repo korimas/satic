@@ -3,7 +3,8 @@
     <!--<q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
     <q-toolbar-title>
       <div class="row q-gutter-xs">
-        <q-btn dense flat class="text-capitalize" color="grey-9"  style="width: 130px; margin-right: 10px; font-size: 16px; font-weight: normal">
+        <q-btn dense flat class="text-capitalize" color="grey-9"
+               style="width: 130px; margin-right: 10px; font-size: 16px; font-weight: normal">
           <q-icon size="sm" name="polymer" color="primary" style="margin-right: 10px"/>
           SaticBoard
         </q-btn>
@@ -79,6 +80,14 @@
       </div>
     </q-toolbar-title>
 
+    <q-btn dense flat round icon="reviews" class="text-grey-8" @click="AIReview">
+      <q-menu>
+        <div style="min-height: 300px; min-width: 300px">
+          {{ ReviewRecord }}
+        </div>
+      </q-menu>
+    </q-btn>
+
     <q-btn dense flat round icon="assistant" class="text-light-blue-6">
       <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
       <q-menu>
@@ -118,8 +127,49 @@
 
 
 <script setup lang="ts">
-
+import {ref} from 'vue'
 import AIAssistant from 'components/AIAssistant.vue';
+import {useCommentStore} from 'stores/comments'
+
+const store = useCommentStore()
+let ReviewRecord = ref('')
+
+async function AIReview() {
+  const detailResp = await fetch('/api/stream-comment', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      //'Authorization': 'Bearer ' + Password.value
+    },
+    body: JSON.stringify({
+      'model': 'gpt-4',
+      'comments': store.Comments,
+      'temperature': 0.7,
+    })
+  })
+
+  const detailReader = detailResp.body!.getReader()
+  const detailDecoder = new TextDecoder('utf-8')
+  let oldConsoleLog = window.console.log;
+  window.console.log = function () {
+    return
+  };
+
+  ReviewRecord.value = ''
+  while (true) {
+    const {value, done} = await detailReader.read()
+    if (value) {
+      ReviewRecord.value = ReviewRecord.value + detailDecoder.decode(value)
+    }
+
+    if (done) {
+      break
+    }
+  }
+
+  window.console.log = oldConsoleLog
+
+}
 
 </script>
 

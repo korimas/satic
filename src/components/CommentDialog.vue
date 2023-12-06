@@ -21,7 +21,7 @@
         </q-input>
 
         <div class="q-gutter-md q-pt-md">
-          <q-card v-for="(comment, index) in comments" :key="index">
+          <q-card v-for="(comment, index) in RequirementComment.comments" :key="index">
             <q-item>
               <q-item-section avatar>
                 <q-avatar>
@@ -59,12 +59,16 @@ const props = defineProps({
   reqId: {
     type: String,
     required: true
+  },
+  reqDesc: {
+    type: String,
+    required: true
   }
 })
 
 
 const store = useCommentStore();
-let comments = computed(() => store.Comments[props.reqId] || [])
+let RequirementComment = computed(() => store.Comments[props.reqId] || {requirementID:props.reqId, comments: []})
 
 let CommentInput = ref('')
 let Name = ref('')
@@ -74,7 +78,7 @@ let Name = ref('')
 // }
 
 function addComment() {
-  store.addComment(props.reqId, CommentInput.value, Name.value)
+  store.addComment(props.reqId, CommentInput.value, Name.value, props.reqDesc)
   CommentInput.value = ''
 }
 

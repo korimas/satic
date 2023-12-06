@@ -29,7 +29,7 @@
                   <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
                 </q-btn>
 
-                <q-btn round size="sm" flat icon="comment" @click="ShowCommentDialog(item.id)">
+                <q-btn round size="sm" flat icon="comment" @click="ShowCommentDialog(item.id, item.description)">
                   <q-tooltip class="bg-grey-3 text-black">Comment</q-tooltip>
                 </q-btn>
 
@@ -87,7 +87,7 @@
   </q-page>
 
   <q-dialog v-model="ShowCommentDialogFlag" persistent>
-    <CommentDialog v-model:req-id="CommentReqId"/>
+    <CommentDialog v-model:req-id="CommentReqId" v-model:req-desc="CommentReqDesc"/>
   </q-dialog>
 </template>
 
@@ -214,9 +214,11 @@ const items = ref([
 let expanded = ref(false)
 let ShowCommentDialogFlag = ref(false)
 let CommentReqId = ref('')
+let CommentReqDesc = ref('')
 
-function ShowCommentDialog(reqId: string) {
+function ShowCommentDialog(reqId: string, reqDesc: string) {
   CommentReqId.value = reqId
+  CommentReqDesc.value = reqDesc
   ShowCommentDialogFlag.value = true
 }
 
