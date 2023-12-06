@@ -83,7 +83,7 @@
     <q-btn dense flat round icon="reviews" class="text-grey-8" @click="AIReview">
       <q-menu>
         <div style="min-height: 300px; min-width: 300px">
-          {{ ReviewRecord }}
+          <div v-html="ReviewRecordMD" class="markdown-body"></div>
         </div>
       </q-menu>
     </q-btn>
@@ -130,9 +130,12 @@
 import {ref} from 'vue'
 import AIAssistant from 'components/AIAssistant.vue';
 import {useCommentStore} from 'stores/comments'
+import {marked} from 'marked';
+import 'github-markdown-css';
 
 const store = useCommentStore()
 let ReviewRecord = ref('')
+let ReviewRecordMD = ref('')
 
 async function AIReview() {
   const detailResp = await fetch('/api/stream-comment', {
@@ -160,6 +163,7 @@ async function AIReview() {
     const {value, done} = await detailReader.read()
     if (value) {
       ReviewRecord.value = ReviewRecord.value + detailDecoder.decode(value)
+      ReviewRecordMD.value = await marked(ReviewRecord.value)
     }
 
     if (done) {
