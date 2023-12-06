@@ -82,9 +82,14 @@
 
     <q-btn dense flat round icon="reviews" class="text-grey-8" @click="AIReview">
       <q-menu>
-        <div style="min-height: 300px; min-width: 300px">
-          <div v-html="ReviewRecordMD" class="markdown-body"></div>
-        </div>
+
+          <q-card style="min-height: 600px; min-width: 1000px">
+            <q-card-section>
+              <div v-html="ReviewRecordMD" class="markdown-body"></div>
+            </q-card-section>
+          </q-card>
+
+
       </q-menu>
     </q-btn>
 
