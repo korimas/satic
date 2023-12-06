@@ -143,7 +143,7 @@ async function AIReview() {
     },
     body: JSON.stringify({
       'model': 'gpt-4',
-      'comments': store.Comments,
+      'comments': JSON.stringify(store.Comments),
       'temperature': 0.7,
     })
   })
