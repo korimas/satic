@@ -12,13 +12,30 @@
     <q-drawer show-if-above v-model="DocSideShow" side="left" bordered :width="DocSideDrawerWidth">
       <div class="row full-height">
         <div style="width:32px; border-right: 1px solid rgba(0, 0, 0, 0.12);" class="column bg-grey-3">
-          <q-btn unelevated padding="xs" class="bg-grey-5">
-            <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal" class="text-capitalize">
+          <q-btn dense flat padding="md xs" class="bg-grey-5">
+            <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal"
+                 class="text-capitalize">
               Navigation
             </div>
             <q-icon name="folder" size="xs"/>
-
           </q-btn>
+
+          <q-btn dense flat padding="md xs" class="bg-grey-3">
+            <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal"
+                 class="text-capitalize">
+              Review
+            </div>
+            <q-icon name="reviews" size="xs"/>
+          </q-btn>
+
+          <q-btn dense flat padding="md xs" class="bg-grey-3">
+            <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal"
+                 class="text-capitalize">
+              Comment
+            </div>
+            <q-icon name="comment" size="xs"/>
+          </q-btn>
+
         </div>
         <div class="col-grow">
           <DocSide @addClick="DocCreateShow = true"></DocSide>
