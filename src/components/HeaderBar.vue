@@ -41,7 +41,6 @@
             </q-list>
           </q-menu>
         </q-btn>
-
         <q-btn dense flat icon-right="expand_more" class="text-capitalize text-grey-7">Tracker
           <q-menu style="width: 100%; width: 250px">
             <q-list dense bordered padding class="rounded-borders">
@@ -80,18 +79,7 @@
       </div>
     </q-toolbar-title>
 
-    <q-btn dense flat round icon="reviews" class="text-grey-8" @click="AIReview">
-      <q-menu>
-
-          <q-card style="min-height: 600px; width: 1000px">
-            <q-card-section>
-              <div v-html="ReviewRecordMD" class="markdown-body"></div>
-            </q-card-section>
-          </q-card>
-
-
-      </q-menu>
-    </q-btn>
+    <q-btn dense flat round icon="reviews" class="text-grey-8" @click="ShowCommentDialogFlag = true"/>
 
     <q-btn dense flat round icon="assistant" class="text-light-blue-6">
       <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
@@ -128,58 +116,20 @@
     </q-btn>
 
   </q-toolbar>
+
+  <q-dialog v-model="ShowCommentDialogFlag" persistent>
+    <CommentRecordDialog />
+  </q-dialog>
+
 </template>
 
 
 <script setup lang="ts">
 import {ref} from 'vue'
 import AIAssistant from 'components/AIAssistant.vue';
-import {useCommentStore} from 'stores/comments'
-import {marked} from 'marked';
-import 'github-markdown-css';
+import CommentRecordDialog from 'components/CommentRecordDialog.vue'
 
-const store = useCommentStore()
-let ReviewRecord = ref('')
-let ReviewRecordMD = ref('')
-
-async function AIReview() {
-  const detailResp = await fetch('/api/stream-comment', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      //'Authorization': 'Bearer ' + Password.value
-    },
-    body: JSON.stringify({
-      'model': 'gpt-4',
-      'comments': JSON.stringify(store.Comments),
-      'temperature': 0.7,
-    })
-  })
-
-  const detailReader = detailResp.body!.getReader()
-  const detailDecoder = new TextDecoder('utf-8')
-  let oldConsoleLog = window.console.log;
-  window.console.log = function () {
-    return
-  };
-
-  ReviewRecord.value = ''
-  while (true) {
-    const {value, done} = await detailReader.read()
-    if (value) {
-      ReviewRecord.value = ReviewRecord.value + detailDecoder.decode(value)
-      ReviewRecordMD.value = await marked(ReviewRecord.value)
-    }
-
-    if (done) {
-      break
-    }
-  }
-
-  window.console.log = oldConsoleLog
-
-}
-
+let ShowCommentDialogFlag = ref(false)
 </script>
 
 
