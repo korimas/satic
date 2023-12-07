@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 60vw; max-width: 80vw;">
+  <q-card style="width: 60vw; max-width: 80vw; height: 35vw">
     <q-card-section class="row items-center bg-grey-3">
       <div class="text-h6">Comment Records</div>
       <q-space/>

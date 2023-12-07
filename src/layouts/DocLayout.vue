@@ -10,7 +10,21 @@
 
     <!--doc side drawer-->
     <q-drawer show-if-above v-model="DocSideShow" side="left" bordered :width="DocSideDrawerWidth">
-      <DocSide @addClick="DocCreateShow = true"></DocSide>
+      <div class="row full-height">
+        <div style="width:32px; border-right: 1px solid rgba(0, 0, 0, 0.12);" class="column bg-grey-3">
+          <q-btn unelevated padding="xs" class="bg-grey-5">
+            <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal" class="text-capitalize">
+              Navigation
+            </div>
+            <q-icon name="folder" size="xs"/>
+
+          </q-btn>
+        </div>
+        <div class="col-grow">
+          <DocSide @addClick="DocCreateShow = true"></DocSide>
+        </div>
+
+      </div>
       <div v-touch-pan.preserveCursor.prevent.mouse.horizontal="resizeDocSide" class="q-drawer_left_resizer"></div>
     </q-drawer>
 
@@ -89,7 +103,7 @@
 </style>
 
 <script setup lang="ts">
-import {ref, nextTick} from 'vue'
+import {nextTick, ref} from 'vue'
 import DocSide from 'components/DocSide.vue';
 import HeaderBar from 'components/HeaderBar.vue';
 import DocCreate from 'components/DocCreate.vue';
@@ -99,7 +113,7 @@ const DocSideShow = ref(false)
 const DocCreateShow = ref(false)
 const DocDetailShow = ref(false)
 
-let drawerInitWidth = 280
+let drawerInitWidth = 310
 let DocSideDrawerWidth = ref(drawerInitWidth)
 let DocDetailDrawerWidth = ref(drawerInitWidth)
 
@@ -123,9 +137,9 @@ function resizeDocDetail(ev: any) {
   }
 }
 
-function init(){
-  nextTick(()=>{
-      DocDetailShow.value = false
+function init() {
+  nextTick(() => {
+    DocDetailShow.value = false
   })
   return
 }
