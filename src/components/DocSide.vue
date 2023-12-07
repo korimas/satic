@@ -18,7 +18,6 @@
       </q-btn>
       <q-space/>
       <q-btn unelevated round size="sm" icon="more_vert">
-        <q-tooltip class="bg-grey-3 text-black">更多</q-tooltip>
         <q-menu  auto-close>
           <q-list dense>
             <q-item clickable>
@@ -27,7 +26,6 @@
               </q-item-section>
               <q-item-section>分享链接</q-item-section>
             </q-item>
-
 
             <q-item clickable>
               <q-item-section avatar>
