@@ -19,7 +19,7 @@
       <q-space/>
       <q-btn unelevated round size="sm" icon="more_vert">
         <q-tooltip class="bg-grey-3 text-black">更多</q-tooltip>
-        <q-menu cover auto-close>
+        <q-menu  auto-close>
           <q-list dense>
             <q-item clickable>
               <q-item-section avatar>

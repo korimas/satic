@@ -17,9 +17,7 @@
 import {marked} from 'marked';
 import 'github-markdown-css';
 import {ref} from 'vue'
-
 import {useCommentStore} from 'stores/comments'
-
 
 const store = useCommentStore()
 let ReviewRecord = ref('')
@@ -59,12 +57,8 @@ async function AIReviewRecords() {
       break
     }
   }
-
   window.console.log = oldConsoleLog
-
 }
-
-
 AIReviewRecords()
 
 </script>
