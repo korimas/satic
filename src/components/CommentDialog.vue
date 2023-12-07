@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 60vw; max-width: 80vw;">
+  <q-card flat bordered style="width: 60vw; max-width: 80vw;">
     <q-card-section class="row items-center bg-grey-3">
       <div class="text-h6">Comments</div>
       <q-space/>
@@ -21,7 +21,7 @@
         </q-input>
 
         <div class="q-gutter-md q-pt-md">
-          <q-card v-for="(comment, index) in RequirementComment.comments" :key="index">
+          <q-card  flat bordered v-for="(comment, index) in RequirementComment.comments" :key="index">
             <q-item>
               <q-item-section avatar>
                 <q-avatar>
@@ -32,7 +32,7 @@
               <q-item-section>
                 <q-item-label>{{ comment.name }}</q-item-label>
                 <q-item-label caption>
-                  System requirement enginer
+                  Requirement Engineer
                 </q-item-label>
               </q-item-section>
             </q-item>
