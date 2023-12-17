@@ -12,7 +12,7 @@
     <q-drawer show-if-above v-model="DocSideShow" side="left" bordered :width="DocSideDrawerWidth">
       <div class="row full-height">
         <div style="width:32px; border-right: 1px solid rgba(0, 0, 0, 0.12);" class="column bg-grey-3">
-          <q-btn dense flat padding="md xs" class="bg-grey-5">
+          <q-btn square dense flat padding="md xs" class="bg-grey-5">
             <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal"
                  class="text-capitalize">
               Navigation
@@ -20,7 +20,7 @@
             <q-icon name="folder" size="xs"/>
           </q-btn>
 
-          <q-btn dense flat padding="md xs" class="bg-grey-3">
+          <q-btn square dense flat padding="md xs" class="bg-grey-3">
             <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal"
                  class="text-capitalize">
               Review
@@ -28,7 +28,7 @@
             <q-icon name="reviews" size="xs"/>
           </q-btn>
 
-          <q-btn dense flat padding="md xs" class="bg-grey-3">
+          <q-btn square dense flat padding="md xs" class="bg-grey-3">
             <div style="writing-mode: vertical-rl; transform: rotate(180deg); font-weight: normal"
                  class="text-capitalize">
               Comment
