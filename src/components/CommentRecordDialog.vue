@@ -1,15 +1,7 @@
 <template>
-  <q-card style="width: 60vw; max-width: 80vw; height: 35vw">
-    <q-card-section class="row items-center bg-grey-3">
-      <div class="text-h6">Comment Records</div>
-      <q-space/>
-      <q-btn icon="close" flat round dense v-close-popup/>
-    </q-card-section>
-
-    <q-card-section>
-      <div v-html="ReviewRecordMD" class="markdown-body"></div>
-    </q-card-section>
-  </q-card>
+  <mi-window style="width: 60vw; max-width: 80vw;">
+    <div v-html="ReviewRecordMD" class="markdown-body" style="min-height: 500px"/>
+  </mi-window>
 
 </template>
 
@@ -18,6 +10,7 @@ import {marked} from 'marked';
 import 'github-markdown-css';
 import {ref} from 'vue'
 import {useCommentStore} from 'stores/comments'
+import MiWindow from './base/MiWindow.vue';
 
 const store = useCommentStore()
 let ReviewRecord = ref('')

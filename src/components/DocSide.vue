@@ -19,7 +19,7 @@
       <q-space/>
       <q-btn unelevated round size="sm" icon="more_vert">
         <q-menu  auto-close>
-          <q-list dense>
+          <q-list dense  style="margin: 3px;">
             <q-item clickable>
               <q-item-section avatar>
                 <q-icon name="share"/>

@@ -1,13 +1,6 @@
 <template>
-  <q-card flat bordered style="width: 60vw; max-width: 80vw;">
-    <q-card-section class="row items-center bg-grey-3">
-      <div class="text-h6">Comments</div>
-      <q-space/>
-      <q-btn icon="close" flat round dense v-close-popup/>
-    </q-card-section>
-
-    <q-card-section>
-      <div class="column q-gutter-y-md">
+  <mi-window title="Comments" style="width: 60vw; max-width: 80vw;">
+    <div class="column q-gutter-y-md">
         <q-input v-model="Name" label="Name"/>
 
         <q-input
@@ -45,14 +38,14 @@
         </div>
 
       </div>
-    </q-card-section>
-  </q-card>
+    </mi-window>
 </template>
 
 <script setup lang="ts">
 
 import {computed, defineProps, ref} from 'vue'
 import {useCommentStore} from 'stores/comments'
+import MiWindow from './base/MiWindow.vue';
 
 // const emit = defineEmits(['close'])
 const props = defineProps({
