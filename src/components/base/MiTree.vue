@@ -452,10 +452,6 @@ export default defineComponent({
   -ms-user-select: none;
 }
 
-.mitree .q-tree__node-header {
-  padding: 0;
-}
-
 .mitree .q-tree__node--child > .q-tree__node-header :focus {
   box-shadow: none;
 }
