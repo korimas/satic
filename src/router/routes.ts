@@ -13,6 +13,10 @@ const routes: RouteRecordRaw[] = [
     path: '/tiptap',
     component: () => import('pages/TipTap.vue'),
   },
+  {
+    path: '/ide',
+    component: () => import('layouts/IDELayout.vue'),
+  },
 
   // Always leave this as last one,
   // but you can also remove it

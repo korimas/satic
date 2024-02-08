@@ -15,7 +15,6 @@
 <script setup lang="ts">
 import { defineEmits, ref } from 'vue';
 
-console.log("MiDrawer.vue ");
 const emit = defineEmits(['close'])
 const props = defineProps({
     showTitleBar: {
