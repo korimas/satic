@@ -1,5 +1,5 @@
 <template>
-  <mi-window style="width: 60vw; max-width: 80vw;">
+  <mi-window style="width: 60vw; max-width: 80vw;" title="Comment Records">
     <div v-html="ReviewRecordMD" class="markdown-body" style="min-height: 500px"/>
   </mi-window>
 
