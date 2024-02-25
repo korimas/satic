@@ -55,7 +55,7 @@
         </template>
 
         <template v-slot:after>
-            content
+            <ContentBox></ContentBox>
         </template>
 
     </q-splitter>
@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from 'vue';
 import ExplorerTab from 'components/ide/swreq/ExplorerTab.vue';
+import ContentBox from 'components/ide/swreq/ContentBox.vue';
 
 const SearchTab = defineAsyncComponent(() => import('components/ide/swreq/SearchTab.vue'));
 const PluginsTab = defineAsyncComponent(() => import('components/ide/swreq/PluginsTab.vue'));
