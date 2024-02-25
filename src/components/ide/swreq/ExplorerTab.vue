@@ -17,7 +17,7 @@
                 <q-tooltip class="bg-grey-3 text-black">导入</q-tooltip>
             </q-btn>
             <q-space />
-            <q-btn unelevated round size="sm" icon="more_vert">
+            <q-btn unelevated size="sm" icon="more_horiz" padding="xs">
                 <q-menu auto-close>
                     <q-list dense style="margin: 3px;">
                         <q-item clickable>

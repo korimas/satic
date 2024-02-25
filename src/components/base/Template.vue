@@ -1,6 +1,6 @@
 <template>
     <div>
-        content box
+        Template
     </div>
 </template>
 

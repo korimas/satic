@@ -3,11 +3,12 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/DocLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/DocPage.vue') },
-      { path: 'doc-detail', component: () => import('pages/DocPage.vue') },
-    ],
+    redirect: '/main/swreq',
+    // component: () => import('layouts/DocLayout.vue'),
+    // children: [
+    //   { path: '', component: () => import('pages/DocPage.vue') },
+    //   { path: 'doc-detail', component: () => import('pages/DocPage.vue') },
+    // ],
   },
   {
     path: '/tiptap',
@@ -20,12 +21,6 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'swreq/',
         component: () => import('pages/swreq/IndexPage.vue'),
-        children: [
-          { path: '', redirect: '/main/swreq/article' },
-          { path: 'article', component: () => import('pages/swreq/side/ArticleSide.vue') },
-          { path: 'search', component: () => import('pages/swreq/side/SearchSide.vue') },
-          { path: 'comment', component: () => import('pages/swreq/side/CommentSide.vue') },
-        ]
       },
     ],
   },
