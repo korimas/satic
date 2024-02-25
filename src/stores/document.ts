@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 
-interface DocTreeNode {
+export interface DocTreeNode {
   key: string;
   label: string;
   icon: string;

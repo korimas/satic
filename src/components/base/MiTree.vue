@@ -1,5 +1,5 @@
 <template>
-  <div class="q-gutter-sm fit">
+  <div class="q-gutter-sm">
     <q-tree
       class="mitree"
       no-transition

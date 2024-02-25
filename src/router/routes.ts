@@ -14,8 +14,20 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/TipTap.vue'),
   },
   {
-    path: '/ide',
-    component: () => import('layouts/IDELayout.vue'),
+    path: '/main/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'swreq/',
+        component: () => import('pages/swreq/IndexPage.vue'),
+        children: [
+          { path: '', redirect: '/main/swreq/article' },
+          { path: 'article', component: () => import('pages/swreq/side/ArticleSide.vue') },
+          { path: 'search', component: () => import('pages/swreq/side/SearchSide.vue') },
+          { path: 'comment', component: () => import('pages/swreq/side/CommentSide.vue') },
+        ]
+      },
+    ],
   },
 
   // Always leave this as last one,

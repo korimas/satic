@@ -9,8 +9,8 @@
         </q-header>
 
         <q-page-container>
-            <!-- <router-view /> -->
-            <ide-base></ide-base>
+            <router-view />
+            <!-- <ide-base></ide-base> -->
         </q-page-container>
 
     </q-layout>
@@ -18,5 +18,5 @@
 
 <script setup lang="ts">
 import HeaderBar from 'components/HeaderBar.vue';
-import IdeBase from 'components/ide/framework/IdeBase.vue';
+import IdeBase from 'components/ide/IdeBase.vue';
 </script>
