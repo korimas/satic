@@ -15,9 +15,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/TipTap.vue'),
   },
   {
-    path: '/main/',
+    path: '/main',
     component: () => import('layouts/MainLayout.vue'),
     children: [
+      {
+        path: '',
+        redirect: '/main/swreq',
+      },
       {
         path: 'swreq/',
         component: () => import('pages/swreq/IndexPage.vue'),
