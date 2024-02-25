@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="col-grow">
-                    <q-tab-panels v-model="CurrentTab" vertical keep-alive>
+                    <q-tab-panels v-model="CurrentTab" vertical keep-alive class="fit">
 
                         <q-tab-panel name="Explorer" class="no-padding">
                             <ExplorerTab></ExplorerTab>
@@ -44,6 +44,9 @@
 
                         <q-tab-panel name="Plugins" class="no-padding">
                             <PluginsTab v-if="InitPluginsTab"></PluginsTab>
+                            <q-inner-loading :showing="true">
+                                <q-spinner-gears size="50px" color="primary" />
+                            </q-inner-loading>
                         </q-tab-panel>
 
                     </q-tab-panels>
