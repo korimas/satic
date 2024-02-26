@@ -27,6 +27,13 @@
                             </q-tooltip>
                         </q-tab>
 
+                        <q-tab name="Chat" icon="question_answer">
+                            <q-tooltip anchor="center right" self="center left" transition-show="scale"
+                                transition-hide="scale">
+                                Chat
+                            </q-tooltip>
+                        </q-tab>
+
                     </q-tabs>
 
                 </div>
@@ -44,6 +51,10 @@
 
                         <q-tab-panel name="Plugins" class="no-padding">
                             <PluginsTab></PluginsTab>
+                        </q-tab-panel>
+
+                        <q-tab-panel name="Chat" class="no-padding">
+                            <ChatTab></ChatTab>
                         </q-tab-panel>
 
                     </q-tab-panels>
@@ -75,6 +86,13 @@ const SearchTab = defineAsyncComponent({
 
 const PluginsTab = defineAsyncComponent({
   loader: () => import('components/ide/swreq/PluginsTab.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000
+})
+
+const ChatTab = defineAsyncComponent({
+  loader: () => import('components/ide/swreq/ChatTab.vue'),
   loadingComponent: MiLoading,
   delay: 0,
   timeout: 15000

@@ -132,5 +132,3 @@ async function StreamChat() {
 
 </script>
 
-
-<style scoped></style>
