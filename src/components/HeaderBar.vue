@@ -84,7 +84,8 @@
     <q-btn dense flat round icon="assistant" class="text-light-blue-6">
       <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
       <q-menu>
-        <AIAssistant></AIAssistant>
+        <AIAssistant @loaded="AIAssistantLoaded = true"></AIAssistant>
+        <MiLoading v-if="!AIAssistantLoaded" />
       </q-menu>
     </q-btn>
 
@@ -129,17 +130,13 @@ import {defineAsyncComponent, ref} from 'vue'
 // import AIAssistant from 'components/AIAssistant.vue';
 import MiLoading from 'components/base/MiLoading.vue';
 
-const AIAssistant = defineAsyncComponent({
-  loader: () => import('components/AIAssistant.vue'),
-  loadingComponent: MiLoading,
-  delay: 0,
-  timeout: 15000
-})
+const AIAssistant = defineAsyncComponent(() => import('components/AIAssistant.vue'))
 
 const CommentRecordDialog = defineAsyncComponent(() => import('components/CommentRecordDialog.vue'))
 // import CommentRecordDialog from 'components/CommentRecordDialog.vue'
 
 let ShowCommentDialogFlag = ref(false)
+let AIAssistantLoaded = ref(false)
 </script>
 
 

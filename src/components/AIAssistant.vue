@@ -1,34 +1,21 @@
 <template>
   <div class="q-pa-md justify-center" style="max-height: 500px">
     <div class="row">
-      <q-icon name="assistant" size="sm" class="text-light-blue-6"/>
+      <q-icon name="assistant" size="sm" class="text-light-blue-6" />
       Seyond AI助手
     </div>
     <div style="width: 100%; width: 400px; padding-right: 8px; padding-left: 8px">
-      <q-chat-message
-        style="white-space: pre-wrap;"
-        v-for="(msg, index) in DisplayMessages" :key="index"
-        :name='msg.sent ? "Me": "Seyond AI"'
-        :text=[msg.text]
-        :avatar='msg.sent ? meImg: aiImg'
-        :sent=msg.sent
-        :bg-color='msg.sent ? "blue-3": "grey-3"'
-      />
-      <q-chat-message
-        style="white-space: pre-wrap;"
-        v-if="Waiting"
-        name="Seyond AI"
-        :avatar="aiImg"
-        :text=[waitText]
-        bg-color="grey-3"
-
-      />
+      <q-chat-message style="white-space: pre-wrap;" v-for="(msg, index) in DisplayMessages" :key="index"
+        :name='msg.sent ? "Me" : "Seyond AI"' :text=[msg.text] :avatar='msg.sent ? meImg : aiImg' :sent=msg.sent
+        :bg-color='msg.sent ? "blue-3" : "grey-3"' />
+      <q-chat-message style="white-space: pre-wrap;" v-if="Waiting" name="Seyond AI" :avatar="aiImg" :text=[waitText]
+        bg-color="grey-3" />
     </div>
     <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
-             style="margin-top:10px; margin-bottom: 10px">
+      style="margin-top:10px; margin-bottom: 10px">
 
       <template v-slot:append>
-        <q-btn dense flat icon="send" @click="StreamChat"/>
+        <q-btn dense flat icon="send" @click="StreamChat" />
       </template>
     </q-input>
 
@@ -53,8 +40,11 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
-import {useAIAssistantStore} from "stores/aiassistant";
+import { defineEmits, ref } from 'vue'
+import { useAIAssistantStore } from "stores/aiassistant";
+
+const emit = defineEmits(['loaded'])
+emit('loaded')
 
 type Message = {
   text: string;
@@ -114,7 +104,7 @@ async function StreamChat() {
   const decoder = new TextDecoder('utf-8')
 
   while (true) {
-    const {value, done} = await reader.read()
+    const { value, done } = await reader.read()
     Loading.value = false
     Waiting.value = true
 
@@ -143,6 +133,4 @@ async function StreamChat() {
 </script>
 
 
-<style scoped>
-
-</style>
+<style scoped></style>
