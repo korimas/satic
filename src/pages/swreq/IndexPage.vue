@@ -39,14 +39,11 @@
                         </q-tab-panel>
 
                         <q-tab-panel name="Search" class="no-padding">
-                            <AsyncComp></AsyncComp>
+                            <SearchTab></SearchTab>
                         </q-tab-panel>
 
                         <q-tab-panel name="Plugins" class="no-padding">
                             <PluginsTab></PluginsTab>
-                            <q-inner-loading :showing="true">
-                                <q-spinner-gears size="50px" color="primary" />
-                            </q-inner-loading>
                         </q-tab-panel>
 
                     </q-tab-panels>
@@ -64,36 +61,35 @@
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from 'vue';
 import ExplorerTab from 'components/ide/swreq/ExplorerTab.vue';
-import ContentBox from 'components/ide/swreq/ContentBox.vue';
+// import ContentBox from 'components/ide/swreq/ContentBox.vue';
+import MiLoading from 'components/base/MiLoading.vue';
 
-const SearchTab = defineAsyncComponent(() => import('components/ide/swreq/SearchTab.vue'));
-const AsyncComp = defineAsyncComponent({
-  // 工厂函数
+// const SearchTab = defineAsyncComponent(() => import('components/ide/swreq/SearchTab.vue'));
+// const PluginsTab = defineAsyncComponent(() => import('components/ide/swreq/PluginsTab.vue'));
+const SearchTab = defineAsyncComponent({
   loader: () => import('components/ide/swreq/SearchTab.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000
+})
 
-  // 加载中显示的组件
-  loadingComponent: {
-    template: '<div>Loading...</div>'
-  },
+const PluginsTab = defineAsyncComponent({
+  loader: () => import('components/ide/swreq/PluginsTab.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000
+})
 
-  // 加载延迟时间，在此时间内不显示加载中组件
-//   delay: 200,
-
-  // 加载失败时显示的组件
-  errorComponent: {
-    template: '<div>Error loading component</div>'
-  },
-
-  // 最长等待时间。超过此时间则显示错误组件
-  timeout: 3000
-});
-
-
-
-const PluginsTab = defineAsyncComponent(() => import('components/ide/swreq/PluginsTab.vue'));
+const ContentBox = defineAsyncComponent({
+  loader: () => import('components/ide/swreq/ContentBox.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000
+})
 
 let splitterModel = ref(320)
 let CurrentTab = ref('Explorer')
+let SearchTabLoaded = ref(false)
 
 function EnterExplorer() {
     console.log('EnterExplorer')

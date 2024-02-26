@@ -126,8 +126,16 @@
 
 <script setup lang="ts">
 import {defineAsyncComponent, ref} from 'vue'
-// const AIAssistant = defineAsyncComponent(() => import('components/AIAssistant.vue'))
-import AIAssistant from 'components/AIAssistant.vue';
+// import AIAssistant from 'components/AIAssistant.vue';
+import MiLoading from 'components/base/MiLoading.vue';
+
+const AIAssistant = defineAsyncComponent({
+  loader: () => import('components/AIAssistant.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000
+})
+
 const CommentRecordDialog = defineAsyncComponent(() => import('components/CommentRecordDialog.vue'))
 // import CommentRecordDialog from 'components/CommentRecordDialog.vue'
 

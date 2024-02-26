@@ -10,5 +10,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 let SesarchText = ref('')
 </script>
