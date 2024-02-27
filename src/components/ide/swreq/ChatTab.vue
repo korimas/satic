@@ -1,6 +1,7 @@
 <template>
-    <div class="justify-center" style="padding: 5px;">
-        <div>
+    <div class="flex flex-column" style="padding: 5px;">
+
+        <div class=" flex-auto">
             <q-chat-message style="white-space: pre-wrap;" v-for="(msg, index) in DisplayMessages" :key="index"
                 :name='msg.sent ? "Me" : "Seyond AI"' :text=[msg.text] :avatar='msg.sent ? meImg : aiImg' :sent=msg.sent
                 :bg-color='msg.sent ? "blue-3" : "grey-3"' />
@@ -9,7 +10,6 @@
         </div>
 
         <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答...">
-
             <template v-slot:append>
                 <q-btn dense flat icon="send" @click="StreamChat" />
             </template>
@@ -19,11 +19,8 @@
 </template>
   
 <script setup lang="ts">
-import { defineEmits, ref } from 'vue'
+import { ref } from 'vue'
 import { useAIAssistantStore } from "stores/aiassistant";
-
-const emit = defineEmits(['loaded'])
-emit('loaded')
 
 type Message = {
     text: string;

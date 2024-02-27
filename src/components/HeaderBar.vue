@@ -81,13 +81,13 @@
 
     <q-btn dense flat round icon="reviews" class="text-grey-8" @click="ShowCommentDialogFlag = true"/>
 
-    <q-btn dense flat round icon="assistant" class="text-light-blue-6">
+    <!-- <q-btn dense flat round icon="assistant" class="text-light-blue-6">
       <q-tooltip class="bg-grey-3 text-black">AI助手</q-tooltip>
       <q-menu>
         <MiLoading v-if="!AIAssistantLoaded" />
         <AIAssistant @loaded="AIAssistantLoaded = true"></AIAssistant>
       </q-menu>
-    </q-btn>
+    </q-btn> -->
 
 
     <q-btn dense flat round icon="search" class="text-grey-8"/>
@@ -130,7 +130,7 @@ import {defineAsyncComponent, ref} from 'vue'
 // import AIAssistant from 'components/AIAssistant.vue';
 import MiLoading from 'components/base/MiLoading.vue';
 
-const AIAssistant = defineAsyncComponent(() => import('components/AIAssistant.vue'))
+// const AIAssistant = defineAsyncComponent(() => import('components/AIAssistant.vue'))
 const CommentRecordDialog = defineAsyncComponent(() => import('components/CommentRecordDialog.vue'))
 // import CommentRecordDialog from 'components/CommentRecordDialog.vue'
 
