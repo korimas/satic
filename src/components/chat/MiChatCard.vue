@@ -11,7 +11,11 @@
                 </q-tooltip></q-icon>
         </div>
         <div style="margin-top: 5px">
-            {{ Content }}
+            <q-circular-progress v-if="!Content" indeterminate size="40px" :thickness="0.4" font-size="50px" color="lime"
+                track-color="grey-3" center-color="grey-8" class="q-ma-md" />
+            <div v-else>
+                {{ Content }}
+            </div>
         </div>
 
     </div>
