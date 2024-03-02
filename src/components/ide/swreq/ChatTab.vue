@@ -1,19 +1,18 @@
 <template>
-    <div class="flex flex-column" style="padding: 5px;">
-
-        <div class=" flex-auto">
-            <q-chat-message style="white-space: pre-wrap;" v-for="(msg, index) in DisplayMessages" :key="index"
-                :name='msg.sent ? "Me" : "Seyond AI"' :text=[msg.text] :avatar='msg.sent ? meImg : aiImg' :sent=msg.sent
-                :bg-color='msg.sent ? "blue-3" : "grey-3"' />
-            <q-chat-message style="white-space: pre-wrap;" v-if="Waiting" name="Seyond AI" :avatar="aiImg" :text=[waitText]
-                bg-color="grey-3" />
+    <div class="column" style="padding: 5px;">
+        <div class="col-grow" style="height: calc(100vh - 111px );;overflow: auto;">
+            <div v-for="(item, index) in Messages" :key="index" class="caption doc-content">
+                <MiChatCard :Sender="item.Sender" :Content="item.Content" :IncludeSession="item.IncludeSession" />
+            </div>
         </div>
 
-        <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答...">
-            <template v-slot:append>
-                <q-btn dense flat icon="send" @click="StreamChat" />
-            </template>
-        </q-input>
+        <div style="height: 40px; margin-bottom: 10px;">
+            <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动...">
+                <template v-slot:append>
+                    <q-btn dense flat icon="send" @click="StreamChat" />
+                </template>
+            </q-input>
+        </div>
 
     </div>
 </template>
@@ -21,10 +20,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAIAssistantStore } from "stores/aiassistant";
+import MiChatCard from 'components/chat/MiChatCard.vue'
 
 type Message = {
-    text: string;
-    sent: boolean;
+    Content: string;
+    Sender: boolean;
+    IncludeSession: boolean;
 }
 
 type GptMessage = {
@@ -33,24 +34,28 @@ type GptMessage = {
 }
 
 const store = useAIAssistantStore()
-let DisplayMessages = ref<Message[]>(store.DisplayMessages)
+let Messages = ref<Message[]>(store.ChatMessages)
 let GptMessages = ref<GptMessage[]>(store.GPTMessages)
+
+Messages.value.push({
+    Sender: false,
+    Content: "Hello, I am Satic AI. How can I help you?",
+    IncludeSession: false
+})
 
 let InputText = ref('')
 let waitText = ref('')
 let Loading = ref(false)
 let Waiting = ref(false)
-const meImg = './imgs/me.jpg'
-const aiImg = './imgs/ai.png'
 
 async function StreamChat() {
     if (InputText.value == '') {
         return
     }
-
-    DisplayMessages.value.push({
-        sent: true,
-        text: InputText.value
+    Messages.value.push({
+        Sender: true,
+        Content: InputText.value,
+        IncludeSession: true
     })
 
     GptMessages.value.push({
@@ -91,13 +96,14 @@ async function StreamChat() {
 
         if (done) {
             Waiting.value = false
-            GptMessages.value?.push({
+            GptMessages.value.push({
                 role: 'assistant',
                 content: waitText.value
             })
-            DisplayMessages.value.push({
-                sent: false,
-                text: waitText.value
+            Messages.value.push({
+                Sender: false,
+                Content: waitText.value,
+                IncludeSession: true
             })
             // await nextTick()
             // inputCom.value.focus()

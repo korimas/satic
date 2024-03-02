@@ -4,5 +4,6 @@ export const useAIAssistantStore = defineStore('assistant', {
   state: () => ({
     DisplayMessages: [],
     GPTMessages: [],
+    ChatMessages: [],
   }),
 });
