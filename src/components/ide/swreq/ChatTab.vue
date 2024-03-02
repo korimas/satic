@@ -1,7 +1,7 @@
 <template>
     <div class="column" style="padding: 5px;">
         <div class="col-grow" style="height: calc(100vh - 111px );;overflow: auto;">
-            <div v-for="(item, index) in Messages" :key="index" class="caption doc-content">
+            <div v-for="item in Messages" :key="item.Id"  class="caption doc-content">
                 <MiChatCard :Sender="item.Sender" :Content="item.Content" :IncludeSession="item.IncludeSession" />
             </div>
         </div>
@@ -23,6 +23,7 @@ import { useAIAssistantStore } from "stores/aiassistant";
 import MiChatCard from 'components/chat/MiChatCard.vue'
 
 type Message = {
+    Id: number;
     Content: string;
     Sender: boolean;
     IncludeSession: boolean;
@@ -38,6 +39,7 @@ let Messages = ref<Message[]>(store.ChatMessages)
 let GptMessages = ref<GptMessage[]>(store.GPTMessages)
 
 Messages.value.push({
+    Id: Date.now(),
     Sender: false,
     Content: "Hello, I am Satic AI. How can I help you?",
     IncludeSession: false
@@ -52,6 +54,7 @@ async function StreamChat() {
         return
     }
     Messages.value.push({
+        Id: Date.now(),
         Sender: true,
         Content: InputText.value,
         IncludeSession: true
@@ -62,12 +65,16 @@ async function StreamChat() {
         content: InputText.value
     })
 
-    InputText.value = ''
-    let RecvMsg: Message = {
+    Messages.value.push({
+        Id: Date.now(),
         Sender: false,
         Content: '',
         IncludeSession: true
-    };
+    })
+
+    let lastMsg = Messages.value[Messages.value.length - 1]
+    InputText.value = ''
+
     // 流式聊天
     Loading.value = true
     const response = await fetch('/api/stream-api', {
@@ -82,7 +89,7 @@ async function StreamChat() {
             'temperature': 0.7,
         })
     })
-    Messages.value.push(RecvMsg)
+
     const reader = response.body!.getReader()
     const decoder = new TextDecoder('utf-8')
 
@@ -93,14 +100,14 @@ async function StreamChat() {
 
         if (value) {
             let text = decoder.decode(value)
-            RecvMsg.Content = RecvMsg.Content + text
+            lastMsg.Content = lastMsg.Content + text
         }
 
         if (done) {
             Waiting.value = false
             GptMessages.value.push({
                 role: 'assistant',
-                content: RecvMsg.Content
+                content: lastMsg.Content
             })
             // await nextTick()
             // inputCom.value.focus()
