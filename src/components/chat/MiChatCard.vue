@@ -3,7 +3,10 @@
         <div class="row">
             <q-avatar v-if="Sender" size="24px" color="primary" icon="perm_identity"></q-avatar>
             <q-avatar v-else size="24px" color="orange" icon="polymer"></q-avatar>
-            <div class="text-h7" style="margin-top: auto; margin-left:10px">Satic AI</div>
+
+            <div v-if="Sender" class="text-h7" style="margin-top: auto; margin-left:10px">You</div>
+            <div v-else class="text-h7" style="margin-top: auto; margin-left:10px">Satic AI</div>
+            
             <q-space></q-space>
             <q-icon v-if="IncludeSession" name="maps_ugc">
                 <q-tooltip anchor="center right" self="center left" transition-show="scale" transition-hide="scale">
