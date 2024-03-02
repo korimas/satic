@@ -44,7 +44,6 @@ Messages.value.push({
 })
 
 let InputText = ref('')
-let waitText = ref('')
 let Loading = ref(false)
 let Waiting = ref(false)
 
@@ -64,7 +63,6 @@ async function StreamChat() {
     })
 
     InputText.value = ''
-    waitText.value = ''
     let RecvMsg: Message = {
         Sender: false,
         Content: '',
@@ -102,7 +100,7 @@ async function StreamChat() {
             Waiting.value = false
             GptMessages.value.push({
                 role: 'assistant',
-                content: waitText.value
+                content: RecvMsg.Content
             })
             // await nextTick()
             // inputCom.value.focus()
