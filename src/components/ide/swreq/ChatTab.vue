@@ -65,7 +65,11 @@ async function StreamChat() {
 
     InputText.value = ''
     waitText.value = ''
-
+    let RecvMsg: Message = {
+        Sender: false,
+        Content: '',
+        IncludeSession: true
+    };
     // 流式聊天
     Loading.value = true
     const response = await fetch('/api/stream-api', {
@@ -80,7 +84,7 @@ async function StreamChat() {
             'temperature': 0.7,
         })
     })
-
+    Messages.value.push(RecvMsg)
     const reader = response.body!.getReader()
     const decoder = new TextDecoder('utf-8')
 
@@ -91,7 +95,7 @@ async function StreamChat() {
 
         if (value) {
             let text = decoder.decode(value)
-            waitText.value = waitText.value + text
+            RecvMsg.Content = RecvMsg.Content + text
         }
 
         if (done) {
@@ -99,11 +103,6 @@ async function StreamChat() {
             GptMessages.value.push({
                 role: 'assistant',
                 content: waitText.value
-            })
-            Messages.value.push({
-                Sender: false,
-                Content: waitText.value,
-                IncludeSession: true
             })
             // await nextTick()
             // inputCom.value.focus()
