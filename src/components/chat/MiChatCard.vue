@@ -12,7 +12,7 @@
         </div>
         <div style="margin-top: 5px">
             <q-circular-progress v-if="!Content" indeterminate size="xs" :thickness="0.4" font-size="50px" color="lime"
-                track-color="grey-3" center-color="grey-8" class="q-ma-md" />
+                track-color="grey-3" center-color="grey-8"/>
             <div v-else>
                 {{ Content }}
             </div>
