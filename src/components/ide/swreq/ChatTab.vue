@@ -1,13 +1,14 @@
 <template>
-    <div class="column justify-between no-wrap" style="padding: 5px; height: calc(100vh - 51px );">
-        <div class="col-grow" style=";overflow: auto;">
+    <div class="column justify-between no-wrap" style="padding: 5px; height: calc(100vh - 51px);">
+        <div style="overflow: auto;">
             <div v-for="item in Messages" :key="item.Id" class="caption doc-content">
                 <MiChatCard :Sender="item.Sender" :Content="item.Content" :IncludeSession="item.IncludeSession" />
             </div>
         </div>
 
-        <div style="margin-bottom: 10px; max-height: 300px;overflow: auto;">
-            <q-input dense autogrow v-model="InputText" outlined placeholder="输入任何问题，与AI互动..." @keydown.enter="handleEnter">
+        <div style="margin-bottom: 10px;">
+            <q-input style="resize: none; max-height: 300px;overflow: none;" dense autogrow v-model="InputText" outlined
+                placeholder="输入任何问题，与AI互动..." @keydown.enter="handleEnter">
                 <template v-slot:append>
                     <q-btn dense flat icon="send" @click="StreamChat" />
                 </template>
@@ -16,7 +17,7 @@
 
     </div>
 </template>
-  
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAIAssistantStore } from "stores/aiassistant";
@@ -38,6 +39,24 @@ const store = useAIAssistantStore()
 let Messages = ref<Message[]>(store.ChatMessages)
 let GptMessages = ref<GptMessage[]>(store.GPTMessages)
 
+Messages.value.push({
+    Id: Date.now(),
+    Sender: false,
+    Content: "Hello, I am Satic AI. How can I help you?",
+    IncludeSession: false
+})
+Messages.value.push({
+    Id: Date.now(),
+    Sender: false,
+    Content: "Hello, I am Satic AI. How can I help you?",
+    IncludeSession: false
+})
+Messages.value.push({
+    Id: Date.now(),
+    Sender: false,
+    Content: "Hello, I am Satic AI. How can I help you?",
+    IncludeSession: false
+})
 Messages.value.push({
     Id: Date.now(),
     Sender: false,
@@ -123,5 +142,3 @@ function handleEnter(e: any) {
 }
 
 </script>
-  
-  
