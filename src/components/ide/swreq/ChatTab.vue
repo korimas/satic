@@ -6,7 +6,7 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px; margin-top: 10px">
             <q-input dense autogrow v-model="InputText" outlined
                 placeholder="输入任何问题，与AI互动..." @keydown.enter="handleEnter">
                 <template v-slot:append>
