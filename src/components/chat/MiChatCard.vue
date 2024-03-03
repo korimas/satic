@@ -16,7 +16,7 @@
         <div style="margin-top: 5px">
             <q-circular-progress v-if="!Content" indeterminate size="xs" :thickness="0.4" font-size="50px" color="lime"
                 track-color="grey-3" center-color="grey-8"/>
-            <div v-else>
+            <div v-else style="white-space: pre-line">
                 {{ Content }}
             </div>
         </div>
