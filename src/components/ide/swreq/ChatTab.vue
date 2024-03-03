@@ -1,13 +1,13 @@
 <template>
-    <div class="column" style="padding: 5px;">
-        <div class="col-grow" style="height: calc(100vh - 111px );;overflow: auto;">
+    <div class="column" style="position: relative;">
+        <div class="col-grow" style="height: calc(100vh - 51px );overflow: auto; padding: 5px">
             <div v-for="item in Messages" :key="item.Id" class="caption doc-content">
                 <MiChatCard :Sender="item.Sender" :Content="item.Content" :IncludeSession="item.IncludeSession" />
             </div>
         </div>
 
-        <div style="height: 40px; margin-bottom: 10px;">
-            <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动..." @keydown.enter="handleEnter">
+        <div style="position: absolute; bottom: 0; width: 100%; padding: 5px; max-height: 200px; overflow: auto;">
+            <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动..." @keydown.enter="handleEnter" autogrow>
                 <template v-slot:append>
                     <q-btn dense flat icon="send" @click="StreamChat" />
                 </template>
@@ -123,5 +123,4 @@ function handleEnter(e: any) {
 }
 
 </script>
-  
   

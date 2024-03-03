@@ -8,9 +8,9 @@
             <div v-else class="text-h7" style="margin-top: auto; margin-left:10px">Satic AI</div>
             
             <q-space></q-space>
-            <q-icon v-if="IncludeSession" name="maps_ugc">
+            <q-icon v-if="IncludeSession" name="maps_ugc" color="positive">
                 <q-tooltip anchor="center right" self="center left" transition-show="scale" transition-hide="scale">
-                    当前消息包含在AI会话中
+                    当前消息已包含在AI会话中
                 </q-tooltip></q-icon>
         </div>
         <div style="margin-top: 5px">

@@ -123,7 +123,7 @@ export default defineComponent({
         } else {
           done([])
         }
-      }, 500)
+      }, 250)
     }
 
     // 获取指定node的parent(q-tree_node)
