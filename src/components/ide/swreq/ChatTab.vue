@@ -45,24 +45,6 @@ Messages.value.push({
     Content: "Hello, I am Satic AI. How can I help you?",
     IncludeSession: false
 })
-Messages.value.push({
-    Id: Date.now(),
-    Sender: false,
-    Content: "Hello, I am Satic AI. How can I help you?",
-    IncludeSession: false
-})
-Messages.value.push({
-    Id: Date.now(),
-    Sender: false,
-    Content: "Hello, I am Satic AI. How can I help you?",
-    IncludeSession: false
-})
-Messages.value.push({
-    Id: Date.now(),
-    Sender: false,
-    Content: "Hello, I am Satic AI. How can I help you?",
-    IncludeSession: false
-})
 
 let InputText = ref('')
 let Loading = ref(false)
