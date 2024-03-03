@@ -7,7 +7,7 @@
         </div>
 
         <div style="margin-bottom: 10px;">
-            <q-input style="resize: none; max-height: 300px;overflow: none;" dense autogrow v-model="InputText" outlined
+            <q-input dense autogrow v-model="InputText" outlined
                 placeholder="输入任何问题，与AI互动..." @keydown.enter="handleEnter">
                 <template v-slot:append>
                     <q-btn dense flat icon="send" @click="StreamChat" />
