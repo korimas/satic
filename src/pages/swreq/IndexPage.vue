@@ -23,7 +23,7 @@
                         <q-tab name="Chat" icon="question_answer">
                             <q-tooltip anchor="center right" self="center left" transition-show="scale"
                                 transition-hide="scale">
-                                Chat
+                                AI Chat
                             </q-tooltip>
                         </q-tab>
                     </q-tabs>
