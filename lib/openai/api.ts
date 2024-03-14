@@ -36,6 +36,11 @@ export async function RequestStream(payload: GPTAPIRequest) {
     body: JSON.stringify(payload),
   });
 
+  if (!res.ok) {
+    console.error('Failed to fetch from OpenAI:', res.status, res.statusText);
+    throw new Error(`Failed to fetch from OpenAI: ${res.status} ${res.statusText}`);
+  }
+  
   const stream = new ReadableStream({
     async start(controller) {
       // callback
