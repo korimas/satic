@@ -12,7 +12,7 @@ export const config = {
       'dub1',
       'fra1',
       'gru1',
-      // 'hkg1', ip blocked by openai
+      // 'hkg1', // ip blocked by openai
       'hnd1',
       'iad1',
       'icn1',
