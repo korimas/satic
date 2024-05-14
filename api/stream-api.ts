@@ -5,10 +5,15 @@ export const config = {
 };
 
 const handler = async (req: Request): Promise<Response> => {
+
+  if (req.method === 'OPTIONS') {
+    return new Response('{"Access": "OPTIONS"}', {
+      status: 200
+  });
+  }
+
   const recvPayload = await req.json()
-
   const defaultModel = process.env.OPENAI_API_MODEL ?? 'gpt-3.5-turbo'
-
   const payload: GPTAPIRequest = {
     model: recvPayload.model ?? defaultModel,
     messages: recvPayload.messages,
