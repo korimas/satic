@@ -1,4 +1,4 @@
-import {RequestStream, GPTAPIMessage, GPTAPIRequest} from '../lib/openai/api';
+import { RequestStream, GPTAPIMessage, GPTAPIRequest } from '../lib/openai/api';
 
 export const config = {
   runtime: 'edge'
@@ -6,10 +6,11 @@ export const config = {
 
 const handler = async (req: Request): Promise<Response> => {
 
+  // for CORS
   if (req.method === 'OPTIONS') {
     return new Response('{"Access": "OPTIONS"}', {
       status: 200
-  });
+    });
   }
 
   const recvPayload = await req.json()
