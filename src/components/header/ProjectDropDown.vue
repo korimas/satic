@@ -68,6 +68,21 @@
             </q-item-section>
           </q-item>
         </q-list>
+        <q-separator />
+        <q-list padding style="width: 300px">
+          <q-item clickable>
+            <q-item-section avatar style="margin: auto; min-width: 30px">
+              <q-icon name="apps" />
+            </q-item-section>
+            <q-item-section>View all projects</q-item-section>
+          </q-item>
+          <q-item clickable>
+            <q-item-section avatar style="margin: auto; min-width: 30px">
+              <q-icon name="add" />
+            </q-item-section>
+            <q-item-section>Add Project</q-item-section>
+          </q-item>
+        </q-list>
       </div>
     </template>
   </DropDownBtn>
