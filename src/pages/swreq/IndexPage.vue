@@ -7,7 +7,7 @@
                     <q-tabs v-model="CurrentTab" vertical switch-indicator active-color="grey-7">
                         <q-tab name="Explorer" icon="article" @click="EnterExplorer"><q-tooltip anchor="center right" self="center left" transition-show="scale"
                                 transition-hide="scale">
-                                Exokirer
+                                Explorer
                             </q-tooltip></q-tab>
                         <q-tab name="Search" icon="search" @click="EnterSearch"><q-tooltip anchor="center right" self="center left" transition-show="scale"
                                 transition-hide="scale">
