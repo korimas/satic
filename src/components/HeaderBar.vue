@@ -5,39 +5,6 @@
       <div class="row q-gutter-xs">
         <SaticLogo></SaticLogo>
         <ProjectDropDown />
-        <q-btn
-          dense
-          flat
-          icon-right="expand_more"
-          class="text-capitalize text-grey-7"
-          >Tracker
-          <q-menu style="width: 100%; width: 250px">
-            <q-list dense bordered padding class="rounded-borders">
-              <q-item clickable v-close-popup>
-                <q-item-section avatar>
-                  <q-icon name="join_right" />
-                </q-item-section>
-                <q-item-section> System Requirement </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup>
-                <q-item-section avatar>
-                  <q-icon name="view_cozy" />
-                </q-item-section>
-                <q-item-section> Software Requirement </q-item-section>
-              </q-item>
-
-              <q-item clickable v-close-popup>
-                <q-item-section avatar>
-                  <q-icon name="join_left" />
-                </q-item-section>
-                <q-item-section> Software Architecture </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-
-        <!--<q-btn unelevated label="Create" color="primary" class="text-capitalize"/>-->
       </div>
     </q-toolbar-title>
 

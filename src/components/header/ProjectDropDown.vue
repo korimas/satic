@@ -40,7 +40,7 @@
           <q-item
             dense
             clickable
-            v-for="project in starredProjects"
+            v-for="project in recentProjects"
             :key="project.name"
             class="q-py-sm"
           >
@@ -96,5 +96,10 @@ const starredProjects = ref([
   { name: 'Falcon I', icon: '/icons/random/icon2.svg' },
   { name: 'Falcon G', icon: '/icons/random/icon3.svg' },
   { name: 'Falcon 10K', icon: '/icons/random/icon4.svg' },
+]);
+const recentProjects = ref([
+  { name: 'Falcon II', icon: '/icons/random/icon2.svg' },
+  { name: 'Falcon 2.1', icon: '/icons/random/icon3.svg' },
+  { name: 'Falcon II Pro', icon: '/icons/random/icon4.svg' },
 ]);
 </script>

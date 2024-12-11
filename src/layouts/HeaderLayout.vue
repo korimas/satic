@@ -7,21 +7,7 @@
       </div>
     </q-header>
 
-    <q-page-container>
-      <q-splitter
-        v-model="splitterModel"
-        unit="px"
-        :limits="splitterLimits"
-        style="height: calc(100vh - 51px); overflow: auto"
-      >
-        <template v-slot:before>
-          <CommonSide></CommonSide>
-        </template>
-        <template v-slot:after>
-          <router-view />
-        </template>
-      </q-splitter>
-    </q-page-container>
+    <q-page-container> <router-view /> </q-page-container>
   </q-layout>
 </template>
 

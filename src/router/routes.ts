@@ -1,13 +1,5 @@
 import { RouteRecordRaw } from 'vue-router';
 
-// /satic
-// /satic/your-work
-// /satic/projects
-// /satic/projects/<project-id>/
-// /satic/projects/<project-id>/specs/<spec-id>
-// /satic/projects/<project-id>/issues
-// /satic/projects/<project-id>/releases
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -16,20 +8,40 @@ const routes: RouteRecordRaw[] = [
   {
     // user view
     path: '/satic',
-    component: () => import('layouts/UserLayout.vue'), // header & router-view
-    redirect: '/satic/swreq',
+    component: () => import('layouts/HeaderLayout.vue'), // header & router-view
+    redirect: '/satic/your-work',
     children: [
       {
-        path: 'swreq',
-        component: () => import('pages/swreq/IndexPage.vue'),
+        path: 'your-work',
+        // component: () => import('pages/YourWork.vue'),
+        component: () => import('pages/SpecPage.vue'),
+      },
+      {
+        path: 'projects-list',
+        component: () => import('pages/ProjectsListPage.vue'),
       },
       {
         path: 'projects',
-        component: () => import('pages/ProjectsPage.vue'),
-      },
-      {
-        path: 'your-work',
-        component: () => import('pages/YourWork.vue'),
+        redirect: '/satic/your-work',
+        component: () => import('layouts/CommSideLayout.vue'),
+        children: [
+          {
+            path: ':projectId/issues',
+            component: () => import('pages/IssuesListPage.vue'),
+          },
+          {
+            path: ':projectId/specs/:specId',
+            component: () => import('pages/SpecPage.vue'),
+          },
+          {
+            path: ':projectId/releases',
+            component: () => import('pages/ReleasesListPage.vue'),
+          },
+          {
+            path: ':projectId/reviews',
+            component: () => import('pages/ReviewsListPage.vue'),
+          },
+        ],
       },
     ],
   },
