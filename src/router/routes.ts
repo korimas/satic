@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'projects-list',
-        component: () => import('pages/ProjectsListPage.vue'),
+        component: () => import('pages/ProjectListPage.vue'),
       },
       {
         path: 'projects',
@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: ':projectId/issues',
-            component: () => import('pages/IssuesListPage.vue'),
+            component: () => import('pages/IssueListPage.vue'),
           },
           {
             path: ':projectId/specs/:specId',
@@ -35,11 +35,11 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: ':projectId/releases',
-            component: () => import('pages/ReleasesListPage.vue'),
+            component: () => import('pages/ReleaseListPage.vue'),
           },
           {
             path: ':projectId/reviews',
-            component: () => import('pages/ReviewsListPage.vue'),
+            component: () => import('pages/ReviewListPage.vue'),
           },
         ],
       },
