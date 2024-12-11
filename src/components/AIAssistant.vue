@@ -4,16 +4,35 @@
       <q-icon name="assistant" size="sm" class="text-light-blue-6" />
       Seyond AI助手
     </div>
-    <div style="width: 100%; width: 400px; padding-right: 8px; padding-left: 8px">
-      <q-chat-message style="white-space: pre-wrap;" v-for="(msg, index) in DisplayMessages" :key="index"
-        :name='msg.sent ? "Me" : "Seyond AI"' :text=[msg.text] :avatar='msg.sent ? meImg : aiImg' :sent=msg.sent
-        :bg-color='msg.sent ? "blue-3" : "grey-3"' />
-      <q-chat-message style="white-space: pre-wrap;" v-if="Waiting" name="Seyond AI" :avatar="aiImg" :text=[waitText]
-        bg-color="grey-3" />
+    <div
+      style="width: 100%; width: 400px; padding-right: 8px; padding-left: 8px"
+    >
+      <q-chat-message
+        style="white-space: pre-wrap"
+        v-for="(msg, index) in DisplayMessages"
+        :key="index"
+        :name="msg.sent ? 'Me' : 'Seyond AI'"
+        :text="[msg.text]"
+        :avatar="msg.sent ? meImg : aiImg"
+        :sent="msg.sent"
+        :bg-color="msg.sent ? 'blue-3' : 'grey-3'"
+      />
+      <q-chat-message
+        style="white-space: pre-wrap"
+        v-if="Waiting"
+        name="Seyond AI"
+        :avatar="aiImg"
+        :text="[waitText]"
+        bg-color="grey-3"
+      />
     </div>
-    <q-input dense v-model="InputText" outlined placeholder="输入任何问题，与AI互动回答..."
-      style="margin-top:10px; margin-bottom: 10px">
-
+    <q-input
+      dense
+      v-model="InputText"
+      outlined
+      placeholder="输入任何问题，与AI互动回答..."
+      style="margin-top: 10px; margin-bottom: 10px"
+    >
       <template v-slot:append>
         <q-btn dense flat icon="send" @click="StreamChat" />
       </template>
@@ -40,95 +59,93 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, ref } from 'vue'
-import { useAIAssistantStore } from "stores/aiassistant";
+import { defineEmits, ref } from 'vue';
+import { useAIAssistantStore } from 'stores/aiassistant';
 
-const emit = defineEmits(['loaded'])
-emit('loaded')
+const emit = defineEmits(['loaded']);
+emit('loaded');
 
 type Message = {
   text: string;
   sent: boolean;
-}
+};
 
 type GptMessage = {
   role: string;
-  content: string
-}
+  content: string;
+};
 
-const store = useAIAssistantStore()
-let DisplayMessages = ref<Message[]>(store.DisplayMessages)
-let GptMessages = ref<GptMessage[]>(store.GPTMessages)
+const store = useAIAssistantStore();
+let DisplayMessages = ref<Message[]>(store.DisplayMessages);
+let GptMessages = ref<GptMessage[]>(store.GPTMessages);
 
-let InputText = ref('')
-let waitText = ref('')
-let Loading = ref(false)
-let Waiting = ref(false)
-const meImg = './imgs/me.jpg'
-const aiImg = './imgs/ai.png'
+let InputText = ref('');
+let waitText = ref('');
+let Loading = ref(false);
+let Waiting = ref(false);
+const meImg = './imgs/me.jpg';
+const aiImg = './imgs/ai.png';
 
 async function StreamChat() {
   if (InputText.value == '') {
-    return
+    return;
   }
 
   DisplayMessages.value.push({
     sent: true,
-    text: InputText.value
-  })
+    text: InputText.value,
+  });
 
   GptMessages.value.push({
     role: 'user',
-    content: InputText.value
-  })
+    content: InputText.value,
+  });
 
-  InputText.value = ''
-  waitText.value = ''
+  InputText.value = '';
+  waitText.value = '';
 
   // 流式聊天
-  Loading.value = true
+  Loading.value = true;
   const response = await fetch('/api/stream-api', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      'model': 'gpt-3.5-turbo',
+      model: 'gpt-3.5-turbo',
       // "model": "gpt-4",
-      'messages': GptMessages.value,
-      'temperature': 0.7,
-    })
-  })
+      messages: GptMessages.value,
+      temperature: 0.7,
+    }),
+  });
 
-  const reader = response.body!.getReader()
-  const decoder = new TextDecoder('utf-8')
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder('utf-8');
 
   while (true) {
-    const { value, done } = await reader.read()
-    Loading.value = false
-    Waiting.value = true
+    const { value, done } = await reader.read();
+    Loading.value = false;
+    Waiting.value = true;
 
     if (value) {
-      let text = decoder.decode(value)
-      waitText.value = waitText.value + text
+      let text = decoder.decode(value);
+      waitText.value = waitText.value + text;
     }
 
     if (done) {
-      Waiting.value = false
+      Waiting.value = false;
       GptMessages.value?.push({
         role: 'assistant',
-        content: waitText.value
-      })
+        content: waitText.value,
+      });
       DisplayMessages.value.push({
         sent: false,
-        text: waitText.value
-      })
+        text: waitText.value,
+      });
       // await nextTick()
       // inputCom.value.focus()
-      break
+      break;
     }
   }
 }
-
 </script>
-

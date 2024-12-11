@@ -5,11 +5,14 @@
         <div class="q-mt-md q-mx-md text-grey-7">Starred</div>
         <q-list padding style="width: 300px">
           <q-item
+            v-for="project in starredProjects"
+            :to="{ name: 'IssuesList', params: { projectId: project.ID } }"
+            @click="UpdateCurProject(project)"
             dense
             clickable
-            v-for="project in starredProjects"
             :key="project.name"
             class="q-py-sm"
+            active-class="my-active-q-item"
           >
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
@@ -38,11 +41,14 @@
         <div class="q-mx-md text-grey-7">Recent</div>
         <q-list padding style="width: 300px">
           <q-item
+            @click="UpdateCurProject(project)"
             dense
             clickable
             v-for="project in recentProjects"
+            :to="{ name: 'IssuesList', params: { projectId: project.ID } }"
             :key="project.name"
             class="q-py-sm"
+            active-class="my-active-q-item"
           >
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
@@ -92,14 +98,28 @@
 import DropDownBtn from './DropDownBtn.vue';
 import { ref } from 'vue';
 
-const starredProjects = ref([
-  { name: 'Falcon I', icon: '/icons/random/icon2.svg' },
-  { name: 'Falcon G', icon: '/icons/random/icon3.svg' },
-  { name: 'Falcon 10K', icon: '/icons/random/icon4.svg' },
+import { Project, useStateStore } from 'src/stores/state';
+const store = useStateStore();
+const starredProjects = ref<Project[]>([
+  { name: 'Falcon I', icon: '/icons/random/icon2.svg', ID: '1', desc: '' },
+  { name: 'Falcon G', icon: '/icons/random/icon3.svg', ID: '2', desc: '' },
+  { name: 'Falcon 10K', icon: '/icons/random/icon4.svg', ID: '3', desc: '' },
 ]);
 const recentProjects = ref([
-  { name: 'Falcon II', icon: '/icons/random/icon2.svg' },
-  { name: 'Falcon 2.1', icon: '/icons/random/icon3.svg' },
-  { name: 'Falcon II Pro', icon: '/icons/random/icon4.svg' },
+  { name: 'Falcon II', icon: '/icons/random/icon2.svg', ID: '4', desc: '' },
+  { name: 'Falcon 2.1', icon: '/icons/random/icon3.svg', ID: '5', desc: '' },
+  { name: 'Falcon II Pro', icon: '/icons/random/icon4.svg', ID: '6', desc: '' },
 ]);
+
+function UpdateCurProject(project: Project) {
+  console.log('UpdateCurProject', project);
+  store.State.curProject = project;
+}
 </script>
+
+<style scoped>
+.my-active-q-item {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+</style>

@@ -60,9 +60,9 @@
 import { defineAsyncComponent, ref } from 'vue';
 // import AIAssistant from 'components/AIAssistant.vue';
 import MiLoading from 'components/base/MiLoading.vue';
-import Logo from 'components/header/Logo.vue';
 import SaticLogo from './header/SaticLogo.vue';
 import ProjectDropDown from './header/ProjectDropDown.vue';
+
 // const AIAssistant = defineAsyncComponent(() => import('components/AIAssistant.vue'))
 const CommentRecordDialog = defineAsyncComponent(
   () => import('components/CommentRecordDialog.vue')
@@ -70,8 +70,6 @@ const CommentRecordDialog = defineAsyncComponent(
 // import CommentRecordDialog from 'components/CommentRecordDialog.vue'
 
 let ShowCommentDialogFlag = ref(false);
-let AIAssistantLoaded = ref(false);
-let ProjectIsOpen = ref(false);
 </script>
 
 <style scoped></style>

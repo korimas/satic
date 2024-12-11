@@ -3,13 +3,13 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/satic/your-work',
+    redirect: '/satic/projects/6/issues',
   },
   {
     // user view
     path: '/satic',
     component: () => import('layouts/HeaderLayout.vue'), // header & router-view
-    redirect: '/satic/your-work',
+    redirect: '/satic/projects/6/issues',
     children: [
       {
         path: 'your-work',
@@ -26,18 +26,22 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/CommSideLayout.vue'),
         children: [
           {
+            name: 'IssuesList',
             path: ':projectId/issues',
             component: () => import('pages/IssueListPage.vue'),
           },
           {
+            name: 'SpecDetail',
             path: ':projectId/specs/:specId',
             component: () => import('pages/SpecPage.vue'),
           },
           {
+            name: 'ReleasesList',
             path: ':projectId/releases',
             component: () => import('pages/ReleaseListPage.vue'),
           },
           {
+            name: 'ReviewsList',
             path: ':projectId/reviews',
             component: () => import('pages/ReviewListPage.vue'),
           },
