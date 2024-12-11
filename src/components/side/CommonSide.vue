@@ -35,6 +35,7 @@
             clickable
             class="q-pl-lg"
             :to="GenerateSpecTo(spec)"
+            active-class="menu-active"
           >
             <q-item-section avatar style="margin: auto; min-width: 30px">
               <q-icon :name="spec.icon" />
