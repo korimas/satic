@@ -1,6 +1,6 @@
 <template>
   <q-toolbar>
-    <!--<q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/>-->
+    <!-- <q-btn dense flat round icon="vertical_split" @click="toggleLeftDrawer" class=" text-grey-9"/> -->
     <q-toolbar-title>
       <div class="row q-gutter-xs">
         <SaticLogo></SaticLogo>

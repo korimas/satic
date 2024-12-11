@@ -1,32 +1,47 @@
 import { RouteRecordRaw } from 'vue-router';
 
+// /satic
+// /satic/your-work
+// /satic/projects
+// /satic/projects/<project-id>/
+// /satic/projects/<project-id>/specs/<spec-id>
+// /satic/projects/<project-id>/issues
+// /satic/projects/<project-id>/releases
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/main/swreq',
-    // component: () => import('layouts/DocLayout.vue'),
-    // children: [
-    //   { path: '', component: () => import('pages/DocPage.vue') },
-    //   { path: 'doc-detail', component: () => import('pages/DocPage.vue') },
-    // ],
+    redirect: '/satic/your-work',
   },
   {
-    path: '/tiptap',
-    component: () => import('pages/TipTap.vue'),
-  },
-  {
-    path: '/main',
-    component: () => import('layouts/MainLayout.vue'),
+    // user view
+    path: '/satic',
+    component: () => import('layouts/UserLayout.vue'), // header & router-view
+    redirect: '/satic/swreq',
     children: [
       {
-        path: '',
-        redirect: '/main/swreq',
-      },
-      {
-        path: 'swreq/',
+        path: 'swreq',
         component: () => import('pages/swreq/IndexPage.vue'),
       },
+      {
+        path: 'projects',
+        component: () => import('pages/ProjectsPage.vue'),
+      },
+      {
+        path: 'your-work',
+        component: () => import('pages/YourWork.vue'),
+      },
     ],
+  },
+  {
+    // admin view
+    path: '/admin/dashboard',
+    component: () => import('layouts/AdminLayout.vue'),
+  },
+  {
+    // for test
+    path: '/test/tiptap',
+    component: () => import('pages/test/TipTap.vue'),
   },
 
   // Always leave this as last one,

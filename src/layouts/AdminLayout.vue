@@ -18,5 +18,4 @@
 
 <script setup lang="ts">
 import HeaderBar from 'components/HeaderBar.vue';
-import IdeBase from 'components/ide/IdeBase.vue';
 </script>
