@@ -7,7 +7,6 @@
           <q-item
             dense
             clickable
-            v-ripple
             v-for="project in starredProjects"
             :key="project.name"
             class="q-py-sm"
@@ -24,11 +23,14 @@
             </q-item-section>
 
             <q-item-section side>
-              <q-icon
-                dense
-                name="star"
+              <q-btn
                 color="yellow-8"
-                style="font-size: 14px"
+                class="gt-xs"
+                size="10px"
+                flat
+                dense
+                round
+                icon="star"
               />
             </q-item-section>
           </q-item>
@@ -38,7 +40,6 @@
           <q-item
             dense
             clickable
-            v-ripple
             v-for="project in starredProjects"
             :key="project.name"
             class="q-py-sm"
@@ -55,11 +56,14 @@
             </q-item-section>
 
             <q-item-section side>
-              <q-icon
-                dense
-                name="star"
+              <q-btn
                 color="yellow-8"
-                style="font-size: 14px"
+                class="gt-xs"
+                size="10px"
+                flat
+                dense
+                round
+                icon="star_border"
               />
             </q-item-section>
           </q-item>
