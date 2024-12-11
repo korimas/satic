@@ -8,20 +8,26 @@
         class="rounded-borders"
         style="width: 300px"
       >
-        <q-item clickable v-ripple>
+        <q-item
+          dense
+          clickable
+          v-ripple
+          v-for="project in starredProjects"
+          :key="project.name"
+        >
           <q-item-section avatar top>
-            <q-avatar>
-              <img src="/public/icon1.png" />
+            <q-avatar square>
+              <img :src="project.icon" />
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <q-item-label lines="1">Falcon I</q-item-label>
+            <q-item-label lines="1">{{ project.name }}</q-item-label>
             <q-item-label caption>Software Project</q-item-label>
           </q-item-section>
 
           <q-item-section side>
-            <q-icon name="star" color="green" />
+            <q-icon dense name="star" color="yellow-8" />
           </q-item-section>
         </q-item>
       </q-list>
@@ -34,8 +40,8 @@ import DropDownBtn from './DropDownBtn.vue';
 import { ref } from 'vue';
 
 const starredProjects = ref([
-  { name: 'Falcon I', id: 1 },
-  { name: 'Falcon G', id: 2 },
-  { name: 'Falcon 10K', id: 3 },
+  { name: 'Falcon I', icon: '/icons/random/icon2.svg' },
+  { name: 'Falcon G', icon: '/icons/random/icon3.svg' },
+  { name: 'Falcon 10K', icon: '/icons/random/icon4.svg' },
 ]);
 </script>
