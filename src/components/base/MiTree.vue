@@ -92,6 +92,11 @@ function doubleClick(val: MouseEvent) {
   emit('doubleClick', Selected.value);
 }
 
+function onMenuItemClick(item: string) {
+  console.log('Menu Click: ' + item);
+  contextMenuVisible.value = false;
+}
+
 // TODO: 做成emit
 function onLazyLoad({
   node,

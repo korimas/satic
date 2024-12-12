@@ -1,12 +1,5 @@
-import { get } from 'http';
 import { defineStore } from 'pinia';
-
-export interface Project {
-  ID: string;
-  name: string;
-  desc: string;
-  icon: string;
-}
+import { Project } from 'src/data/structs';
 
 interface State {
   curProject: Project;

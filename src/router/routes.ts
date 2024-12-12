@@ -3,26 +3,27 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/satic/projects/6/issues',
+    redirect: '/satic/projects/2c485ec4-cc23-4245-a272-0afef4735364/issues',
   },
   {
     // user view
     path: '/satic',
     component: () => import('layouts/HeaderLayout.vue'), // header & router-view
-    redirect: '/satic/projects/6/issues',
+    redirect: '/satic/your-work',
     children: [
       {
         path: 'your-work',
-        // component: () => import('pages/YourWork.vue'),
-        component: () => import('pages/project_view/SpecPage.vue'),
+        component: () => import('pages/YourWork.vue'),
+        // component: () => import('pages/project_view/SpecPage.vue'),
       },
       {
+        name: 'ProjectsList',
         path: 'projects-list',
-        component: () => import('pages/ProjectListPage.vue'),
+        component: () => import('src/pages/project_view/ProjectListPage.vue'),
       },
       {
         path: 'projects',
-        redirect: '/satic/your-work',
+        redirect: '/satic/projects-list',
         component: () => import('layouts/CommSideLayout.vue'),
         children: [
           {
@@ -63,6 +64,7 @@ const routes: RouteRecordRaw[] = [
   // Always leave this as last one,
   // but you can also remove it
   {
+    name: 'NotFound',
     path: '/:catchAll(.*)*',
     component: () => import('pages/errors/NotFound.vue'),
   },

@@ -76,7 +76,7 @@
         </q-list>
         <q-separator />
         <q-list padding style="width: 300px">
-          <q-item clickable>
+          <q-item clickable :to="{ name: 'ProjectsList' }">
             <q-item-section avatar style="margin: auto; min-width: 30px">
               <q-icon name="apps" />
             </q-item-section>
@@ -98,18 +98,13 @@
 import DropDownBtn from './DropDownBtn.vue';
 import { ref } from 'vue';
 
-import { Project, useStateStore } from 'src/stores/state';
+import { useStateStore } from 'src/stores/state';
+import { Project } from 'src/data/structs';
+import { StarredProjects, RecentProjects } from 'src/data/demo';
+
 const store = useStateStore();
-const starredProjects = ref<Project[]>([
-  { name: 'Falcon I', icon: '/icons/random/icon2.svg', ID: '1', desc: '' },
-  { name: 'Falcon G', icon: '/icons/random/icon3.svg', ID: '2', desc: '' },
-  { name: 'Falcon 10K', icon: '/icons/random/icon4.svg', ID: '3', desc: '' },
-]);
-const recentProjects = ref([
-  { name: 'Falcon II', icon: '/icons/random/icon2.svg', ID: '4', desc: '' },
-  { name: 'Falcon 2.1', icon: '/icons/random/icon3.svg', ID: '5', desc: '' },
-  { name: 'Falcon II Pro', icon: '/icons/random/icon4.svg', ID: '6', desc: '' },
-]);
+const starredProjects = ref<Project[]>(StarredProjects);
+const recentProjects = ref<Project[]>(RecentProjects);
 
 function UpdateCurProject(project: Project) {
   console.log('UpdateCurProject', project);

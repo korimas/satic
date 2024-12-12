@@ -104,10 +104,12 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Project, useStateStore } from 'src/stores/state';
-import { useRoute } from 'vue-router';
+import { useStateStore } from 'src/stores/state';
+import { useRoute, useRouter } from 'vue-router';
+import { getProject } from 'src/data/demo';
 
 const route = useRoute();
+const router = useRouter();
 const store = useStateStore();
 const SpecificationOpen = ref(true);
 
@@ -161,12 +163,16 @@ function GenerateSpecTo(spec: any) {
 function LoadCurProject() {
   if (!store.State.curProject) {
     // TODO: 根据当前projectID加载
-    store.State.curProject = {
-      ID: '1',
-      name: 'Falcon I',
-      icon: '/icons/random/icon2.svg',
-      desc: '',
-    };
+    const project = getProject(
+      Array.isArray(route.params.projectId)
+        ? route.params.projectId[0]
+        : route.params.projectId
+    );
+    if (project) {
+      store.State.curProject = project;
+    } else {
+      router.push({ path: '/errors/notfound' });
+    }
   }
 }
 LoadCurProject();
