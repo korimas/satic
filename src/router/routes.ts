@@ -28,22 +28,22 @@ const routes: RouteRecordRaw[] = [
           {
             name: 'IssuesList',
             path: ':projectId/issues',
-            component: () => import('pages/IssueListPage.vue'),
+            component: () => import('pages/project_view/IssueListPage.vue'),
           },
           {
             name: 'SpecDetail',
             path: ':projectId/specs/:specId',
-            component: () => import('pages/SpecPage.vue'),
+            component: () => import('pages/project_view/SpecPage.vue'),
           },
           {
             name: 'ReleasesList',
             path: ':projectId/releases',
-            component: () => import('pages/ReleaseListPage.vue'),
+            component: () => import('pages/project_view/ReleaseListPage.vue'),
           },
           {
             name: 'ReviewsList',
             path: ':projectId/reviews',
-            component: () => import('pages/ReviewListPage.vue'),
+            component: () => import('pages/project_view/ReviewListPage.vue'),
           },
         ],
       },
