@@ -27,6 +27,7 @@
             @dragleave="dragLeave"
             @dragstart="dragStart($event, prop.key)"
             @dragend="dragStop"
+            @contextmenu.prevent="showContextMenu($event, prop.node)"
           >
             <q-icon :name="prop.node.icon" style="margin-right: 3px" />
             {{ prop.node.label }}
@@ -35,6 +36,17 @@
       </template>
     </q-tree>
   </div>
+  <!-- 右键菜单 -->
+  <q-menu context-menu>
+    <q-list dense style="min-width: 200px">
+      <q-item clickable v-ripple @click="onMenuItemClick('item1')">
+        <q-item-section>Item 1</q-item-section>
+      </q-item>
+      <q-item clickable v-ripple @click="onMenuItemClick('item2')">
+        <q-item-section>Item 2</q-item-section>
+      </q-item>
+    </q-list>
+  </q-menu>
 </template>
 
 <script setup lang="ts">
@@ -52,12 +64,17 @@ const emit = defineEmits(['doubleClick', 'singleClick']);
 const Selected = ref('');
 const expanded = ref([]);
 const treeRef = ref();
-const propsData = ref(props);
-
+const contextMenuVisible = ref(false);
 let nodes = props.nodes;
 let moveType = -1;
 let positionIndicator: HTMLElement | null = null;
 let lastSelected = '';
+
+function showContextMenu(event: MouseEvent, node: any) {
+  // 获取对应的node的数据
+  console.log('Right Click: ', node.label);
+  contextMenuVisible.value = true;
+}
 
 // methods
 function SelectedHandle(selectKey: string) {
@@ -329,7 +346,7 @@ function dragEnter(event: any) {
 // 当拖拽元素在目标元素上移动时触发
 // 可以在这个事件中阻止默认行为，以允许放置操作
 function dragOver(event: any) {
-  event.preventDefault(); // 允许放置
+  event.preventDefault(); // 阻止默认行为
   const target = event.target;
 
   if (target) {
