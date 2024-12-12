@@ -161,18 +161,16 @@ function GenerateSpecTo(spec: any) {
 }
 
 function LoadCurProject() {
-  if (!store.State.curProject) {
-    // TODO: 根据当前projectID加载
-    const project = getProject(
-      Array.isArray(route.params.projectId)
-        ? route.params.projectId[0]
-        : route.params.projectId
-    );
-    if (project) {
-      store.State.curProject = project;
-    } else {
-      router.push({ path: '/errors/notfound' });
-    }
+  console.log('load project');
+  const project = getProject(
+    Array.isArray(route.params.projectId)
+      ? route.params.projectId[0]
+      : route.params.projectId
+  );
+  if (project) {
+    store.State.curProject = project;
+  } else {
+    router.push({ path: '/errors/notfound' });
   }
 }
 LoadCurProject();

@@ -39,6 +39,28 @@
         />
       </div>
     </template>
+
+    <template v-slot:body-cell-project="props">
+      <q-td :props="props">
+        <q-item
+          :to="{ name: 'IssuesList', params: { projectId: props.row.ID } }"
+          dense
+          clickable
+          class="q-py-sm"
+          active-class="my-active-q-item"
+        >
+          <q-item-section avatar top style="margin: auto; min-width: 30px">
+            <q-avatar square style="width: 26px; height: 26px">
+              <img :src="props.row.icon" />
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label lines="1">{{ props.row.name }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-td>
+    </template>
   </q-table>
 </template>
 
