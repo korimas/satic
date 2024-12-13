@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/satic/projects/2c485ec4-cc23-4245-a272-0afef4735364/issues',
+    redirect: '/satic/projects-list',
   },
   {
     // user view

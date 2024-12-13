@@ -13,9 +13,7 @@
     <template v-slot:top>
       <div class="q-gutter-sm row full-width" style="margin: 0">
         <!--表格标题-->
-        <div class="q-table__title text-h5">
-          {{ tableTitle }}
-        </div>
+        <div class="q-table__title text-h5">Projects</div>
         <q-space></q-space>
 
         <!--批量删除按钮-->
@@ -26,7 +24,7 @@
           color="red"
           label="Delete"
           :disabled="selected.length < 1"
-          @click="deleteSelectedWorks(dayWork)"
+          @click="deleteProjects"
         />
         <!--创建按钮-->
         <q-btn
@@ -35,7 +33,7 @@
           color="green"
           icon="add"
           label="ADD"
-          @click="addWorkItem(dayWork)"
+          @click="ProjectCreateShow = true"
         />
       </div>
     </template>
@@ -62,26 +60,31 @@
       </q-td>
     </template>
   </q-table>
+
+  <!--doc create drawer-->
+  <q-drawer
+    side="right"
+    overlay
+    v-model="ProjectCreateShow"
+    bordered
+    :width="$q.screen.width > 800 ? 800 : $q.screen.width"
+    :breakpoint="800"
+  >
+    <ProjectCreate
+      @close="ProjectCreateShow = !ProjectCreateShow"
+    ></ProjectCreate>
+  </q-drawer>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { AllProjects } from 'src/data/demo';
+import { Project } from 'src/data/structs';
+import ProjectCreate from 'src/components/projects/ProjectCreate.vue';
 
-defineOptions({
-  name: 'DailyWorkTable',
-});
-
-// props
-interface Props {
-  dayWork: string;
-}
-
-const props = defineProps<Props>();
-let dayWork = ref(props.dayWork);
-let tableTitle = 'Projects';
-let rows = ref(AllProjects);
-let selected = ref([]);
+let ProjectCreateShow = ref(false);
+let rows = ref<Project[]>(AllProjects);
+let selected = ref<Project[]>([]);
 let columns = [
   {
     name: 'project',
@@ -124,6 +127,11 @@ let initialPagination = {
   page: 1,
   rowsPerPage: 50,
 };
+
+function deleteProjects() {
+  rows.value = rows.value.filter((row) => !selected.value.includes(row));
+  selected.value = [];
+}
 </script>
 
 <style>

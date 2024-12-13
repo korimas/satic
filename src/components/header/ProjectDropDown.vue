@@ -13,6 +13,7 @@
             :key="project.name"
             class="q-py-sm"
             active-class="my-active-q-item"
+            :active="isProjectActive(project)"
           >
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
@@ -82,12 +83,12 @@
             </q-item-section>
             <q-item-section>View all projects</q-item-section>
           </q-item>
-          <q-item clickable>
+          <!-- <q-item clickable>
             <q-item-section avatar style="margin: auto; min-width: 30px">
               <q-icon name="add" />
             </q-item-section>
             <q-item-section>Add Project</q-item-section>
-          </q-item>
+          </q-item> -->
         </q-list>
       </div>
     </template>
@@ -109,6 +110,14 @@ const recentProjects = ref<Project[]>(RecentProjects);
 function UpdateCurProject(project: Project) {
   console.log('UpdateCurProject', project);
   store.State.curProject = project;
+}
+
+function isProjectActive(project: Project) {
+  if (!store.State.curProject) {
+    return false;
+  }
+
+  return store.State.curProject.ID === project.ID;
 }
 </script>
 
