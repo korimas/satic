@@ -11,7 +11,7 @@ export class ProjectsHandler extends BaseApiHandler {
 
     const result = await this.sql`  
         INSERT INTO projects (name, key, icon, description)  
-        VALUES (${payload.name}, ${payload.name}, ${payload.icon}, ${payload.description})  
+        VALUES (${payload.name}, ${payload.key}, ${payload.icon}, ${payload.description})  
         RETURNING *  
       `;
 
