@@ -23,6 +23,8 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     if (req.method === 'GET') {
       return await get_projects(req);
+    } else if (req.method === 'POST') {
+      return await post_projects(req);
     }
     return new Response('{"error": "Method not allowed"}', {
       status: 405,
@@ -43,4 +45,22 @@ async function get_projects(req: Request): Promise<Response> {
     data: response,
   });
 }
+
+async function post_projects(req: Request): Promise<Response> {
+  const sql = neon(getDataBaseURL());
+
+  const reqPayload = await req.json();
+
+  const result = await sql`  
+      INSERT INTO projects (name, key, icon, description)  
+      VALUES (${reqPayload.name}, ${reqPayload.name}, ${reqPayload.icon}, ${reqPayload.description})  
+      RETURNING *  
+    `;
+  console.log('Inserted user:', result[0]);
+  return Response.json({
+    message: 'A Ok!',
+    data: result[0],
+  });
+}
+
 export default handler;
