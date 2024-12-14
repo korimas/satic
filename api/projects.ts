@@ -5,7 +5,7 @@ export const config = {
   regions: ['sin1', 'iad1'],
 };
 
-export const handler = async (req: Request): Promise<Response> => {
+const handler = async (req: Request): Promise<Response> => {
   // for CORS
   if (req.method === 'OPTIONS') {
     return new Response('{"Access": "OPTIONS"}', {
@@ -34,3 +34,5 @@ export const handler = async (req: Request): Promise<Response> => {
     });
   }
 };
+
+export default handler;
