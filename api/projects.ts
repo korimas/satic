@@ -72,7 +72,7 @@ async function delete_projects(req: Request): Promise<Response> {
   console.log(reqPayload.ids.length);
 
   // 验证输入
-  if (!Array.isArray(reqPayload.ids) || reqPayload.ids.length === 0) {
+  if (reqPayload.ids.length === 0) {
     return new Response('{"error": "Invalid ids array"}', {
       status: 400,
     });
