@@ -1,4 +1,4 @@
-import { RequestStream, GPTAPIMessage, GPTAPIRequest } from '../lib/openai/api';
+import { RequestStream, GPTAPIMessage, GPTAPIRequest } from '../../lib/openai/api';
 
 export const config = {
   runtime: 'edge',
@@ -13,6 +13,7 @@ const handler = async (req: Request): Promise<Response> => {
       status: 200
     });
   }
+
   const recvPayload = await req.json()
   const prompt = `
 # Policy:
@@ -25,20 +26,15 @@ const handler = async (req: Request): Promise<Response> => {
 
 # Facts:
 * 你是一位专业的车载激光雷达软件需求分析工程师，同时你具备非常丰富的ASPICE L2的软件需求的评审经验。
-* 用户的每一条输入都是你需要评审的软件需求。
-* 以下的列表是你评审的检查要点，你必须对每一个检查要点进行分析：
-    * 必须完整、清晰、明确、无二义，清楚地表述出需求的目的和功能
-    * 必须避免使用陈述句，尽量使用自然语言进行描述。
-    * 必须明确软件需求的条件或场景，明确在什么情况下，需求会被触发。
-    * 必须避免使用缺乏明确含义的词汇，例如"快速"、"易用"、"高效"等主观或模糊的词汇，而是要尝试提供具体的数值或者标准。
-    * 考虑异常处理和错误恢复，明确地包括对异常情况的处理。
-    * 如果需求有任何约束条件，例如时间、预算、技术等，必须在需求描述中明确说明。
+* 你组织了一次软件需求的评审，请根据输入的信息整理成评审记录
+* 整理的过程中你可以对相关的评审记录进行总结和优化。
+* 针对每条评审意见，给出你的解决方案，解决方案应该尽可能的详细。
 
 # Output:
 * 按以下格式输出：
 """
-评审意见：
-修改建议：
+| 软件需求编号 | 需求描述 | 评审人 | 评审意见 | 解决方案 |
+| ---------- | ------- | ------ | -------- | ------- |
 """
 `
 
@@ -49,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
     },
     {
       'role': 'user',
-      'content': recvPayload.requirement
+      'content': recvPayload.comments
     }
   ]
   const defaultModel = process.env.OPENAI_API_MODEL ?? 'gpt-3.5-turbo'

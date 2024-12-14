@@ -90,7 +90,7 @@ async function StreamChat() {
 
   // 流式聊天
   Loading.value = true;
-  const response = await fetch('/api/stream-api', {
+  const response = await fetch('/api/chat/stream-api', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
