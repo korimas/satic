@@ -25,6 +25,8 @@ const handler = async (req: Request): Promise<Response> => {
       return await get_projects(req);
     } else if (req.method === 'POST') {
       return await post_projects(req);
+    } else if (req.method === 'DELETE') {
+      return await delete_projects(req);
     }
     return new Response('{"error": "Method not allowed"}', {
       status: 405,
@@ -66,9 +68,20 @@ async function post_projects(req: Request): Promise<Response> {
 async function delete_projects(req: Request): Promise<Response> {
   const sql = neon(getDataBaseURL());
   const reqPayload = await req.json();
+
+  // 验证输入
+  if (!Array.isArray(reqPayload.ids) || reqPayload.ids.length === 0) {
+    return new Response('{"error": "Invalid ids array"}', {
+      status: 400,
+    });
+  }
+
   const result = await sql`  
-      DELETE FROM projects WHERE id = ${reqPayload.id}  
+      DELETE FROM projects   
+      WHERE id = ANY(${reqPayload.ids}::uuid[])  
+      RETURNING id  
     `;
+
   return Response.json({
     message: 'A Ok!',
     data: result,
