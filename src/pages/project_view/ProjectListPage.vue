@@ -6,7 +6,7 @@
     :rows="rows"
     v-model:selected="selected"
     :columns="columns"
-    row-key="ID"
+    row-key="id"
     :pagination="initialPagination"
   >
     <!--表格顶部内容:插槽-->
@@ -105,11 +105,11 @@ let columns = [
     // format: (val) => `${val}`,
   },
   {
-    name: 'ID',
+    name: 'id',
     required: true,
     label: 'ID',
     align: 'left' as const,
-    field: 'ID',
+    field: 'id',
     // format: (val) => `${val}`,
   },
   {

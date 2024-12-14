@@ -6,7 +6,7 @@
         <q-list padding style="width: 300px">
           <q-item
             v-for="project in starredProjects"
-            :to="{ name: 'IssuesList', params: { projectId: project.ID } }"
+            :to="{ name: 'IssuesList', params: { projectId: project.id } }"
             @click="UpdateCurProject(project)"
             dense
             clickable
@@ -46,7 +46,7 @@
             dense
             clickable
             v-for="project in recentProjects"
-            :to="{ name: 'IssuesList', params: { projectId: project.ID } }"
+            :to="{ name: 'IssuesList', params: { projectId: project.id } }"
             :key="project.name"
             class="q-py-sm"
             active-class="my-active-q-item"
@@ -117,7 +117,7 @@ function isProjectActive(project: Project) {
     return false;
   }
 
-  return store.State.curProject.ID === project.ID;
+  return store.State.curProject.id === project.id;
 }
 </script>
 
