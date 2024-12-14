@@ -28,6 +28,7 @@ export const handler = async (req: Request): Promise<Response> => {
       data: response,
     });
   } catch (e) {
+    console.error(e);
     return new Response('{"error": "Failed to query database"}', {
       status: 500,
     });
