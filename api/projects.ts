@@ -20,11 +20,16 @@ export const handler = async (req: Request): Promise<Response> => {
   }
   console.log('start select');
 
-  const sql = neon(process.env.DATABASE_URL);
-  const response = await sql`SELECT * FROM projects`;
-
-  return Response.json({
-    message: 'A Ok!',
-    data: response,
-  });
+  try {
+    const sql = neon(process.env.DATABASE_URL);
+    const response = await sql`SELECT * FROM projects`;
+    return Response.json({
+      message: 'A Ok!',
+      data: response,
+    });
+  } catch (e) {
+    return new Response('{"error": "Failed to query database"}', {
+      status: 500,
+    });
+  }
 };
