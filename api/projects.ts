@@ -5,6 +5,13 @@ export const config = {
   regions: ['sin1', 'iad1'],
 };
 
+function getDataBaseURL(): string {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(`Failed to get DATABASE_URL`);
+  }
+  return process.env.DATABASE_URL;
+}
+
 const handler = async (req: Request): Promise<Response> => {
   // for CORS
   if (req.method === 'OPTIONS') {
@@ -13,19 +20,12 @@ const handler = async (req: Request): Promise<Response> => {
     });
   }
 
-  if (!process.env.DATABASE_URL) {
-    return new Response('{"error": "Missing DATABASE_URL"}', {
-      status: 500,
-    });
-  }
-  console.log('start select');
-
   try {
-    const sql = neon(process.env.DATABASE_URL);
-    const response = await sql`SELECT * FROM projects`;
-    return Response.json({
-      message: 'A Ok!',
-      data: response,
+    if (req.method === 'GET') {
+      return await get_projects(req);
+    }
+    return new Response('{"error": "Method not allowed"}', {
+      status: 405,
     });
   } catch (e) {
     console.error(e);
@@ -35,4 +35,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
+async function get_projects(req: Request): Promise<Response> {
+  const sql = neon(getDataBaseURL());
+  const response = await sql`SELECT * FROM projects`;
+  return Response.json({
+    message: 'A Ok!',
+    data: response,
+  });
+}
 export default handler;
