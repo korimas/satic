@@ -68,6 +68,8 @@ async function post_projects(req: Request): Promise<Response> {
 async function delete_projects(req: Request): Promise<Response> {
   const sql = neon(getDataBaseURL());
   const reqPayload = await req.json();
+  console.log('reqPayload:', reqPayload);
+  console.log(reqPayload.ids.length);
 
   // 验证输入
   if (!Array.isArray(reqPayload.ids) || reqPayload.ids.length === 0) {
