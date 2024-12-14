@@ -63,4 +63,16 @@ async function post_projects(req: Request): Promise<Response> {
   });
 }
 
+async function delete_projects(req: Request): Promise<Response> {
+  const sql = neon(getDataBaseURL());
+  const reqPayload = await req.json();
+  const result = await sql`  
+      DELETE FROM projects WHERE id = ${reqPayload.id}  
+    `;
+  return Response.json({
+    message: 'A Ok!',
+    data: result,
+  });
+}
+
 export default handler;
