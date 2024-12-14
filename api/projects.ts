@@ -18,6 +18,7 @@ export const handler = async (req: Request): Promise<Response> => {
       status: 500,
     });
   }
+  console.log('start select');
 
   const sql = neon(process.env.DATABASE_URL);
   const response = await sql`SELECT * FROM projects`;
