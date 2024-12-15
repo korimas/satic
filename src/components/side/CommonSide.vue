@@ -3,18 +3,22 @@
     <div class="column q-mx-sm q-mt-md full-height">
       <!-- Project Title -->
       <q-item dense class="q-my-lg">
-        <q-item-section avatar top style="margin: auto; min-width: 30px">
+        <q-item-section
+          avatar
+          top
+          style="margin: auto; min-width: 30px"
+          v-if="curProjectIcon"
+        >
           <q-avatar square style="width: 26px; height: 26px">
-            <img :src="'/icons/random/' + store.State.curProject.icon" />
+            <img :src="'/icons/random/' + curProjectIcon" />
           </q-avatar>
         </q-item-section>
 
-        <q-item-section>
-          <q-item-label lines="1">{{
-            store.State.curProject.name
-          }}</q-item-label>
+        <q-item-section v-if="curProjectName">
+          <q-item-label lines="1">{{ curProjectName }}</q-item-label>
           <q-item-label caption>Software Project</q-item-label>
         </q-item-section>
+        <q-inner-loading :showing="!curProjectIcon" />
       </q-item>
 
       <!-- Specifications -->
@@ -103,16 +107,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useStateStore } from 'src/stores/state';
 import { useRoute, useRouter } from 'vue-router';
-import { getProject } from 'src/data/demo';
 import API from 'src/api/satic';
 
 const route = useRoute();
 const router = useRouter();
 const store = useStateStore();
 const SpecificationOpen = ref(true);
+let curProjectIcon = ref('');
+let curProjectName = ref('');
 
 const SpecList = ref([
   { name: 'System Requirement', icon: 'article', ID: '1' },
@@ -162,18 +167,28 @@ function GenerateSpecTo(spec: any) {
 }
 
 async function LoadCurProject() {
-  console.log('load project');
-  const resp = await API.getProject(
-    Array.isArray(route.params.projectId)
-      ? route.params.projectId[0]
-      : route.params.projectId
-  );
+  if (!route.params.projectId) {
+    return;
+  }
+
+  const resp = await API.getProject(route.params.projectId);
   if (resp.result) {
     store.State.curProject = resp.result;
+    curProjectIcon.value = resp.result.icon;
+    curProjectName.value = resp.result.name;
   } else {
     router.push({ path: '/errors/notfound' });
   }
 }
+
+watch(
+  () => route.params.projectId,
+  (newId, oldId) => {
+    console.log('ID参数变化：', { newId, oldId });
+    LoadCurProject();
+  }
+);
+
 LoadCurProject();
 </script>
 

@@ -73,6 +73,7 @@
   >
     <ProjectCreate
       @close="ProjectCreateShow = !ProjectCreateShow"
+      @success="getAllPrjects"
     ></ProjectCreate>
   </q-drawer>
 </template>
@@ -119,7 +120,7 @@ let columns = [
     required: true,
     label: 'Description',
     align: 'left' as const,
-    field: 'desc',
+    field: 'description',
     // format: (val) => `${val}`,
   },
 ];
@@ -130,9 +131,14 @@ let initialPagination = {
   rowsPerPage: 50,
 };
 
-function deleteProjects() {
-  rows.value = rows.value.filter((row) => !selected.value.includes(row));
-  selected.value = [];
+async function deleteProjects() {
+  let resp = await API.deleteProjects(
+    selected.value.map((project) => project.id)
+  );
+  if (resp.success) {
+    getAllPrjects();
+    selected.value = [];
+  }
 }
 
 async function getAllPrjects() {

@@ -2,12 +2,20 @@
   <DropDownBtn label="Project">
     <template v-slot:drop-content>
       <div class="column">
-        <div class="q-mt-md q-mx-md text-grey-7">Starred</div>
-        <q-list padding style="width: 300px">
+        <div
+          class="q-mt-md q-mx-md text-grey-7"
+          v-if="starredProjects.length !== 0"
+        >
+          Starred
+        </div>
+        <q-list
+          padding
+          style="width: 300px"
+          v-if="starredProjects.length !== 0"
+        >
           <q-item
             v-for="project in starredProjects"
             :to="{ name: 'IssuesList', params: { projectId: project.id } }"
-            @click="UpdateCurProject(project)"
             dense
             clickable
             :key="project.name"
@@ -39,10 +47,9 @@
             </q-item-section>
           </q-item>
         </q-list>
-        <div class="q-mx-md text-grey-7">Recent</div>
+        <div class="q-mx-md q-mt-md text-grey-7">Recent</div>
         <q-list padding style="width: 300px">
           <q-item
-            @click="UpdateCurProject(project)"
             dense
             clickable
             v-for="project in recentProjects"
@@ -101,16 +108,12 @@ import { ref } from 'vue';
 
 import { useStateStore } from 'src/stores/state';
 import { Project } from 'src/data/structs';
-import { StarredProjects, RecentProjects } from 'src/data/demo';
+// import { StarredProjects, RecentProjects } from 'src/data/demo';
+import API from 'src/api/satic';
 
 const store = useStateStore();
-const starredProjects = ref<Project[]>(StarredProjects);
-const recentProjects = ref<Project[]>(RecentProjects);
-
-function UpdateCurProject(project: Project) {
-  console.log('UpdateCurProject', project);
-  store.State.curProject = project;
-}
+const starredProjects = ref<Project[]>([]);
+const recentProjects = ref<Project[]>([]);
 
 function isProjectActive(project: Project) {
   if (!store.State.curProject) {
@@ -119,6 +122,16 @@ function isProjectActive(project: Project) {
 
   return store.State.curProject.id === project.id;
 }
+
+async function loadRecentProjects() {
+  let resp = await API.getAllPrjects();
+  console.log('recent projects: ', resp);
+  if (resp.success) {
+    recentProjects.value = resp.result;
+  }
+}
+
+loadRecentProjects();
 </script>
 
 <style scoped>

@@ -12,6 +12,20 @@ let API = {
           id: id,
         },
     });
+  },
+
+  createProject(data) {
+    return request('/projects', 'post', {
+      data: data,
+    });
+  },
+
+  deleteProjects(ids) {
+    return request('projects', 'delete',{
+        data: {
+            ids: ids,
+        },
+    });
   }
 };
 

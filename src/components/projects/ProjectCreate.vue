@@ -44,7 +44,13 @@
       </q-input>
       <div class="row q-gutter-md">
         <q-space />
-        <q-btn unelevated label="Submit" type="submit" color="primary" />
+        <q-btn
+          :loading="submintLoading"
+          unelevated
+          label="Submit"
+          type="submit"
+          color="primary"
+        />
       </div>
     </q-form>
   </mi-window>
@@ -53,12 +59,19 @@
 <script setup lang="ts">
 import { defineEmits, ref } from 'vue';
 import MiWindow from 'components/base/MiWindow.vue';
+import API from 'src/api/satic';
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'success']);
 let Name = ref('');
 let Key = ref('');
 let Description = ref('');
-let Icon = ref<File | null>(null);
+let submintLoading = ref(false);
+
+interface IconOption {
+  icon: string;
+}
+
+let Icon = ref<IconOption | null>(null);
 let iconOptions = [
   { icon: 'icon2.svg' },
   { icon: 'icon3.svg' },
@@ -69,11 +82,30 @@ function close() {
   emit('close');
 }
 
-function onSubmit() {
-  console.log(Name.value);
+async function onSubmit() {
+  if (!Name.value || !Key.value || !Description.value || !Icon.value) {
+    return;
+  }
+  submintLoading.value = true;
+  let resp = await API.createProject({
+    name: Name.value,
+    key: Key.value,
+    description: Description.value,
+    icon: Icon.value.icon,
+  });
+  submintLoading.value = false;
+  if (resp.success) {
+    emit('close');
+    // reset form
+    onReset();
+    emit('success');
+  }
 }
 
 function onReset() {
   Name.value = '';
+  Key.value = '';
+  Description.value = '';
+  Icon.value = null;
 }
 </script>
