@@ -149,9 +149,7 @@ async function getAllPrjects() {
   projectLoading.value = false;
 }
 
-onMounted(async () => {
-  getAllPrjects();
-});
+getAllPrjects();
 </script>
 
 <style>

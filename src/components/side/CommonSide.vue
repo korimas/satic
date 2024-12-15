@@ -185,6 +185,8 @@ watch(
   () => route.params.projectId,
   (newId, oldId) => {
     console.log('ID参数变化：', { newId, oldId });
+    curProjectName.value = '';
+    curProjectIcon.value = '';
     LoadCurProject();
   }
 );
