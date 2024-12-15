@@ -5,7 +5,7 @@
       <q-item dense class="q-my-lg">
         <q-item-section avatar top style="margin: auto; min-width: 30px">
           <q-avatar square style="width: 26px; height: 26px">
-            <img :src="store.State.curProject.icon" />
+            <img :src="'/icons/random/' + store.State.curProject.icon" />
           </q-avatar>
         </q-item-section>
 

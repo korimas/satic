@@ -13,7 +13,7 @@
           <q-item v-bind="scope.itemProps">
             <q-item-section avatar>
               <q-avatar square style="width: 26px; height: 26px">
-                <img :src="scope.opt.icon" />
+                <img :src="'/icons/random/' + scope.opt.icon" />
               </q-avatar>
             </q-item-section>
           </q-item>
@@ -30,23 +30,17 @@
             class="q-ma-none"
           >
             <q-avatar square style="width: 26px; height: 26px">
-              <img :src="scope.opt.icon" />
+              <img :src="'/icons/random/' + scope.opt.icon" />
             </q-avatar>
           </q-chip>
         </template>
       </q-select>
 
-      <q-input dense filled v-model="Name" prefix="Name:"> </q-input>
+      <q-input dense filled v-model="Name" label="Name"> </q-input>
 
-      <q-input dense filled v-model="Key" prefix="Key: "> </q-input>
+      <q-input dense filled v-model="Key" label="Key"> </q-input>
 
-      <q-input
-        dense
-        filled
-        v-model="Description"
-        type="textarea"
-        prefix="Description: "
-      >
+      <q-input dense filled v-model="Description" autogrow label="Description">
       </q-input>
       <div class="row q-gutter-md">
         <q-space />
@@ -66,9 +60,9 @@ let Key = ref('');
 let Description = ref('');
 let Icon = ref<File | null>(null);
 let iconOptions = [
-  { icon: '/icons/random/icon2.svg' },
-  { icon: '/icons/random/icon3.svg' },
-  { icon: '/icons/random/icon4.svg' },
+  { icon: 'icon2.svg' },
+  { icon: 'icon3.svg' },
+  { icon: 'icon4.svg' },
 ];
 
 function close() {

@@ -17,7 +17,7 @@
           >
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
-                <img :src="project.icon" />
+                <img :src="'/icons/random/' + project.icon" />
               </q-avatar>
             </q-item-section>
 
@@ -53,7 +53,7 @@
           >
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
-                <img :src="project.icon" />
+                <img :src="'/icons/random/' + project.icon" />
               </q-avatar>
             </q-item-section>
 

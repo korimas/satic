@@ -34,7 +34,7 @@ export abstract class BaseApiHandler {
       console.error(error);
       const errorMessage =
         error instanceof Error ? error.message : 'unknown error';
-      return this.makeResponse(null, false, errorMessage);
+      return this.makeResponse(null, false, -9999, errorMessage);
     }
   }
 
@@ -47,9 +47,7 @@ export abstract class BaseApiHandler {
       case 'DELETE':
         return this.handleDelete(req);
       default:
-        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-          status: 405,
-        });
+        throw new Error(`Unsupported method: ${req.method}`);
     }
   }
 
@@ -74,7 +72,19 @@ export abstract class BaseApiHandler {
   //     });
   //   }
 
-  protected makeResponse<T>(result: T, success: boolean, error = ''): Response {
-    return Response.json({ result, success, error });
+  protected makeResponse<T>(
+    result: T,
+    success: boolean,
+    errorCode = 0,
+    errorMessage = ''
+  ): Response {
+    return Response.json({
+      result: result,
+      success: success,
+      error: {
+        code: errorCode,
+        message: errorMessage,
+      },
+    });
   }
 }
