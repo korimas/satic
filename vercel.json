@@ -3,7 +3,7 @@
     "regions": ["sin1"],
     "rewrites": [
         {
-            "source": "/(.*)",
+            "source": "/satic/(.*)",
             "destination": "/index.html"
         }
     ],

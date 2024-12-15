@@ -52,12 +52,12 @@ const routes: RouteRecordRaw[] = [
   },
   {
     // admin view
-    path: '/admin/dashboard',
+    path: '/satic/admin/dashboard',
     component: () => import('layouts/AdminLayout.vue'),
   },
   {
     // for test
-    path: '/test/tiptap',
+    path: '/satic/test/tiptap',
     component: () => import('pages/test/TipTap.vue'),
   },
 
