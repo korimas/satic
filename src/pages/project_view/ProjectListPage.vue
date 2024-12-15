@@ -41,7 +41,7 @@
     <template v-slot:body-cell-project="props">
       <q-td :props="props">
         <q-item
-          :to="{ name: 'IssuesList', params: { projectId: props.row.ID } }"
+          :to="{ name: 'IssuesList', params: { projectId: props.row.id } }"
           dense
           clickable
           class="q-py-sm"
