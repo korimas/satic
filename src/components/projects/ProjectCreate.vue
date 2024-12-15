@@ -1,39 +1,52 @@
 <template>
   <mi-window @close="close" title="Add Project">
     <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-      <q-file dense color="teal" filled v-model="Icon" label="图标">
-        <template v-slot:prepend>
-          <q-icon name="cloud_upload" />
-        </template>
-      </q-file>
-
-      <q-input
+      <q-select
+        prefix="Icon:"
         dense
-        standout="bg-teal text-white"
-        v-model="Name"
-        prefix="Name:"
+        filled
+        v-model="Icon"
+        :options="iconOptions"
+        stack-label
       >
-        <template v-slot:prepend>
-          <q-icon name="wysiwyg" />
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section avatar>
+              <q-avatar square style="width: 26px; height: 26px">
+                <img :src="scope.opt.icon" />
+              </q-avatar>
+            </q-item-section>
+          </q-item>
         </template>
-      </q-input>
 
-      <q-input dense standout="bg-teal text-white" v-model="Key" prefix="Key: ">
-        <template v-slot:prepend>
-          <q-icon name="key" />
+        <template v-slot:selected-item="scope">
+          <q-chip
+            removable
+            dense
+            @remove="scope.removeAtIndex(scope.index)"
+            :tabindex="scope.tabindex"
+            color="white"
+            text-color="secondary"
+            class="q-ma-none"
+          >
+            <q-avatar square style="width: 26px; height: 26px">
+              <img :src="scope.opt.icon" />
+            </q-avatar>
+          </q-chip>
         </template>
-      </q-input>
+      </q-select>
+
+      <q-input dense filled v-model="Name" prefix="Name:"> </q-input>
+
+      <q-input dense filled v-model="Key" prefix="Key: "> </q-input>
 
       <q-input
         dense
-        standout="bg-teal text-white"
+        filled
         v-model="Description"
         type="textarea"
-        label="Project Description"
+        prefix="Description: "
       >
-        <template v-slot:prepend>
-          <q-icon name="description" />
-        </template>
       </q-input>
       <div class="row q-gutter-md">
         <q-space />
@@ -52,6 +65,11 @@ let Name = ref('');
 let Key = ref('');
 let Description = ref('');
 let Icon = ref<File | null>(null);
+let iconOptions = [
+  { icon: '/icons/random/icon2.svg' },
+  { icon: '/icons/random/icon3.svg' },
+  { icon: '/icons/random/icon4.svg' },
+];
 
 function close() {
   emit('close');
