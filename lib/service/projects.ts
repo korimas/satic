@@ -7,7 +7,10 @@ export class ProjectsHandler extends BaseApiHandler {
     const id = url.searchParams.get('id');
     if (id) {
       const result = await this.sql`SELECT * FROM projects WHERE id = ${id}`;
-      return result;
+      if (!Array.isArray(result) || result.length === 0) {
+        throw new Error(`Project not found: ${id}`);
+      }
+      return result[0];
     }
 
     const result = await this.sql`SELECT * FROM projects`;
