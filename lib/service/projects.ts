@@ -2,6 +2,14 @@ import { BaseApiHandler } from './base';
 
 export class ProjectsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
+    //get query params
+    const url = new URL(req.url);
+    const id = url.searchParams.get('id');
+    if (id) {
+      const result = await this.sql`SELECT * FROM projects WHERE id = ${id}`;
+      return result;
+    }
+
     const result = await this.sql`SELECT * FROM projects`;
     return result;
   }

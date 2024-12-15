@@ -1,5 +1,6 @@
 <template>
   <q-table
+    :loading="projectLoading"
     class="work-item-table"
     flat
     selection="multiple"
@@ -77,14 +78,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { AllProjects } from 'src/data/demo';
+import { ref, onMounted } from 'vue';
 import { Project } from 'src/data/structs';
 import ProjectCreate from 'src/components/projects/ProjectCreate.vue';
+import API from 'src/api/satic';
 
 let ProjectCreateShow = ref(false);
-let rows = ref<Project[]>(AllProjects);
+let rows = ref<Project[]>([]);
 let selected = ref<Project[]>([]);
+let projectLoading = ref(false);
 let columns = [
   {
     name: 'project',
@@ -132,6 +134,18 @@ function deleteProjects() {
   rows.value = rows.value.filter((row) => !selected.value.includes(row));
   selected.value = [];
 }
+
+async function getAllPrjects() {
+  projectLoading.value = true;
+  const resp = await API.getAllPrjects();
+
+  rows.value = resp.result;
+  projectLoading.value = false;
+}
+
+onMounted(async () => {
+  getAllPrjects();
+});
 </script>
 
 <style>

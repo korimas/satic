@@ -55,7 +55,7 @@ RequestInstance.interceptors.response.use((response) => {
   if (response.data.success === false) {
     Dialog.create({
       title: '错误',
-      message: response.data.exception.errmsg,
+      message: response.data.error.message,
     });
   }
   return response;

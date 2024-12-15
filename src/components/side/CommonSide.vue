@@ -107,6 +107,7 @@ import { ref } from 'vue';
 import { useStateStore } from 'src/stores/state';
 import { useRoute, useRouter } from 'vue-router';
 import { getProject } from 'src/data/demo';
+import API from 'src/api/satic';
 
 const route = useRoute();
 const router = useRouter();
@@ -160,15 +161,15 @@ function GenerateSpecTo(spec: any) {
   };
 }
 
-function LoadCurProject() {
+async function LoadCurProject() {
   console.log('load project');
-  const project = getProject(
+  const resp = await API.getProject(
     Array.isArray(route.params.projectId)
       ? route.params.projectId[0]
       : route.params.projectId
   );
-  if (project) {
-    store.State.curProject = project;
+  if (resp.result) {
+    store.State.curProject = resp.result;
   } else {
     router.push({ path: '/errors/notfound' });
   }
