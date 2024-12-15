@@ -9,7 +9,7 @@
           style="margin: auto; min-width: 30px"
           v-if="curProjectIcon"
         >
-          <q-avatar square style="width: 26px; height: 26px">
+          <q-avatar square style="width: 35px; height: 35px">
             <img :src="'/icons/random/' + curProjectIcon" />
           </q-avatar>
         </q-item-section>
