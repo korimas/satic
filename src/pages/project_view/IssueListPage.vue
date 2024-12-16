@@ -116,14 +116,6 @@ let columns = [
     // format: (val) => `${val}`,
   },
   {
-    name: 'fixVersion',
-    required: true,
-    label: 'FixVersion',
-    align: 'left' as const,
-    field: 'fixVersion',
-    // format: (val) => `${val}`,
-  },
-  {
     name: 'reporter',
     required: true,
     label: 'Reporter',

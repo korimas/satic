@@ -7,14 +7,14 @@ export class IssuesHandler extends BaseApiHandler {
     const id = url.searchParams.get('id');
     if (id) {
       // get detail
-      const result = await this.sql`SELECT * FROM projects WHERE id = ${id}`;
+      const result = await this.sql`SELECT * FROM issues WHERE id = ${id}`;
       if (!Array.isArray(result) || result.length === 0) {
         throw new Error(`Project not found: ${id}`);
       }
       return result[0];
     }
     // get list
-    const result = await this.sql`SELECT * FROM projects`;
+    const result = await this.sql`SELECT * FROM issues`;
     return result;
   }
 
@@ -22,8 +22,8 @@ export class IssuesHandler extends BaseApiHandler {
     const payload = await req.json();
 
     const result = (await this.sql`  
-        INSERT INTO projects (name, key, icon, description)  
-        VALUES (${payload.name}, ${payload.key}, ${payload.icon}, ${payload.description})  
+        INSERT INTO issues (key, issue_type, summary, reporter, description, status, priority, project_id)  
+        VALUES ( ${payload.key} ,${payload.issue_type}, ${payload.summary}, ${payload.reporter}, ${payload.description}, ${payload.status}, ${payload.priority}, ${payload.project_id})  
         RETURNING *  
       `) as any[];
 
@@ -42,7 +42,7 @@ export class IssuesHandler extends BaseApiHandler {
     }
 
     const result = await this.sql`  
-        DELETE FROM projects  
+        DELETE FROM issues  
         WHERE id = ANY(${payload.ids}::uuid[])  
         RETURNING id  
       `;
