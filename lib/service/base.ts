@@ -78,13 +78,18 @@ export abstract class BaseApiHandler {
     errorCode = 0,
     errorMessage = ''
   ): Response {
-    return Response.json({
-      result: result,
-      success: success,
-      error: {
-        code: errorCode,
-        message: errorMessage,
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        result: result,
+        success: success,
+        error: {
+          code: errorCode,
+          message: errorMessage,
+        },
+      }),
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 }
