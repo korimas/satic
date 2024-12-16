@@ -117,8 +117,8 @@ let newIssue = ref<Issue>(getNewIssue());
 function getNewIssue() {
   return {
     id: 0,
-    key: store.State.curProject.key,
-    project_id: store.State.curProject.id,
+    key: '',
+    project_id: '',
     issue_type: '',
     summary: '',
     description: '',
@@ -136,7 +136,11 @@ function getNewIssue() {
 }
 
 async function createIssue() {
+  submintLoading.value = true;
+  newIssue.value.key = store.State.curProject.key;
+  newIssue.value.project_id = store.State.curProject.id;
   let resp = await API.createIssue(newIssue.value);
+  submintLoading.value = false;
   if (resp.success) {
     emit('close');
     // reset form

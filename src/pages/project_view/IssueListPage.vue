@@ -1,6 +1,6 @@
 <template>
   <q-table
-    :loading="projectLoading"
+    :loading="tableLoading"
     class="work-item-table"
     flat
     selection="multiple"
@@ -34,30 +34,25 @@
           color="green"
           icon="add"
           label="ADD"
-          @click="ProjectCreateShow = true"
+          @click="IssueCreateShow = true"
         />
       </div>
     </template>
 
-    <template v-slot:body-cell-project="props">
+    <template v-slot:body-cell-key="props">
       <q-td :props="props">
-        <q-item
-          :to="{ name: 'IssuesList', params: { projectId: props.row.id } }"
-          dense
-          clickable
-          class="q-py-sm"
-          active-class="my-active-q-item"
-        >
-          <q-item-section avatar top style="margin: auto; min-width: 30px">
-            <q-avatar square style="width: 26px; height: 26px">
-              <img :src="'/icons/random/' + props.row.icon" />
-            </q-avatar>
-          </q-item-section>
+        {{ props.row.key + '-' + props.row.id }}
+      </q-td>
+    </template>
 
-          <q-item-section>
-            <q-item-label lines="1">{{ props.row.name }}</q-item-label>
-          </q-item-section>
-        </q-item>
+    <template v-slot:body-cell-type="props">
+      <q-td :props="props">
+        <q-avatar square style="width: 26px; height: 26px">
+          <q-icon
+            :name="IssueTypeStyle[props.row.issue_type as keyof typeof IssueTypeStyle].icon"
+            :color="IssueTypeStyle[props.row.issue_type as keyof typeof IssueTypeStyle].color"
+          />
+        </q-avatar>
       </q-td>
     </template>
   </q-table>
@@ -66,28 +61,29 @@
   <q-drawer
     side="right"
     overlay
-    v-model="ProjectCreateShow"
+    v-model="IssueCreateShow"
     bordered
     :width="$q.screen.width > 800 ? 800 : $q.screen.width"
     :breakpoint="800"
   >
     <IssueCreate
-      @close="ProjectCreateShow = !ProjectCreateShow"
+      @close="IssueCreateShow = !IssueCreateShow"
       @success="getAllIssues"
     ></IssueCreate>
   </q-drawer>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { Project } from 'src/data/structs';
 import IssueCreate from 'src/components/issues/IssueCreate.vue';
 import API from 'src/api/satic';
+import { IssueTypeStyle } from 'src/data/style';
 
-let ProjectCreateShow = ref(false);
+let IssueCreateShow = ref(false);
 let rows = ref<Project[]>([]);
 let selected = ref<Project[]>([]);
-let projectLoading = ref(false);
+let tableLoading = ref(false);
 let columns = [
   {
     name: 'key',
@@ -104,7 +100,7 @@ let columns = [
     label: 'Type',
     align: 'left' as const,
     headerStyle: 'width: 50px',
-    field: 'type',
+    field: 'issue_type',
     // format: (val) => `${val}`,
   },
   {
@@ -147,24 +143,19 @@ let initialPagination = {
   rowsPerPage: 50,
 };
 
-function getIssueIcon(issue_type: string) {
-  switch (issue_type) {
-    case 'bug':
-      return 'bug_report';
-    case 'task':
-      return 'task';
-    default:
-      return 'data_saver_off';
-  }
-}
-
 function deleteIssues() {
   console.log(selected.value);
 }
 
-function getAllIssues() {
-  console.log('get all issues');
+async function getAllIssues() {
+  tableLoading.value = true;
+  const resp = await API.getAllIssues();
+
+  rows.value = resp.result;
+  tableLoading.value = false;
 }
+
+getAllIssues();
 </script>
 
 <style>

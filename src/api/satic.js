@@ -33,6 +33,10 @@ let API = {
       data: data,
     });
   },
+
+  getAllIssues() {
+    return request('/issues', 'get');
+  },
 };
 
 export default API;
