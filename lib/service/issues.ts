@@ -22,8 +22,8 @@ export class IssuesHandler extends BaseApiHandler {
     const payload = await req.json();
 
     const result = (await this.sql`  
-        INSERT INTO issues (key, issue_type, summary, reporter, description, status, priority, project_id)  
-        VALUES ( ${payload.key} ,${payload.issue_type}, ${payload.summary}, ${payload.reporter}, ${payload.description}, ${payload.status}, ${payload.priority}, ${payload.project_id})  
+        INSERT INTO issues (key, issue_type, summary, reporter_id, description, status, priority, project_id)  
+        VALUES ( ${payload.key} ,${payload.issue_type}, ${payload.summary}, ${payload.reporter_id}, ${payload.description}, ${payload.status}, ${payload.priority}, ${payload.project_id})  
         RETURNING *  
       `) as any[];
 
