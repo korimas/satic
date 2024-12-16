@@ -8,9 +8,9 @@ let API = {
 
   getProject(id) {
     return request(`/projects`, 'get', {
-        params: {
-          id: id,
-        },
+      params: {
+        id: id,
+      },
     });
   },
 
@@ -21,12 +21,18 @@ let API = {
   },
 
   deleteProjects(ids) {
-    return request('projects', 'delete',{
-        data: {
-            ids: ids,
-        },
+    return request('projects', 'delete', {
+      data: {
+        ids: ids,
+      },
     });
-  }
+  },
+
+  createIssue(data) {
+    return request('/issues', 'post', {
+      data: data,
+    });
+  },
 };
 
 export default API;

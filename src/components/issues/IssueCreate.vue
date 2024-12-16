@@ -47,7 +47,7 @@
       <q-input dense filled v-model="newIssue.summary" placeholder="Summary" />
 
       <q-editor
-        v-model="Description"
+        v-model="newIssue.description"
         placeholder="Description"
         min-height="10rem"
         :toolbar="[
@@ -107,39 +107,53 @@ import { Issue } from 'src/data/structs';
 import { IssueTypes, IssueTypeStyle } from 'src/data/style';
 // import MiInput from '../base/MiInput.vue';
 import API from 'src/api/satic';
+import { useStateStore } from 'src/stores/state';
+const store = useStateStore();
 
 const emit = defineEmits(['close', 'success']);
-let Summary = ref('');
-let Description = ref('');
 let submintLoading = ref(false);
-let newIssue = ref<Issue>({
-  id: 0,
-  key: '',
-  project_id: '',
-  issue_type: '',
-  summary: '',
-  description: '',
-  priority: '',
-  status: '',
-  reporter_id: '',
-  assignee_id: '',
-  due_date: '',
-  start_date: '',
-  parent_issue_id: 0,
-  custom_fields: {},
-  created_at: '',
-  updated_at: '',
-});
+let newIssue = ref<Issue>(getNewIssue());
+
+function getNewIssue() {
+  return {
+    id: 0,
+    key: store.State.curProject.key,
+    project_id: store.State.curProject.id,
+    issue_type: '',
+    summary: '',
+    description: '',
+    priority: '',
+    status: '',
+    reporter_id: '',
+    assignee_id: '',
+    due_date: '',
+    start_date: '',
+    parent_issue_id: 0,
+    custom_fields: {},
+    created_at: '',
+    updated_at: '',
+  };
+}
+
+async function createIssue() {
+  let resp = await API.createIssue(newIssue.value);
+  if (resp.success) {
+    emit('close');
+    // reset form
+    onReset();
+    emit('success');
+  }
+}
 
 function close() {
   emit('close');
 }
 
 async function onSubmit() {
-  console.log('submit');
+  createIssue();
 }
 
 function onReset() {
-  console.log('reset');
+  newIssue.value = getNewIssue();
 }
 </script>
