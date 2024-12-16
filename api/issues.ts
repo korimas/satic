@@ -5,7 +5,8 @@ export const config = {
 };
 
 const handler = async (req: Request): Promise<Response> => {
-  return new IssuesHandler().handleRequest(req);
+  const issuesHandler = new IssuesHandler();
+  return issuesHandler.handleRequest(req);
 };
 
 export default handler;
