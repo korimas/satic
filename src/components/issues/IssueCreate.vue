@@ -76,11 +76,7 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <q-date v-model="newIssue.due_date">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
+              <q-date v-model="newIssue.due_date" />
             </q-popup-proxy>
           </q-icon>
         </template>
