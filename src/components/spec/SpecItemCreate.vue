@@ -4,7 +4,7 @@
       <q-select
         dense
         filled
-        v-model="newIssue.issue_type"
+        v-model="newSpecItem.type"
         :options="IssueTypes"
         stack-label
       >
@@ -44,10 +44,15 @@
         </template>
       </q-select>
 
-      <q-input dense filled v-model="newIssue.summary" placeholder="Summary" />
+      <q-input
+        dense
+        filled
+        v-model="newSpecItem.summary"
+        placeholder="Summary"
+      />
 
       <q-editor
-        v-model="newIssue.description"
+        v-model="newSpecItem.description"
         placeholder="Description"
         min-height="10rem"
         :toolbar="[
@@ -60,27 +65,6 @@
           ['AI'],
         ]"
       />
-
-      <q-input
-        dense
-        filled
-        v-model="newIssue.due_date"
-        mask="date"
-        :rules="['date']"
-        placeholder="Due Date"
-      >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy
-              cover
-              transition-show="scale"
-              transition-hide="scale"
-            >
-              <q-date v-model="newIssue.due_date" />
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
 
       <div class="row q-gutter-md">
         <q-space />
@@ -99,7 +83,7 @@
 <script setup lang="ts">
 import { defineEmits, ref } from 'vue';
 import MiWindow from 'components/base/MiWindow.vue';
-import { Issue } from 'src/data/structs';
+import { SpecItem } from 'src/data/structs';
 import { IssueTypes, IssueTypeStyle } from 'src/data/style';
 // import MiInput from '../base/MiInput.vue';
 import API from 'src/api/satic';
@@ -108,34 +92,35 @@ const store = useStateStore();
 
 const emit = defineEmits(['close', 'success']);
 let submintLoading = ref(false);
-let newIssue = ref<Issue>(getNewIssue());
+let newSpecItem = ref<SpecItem>(getSpecItem());
 
-function getNewIssue() {
+function getSpecItem() {
   return {
     id: 0,
-    key: '', // TODO: 根据project_id自动获取
+    key: '',
     project_id: '',
-    issue_type: '',
+    spec_id: '',
     summary: '',
     description: '',
-    priority: 'medium',
-    status: 'TODO',
-    reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
-    assignee_id: '',
-    due_date: '',
-    start_date: '',
-    parent_issue_id: 0,
+    priority: '',
+    status: '',
+    reporter_id: '',
+    type: '',
+
+    path: '',
+    depth: 0,
+    parent_id: 0,
     custom_fields: {},
     created_at: '',
     updated_at: '',
   };
 }
 
-async function createIssue() {
+async function createSpecItem() {
   submintLoading.value = true;
-  newIssue.value.key = store.State.curProject.key;
-  newIssue.value.project_id = store.State.curProject.id;
-  let resp = await API.createIssue(newIssue.value);
+  newSpecItem.value.key = store.State.curProject.key; // TODO: key由后台根据project_id自动生成
+  newSpecItem.value.project_id = store.State.curProject.id;
+  let resp = await API.createIssue(newSpecItem.value);
   submintLoading.value = false;
   if (resp.success) {
     emit('close');
@@ -150,10 +135,10 @@ function close() {
 }
 
 async function onSubmit() {
-  createIssue();
+  createSpecItem();
 }
 
 function onReset() {
-  newIssue.value = getNewIssue();
+  newSpecItem.value = getSpecItem();
 }
 </script>
