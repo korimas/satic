@@ -29,7 +29,7 @@ export interface SpecItem {
   id: number;
   key: string;
   project_id: string;
-  spec_id: string;
+  spec_id: number;
   summary: string;
   description: string;
   priority: string;

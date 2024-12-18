@@ -2,6 +2,7 @@ import { getProject } from 'src/data/demo';
 import request from './requests';
 
 let API = {
+  // Projects
   getAllPrjects() {
     return request('/projects', 'get');
   },
@@ -28,6 +29,7 @@ let API = {
     });
   },
 
+  // Issues
   createIssue(data) {
     return request('/issues', 'post', {
       data: data,
@@ -36,6 +38,13 @@ let API = {
 
   getAllIssues() {
     return request('/issues', 'get');
+  },
+
+  // specs
+  createSpecItem(data) {
+    return request('/spec_items', 'post', {
+      data: data,
+    });
   },
 };
 

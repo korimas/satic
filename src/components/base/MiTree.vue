@@ -27,26 +27,33 @@
             @dragleave="dragLeave"
             @dragstart="dragStart($event, prop.key)"
             @dragend="dragStop"
-            @contextmenu.prevent="showContextMenu($event, prop.node)"
+            @contextmenu.prevent="onRightClick($event, prop.node)"
           >
-            <q-icon :name="prop.node.icon" style="margin-right: 3px" />
+            <q-icon
+              :name="prop.node.icon"
+              style="margin-right: 3px; margin-left: 1px"
+              :color="prop.node.color"
+            />
             {{ prop.node.label }}
           </div>
         </div>
       </template>
     </q-tree>
+    <!-- 右键菜单 -->
+    <q-menu context-menu>
+      <q-list dense style="min-width: 200px">
+        <q-item
+          clickable
+          v-close-popup
+          v-for="menu in menus"
+          :key="menu.name"
+          @click="onMenuItemClick(menu.name, menu.name)"
+        >
+          <q-item-section>{{ menu.name }}</q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
   </div>
-  <!-- 右键菜单 -->
-  <q-menu context-menu>
-    <q-list dense style="min-width: 200px">
-      <q-item clickable v-ripple @click="onMenuItemClick('item1')">
-        <q-item-section>Item 1</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple @click="onMenuItemClick('item2')">
-        <q-item-section>Item 2</q-item-section>
-      </q-item>
-    </q-list>
-  </q-menu>
 </template>
 
 <script setup lang="ts">
@@ -54,27 +61,22 @@ import { ref, defineProps, defineEmits } from 'vue';
 
 interface Props {
   nodes: Array<any>;
+  menus: Array<any>;
 }
 const props = withDefaults(defineProps<Props>(), {
   nodes: () => [],
+  menus: () => [],
 });
 
-const emit = defineEmits(['doubleClick', 'singleClick']);
+const emit = defineEmits(['doubleClick', 'singleClick', 'menuClick']);
 
 const Selected = ref('');
 const expanded = ref([]);
 const treeRef = ref();
-const contextMenuVisible = ref(false);
 let nodes = props.nodes;
 let moveType = -1;
 let positionIndicator: HTMLElement | null = null;
 let lastSelected = '';
-
-function showContextMenu(event: MouseEvent, node: any) {
-  // 获取对应的node的数据
-  console.log('Right Click: ', node.label);
-  contextMenuVisible.value = true;
-}
 
 // methods
 function SelectedHandle(selectKey: string) {
@@ -92,9 +94,14 @@ function doubleClick(val: MouseEvent) {
   emit('doubleClick', Selected.value);
 }
 
-function onMenuItemClick(item: string) {
-  console.log('Menu Click: ' + item);
-  contextMenuVisible.value = false;
+function onRightClick(event: MouseEvent, node: any) {
+  // event.preventDefault();
+  Selected.value = node.key;
+  console.log('Right Click: ' + node.label);
+}
+
+function onMenuItemClick(menuName: string, item: string) {
+  emit('menuClick', menuName, Selected.value);
 }
 
 // TODO: 做成emit
@@ -478,6 +485,9 @@ function drop(event: any, key: string) {
 .mitree .q-tree__node .dragging .q-hoverable:hover > .q-focus-helper {
   background: none;
   opacity: 0;
+}
+.mitree .q-tree__node--selected {
+  background-color: #e6f1fc !important;
 }
 
 .position-indicator {

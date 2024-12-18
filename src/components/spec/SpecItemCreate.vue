@@ -1,11 +1,11 @@
 <template>
-  <mi-window @close="close" title="Add Issue">
+  <mi-window @close="close" title="Add Item">
     <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
       <q-select
         dense
         filled
         v-model="newSpecItem.type"
-        :options="IssueTypes"
+        :options="SpecItemTypes"
         stack-label
       >
         <template v-slot:option="scope">
@@ -13,8 +13,8 @@
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
                 <q-icon
-                  :name="IssueTypeStyle[scope.opt as keyof typeof IssueTypeStyle].icon"
-                  :color="IssueTypeStyle[scope.opt as keyof typeof IssueTypeStyle].color"
+                  :name="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].icon"
+                  :color="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].color"
                 />
               </q-avatar>
             </q-item-section>
@@ -26,13 +26,13 @@
         </template>
 
         <template v-slot:selected-item="scope">
-          <div v-if="!scope.opt" class="text-grey-8">Issue type</div>
+          <div v-if="!scope.opt" class="text-grey-8">Type</div>
           <q-item v-else dense style="padding-left: 0px">
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
                 <q-icon
-                  :name="IssueTypeStyle[scope.opt as keyof typeof IssueTypeStyle].icon"
-                  :color="IssueTypeStyle[scope.opt as keyof typeof IssueTypeStyle].color"
+                  :name="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].icon"
+                  :color="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].color"
                 />
               </q-avatar>
             </q-item-section>
@@ -84,7 +84,7 @@
 import { defineEmits, ref } from 'vue';
 import MiWindow from 'components/base/MiWindow.vue';
 import { SpecItem } from 'src/data/structs';
-import { IssueTypes, IssueTypeStyle } from 'src/data/style';
+import { SpecItemTypes, SpecItemTypeStyle } from 'src/data/style';
 // import MiInput from '../base/MiInput.vue';
 import API from 'src/api/satic';
 import { useStateStore } from 'src/stores/state';
@@ -99,7 +99,7 @@ function getSpecItem() {
     id: 0,
     key: '',
     project_id: '',
-    spec_id: '',
+    spec_id: 1,
     summary: '',
     description: '',
     priority: '',
@@ -120,7 +120,7 @@ async function createSpecItem() {
   submintLoading.value = true;
   newSpecItem.value.key = store.State.curProject.key; // TODO: key由后台根据project_id自动生成
   newSpecItem.value.project_id = store.State.curProject.id;
-  let resp = await API.createIssue(newSpecItem.value);
+  let resp = await API.createSpecItem(newSpecItem.value);
   submintLoading.value = false;
   if (resp.success) {
     emit('close');

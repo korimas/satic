@@ -76,7 +76,7 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <q-date v-model="newIssue.due_date" />
+              <q-date v-close-popup v-model="newIssue.due_date" />
             </q-popup-proxy>
           </q-icon>
         </template>
