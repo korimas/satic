@@ -27,6 +27,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         .sql`SELECT * FROM spec_items WHERE depth = 1 ORDER BY sequence DESC LIMIT 1`;
       if (!Array.isArray(last) || last.length === 0) {
         // insert as first
+        console.log('insert as first');
         let spec_item = payload.spec_item;
         spec_item.sequence = 100;
         spec_item.path = '100';
@@ -35,6 +36,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         spec_item.has_children = false;
         return await this.createSpecItem(spec_item);
       }
+      console.log('insert as last');
     }
   }
 
