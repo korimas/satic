@@ -141,10 +141,21 @@ export class SpecItemsHandler extends BaseApiHandler {
     spec_item.sequence = sequence;
     spec_item.path = ref_item.path;
     spec_item.depth = ref_item.depth;
-    spec_item.parent_id =
-      payload.position.type === 'child' ? ref_item.id : ref_item.parent_id;
+    spec_item.parent_id = ref_item.parent_id;
+
+    if (payload.position.type === 'child') {
+      spec_item.path = `${ref_item.path}.${sequence}`;
+      spec_item.depth = ref_item.depth + 1;
+      spec_item.parent_id = ref_item.id;
+    }
     spec_item.has_children = false;
-    return await this.createSpecItem(spec_item);
+    let result = await this.createSpecItem(spec_item);
+    await this.setSpecHasChildren(ref_item.id);
+    return result;
+  }
+
+  protected async setSpecHasChildren(id: number) {
+    await this.sql`UPDATE spec_items SET has_children = true WHERE id = ${id}`;
   }
 
   protected async createSpecItem(spec_item: any) {
