@@ -75,20 +75,21 @@ import {
 } from 'src/data/style';
 import { SpecItem } from 'src/data/structs';
 import { SpecPositionType } from 'src/data/constances';
+import API from 'src/api/satic';
 
-const emit = defineEmits(['close', 'success']);
-let SpecItemCreateShow = ref(false);
-let nodes = ref<any[]>([]);
-let operationNode = ref<SpecItem>({} as SpecItem);
-let positionType = ref(SpecPositionType.Above);
 const store = useDocumentStore();
-nodes.value = store.DocEntrys;
+const emit = defineEmits(['close', 'success']);
+const SpecItemCreateShow = ref(false);
+// const nodes = ref<SpecItem[]>(store.DocEntrys as SpecItem[]);
+const nodes = ref<SpecItem[]>([]);
+const operationNode = ref<SpecItem>({} as SpecItem);
+const positionType = ref(SpecPositionType.Above);
 
 function doubleClick(node: string) {
   console.log(node);
 }
 
-function menuClick(menu: string, node: any) {
+function menuClick(menu: string, node: SpecItem) {
   console.log('menu click: ', menu, node);
   operationNode.value = node;
   switch (menu) {
@@ -108,7 +109,6 @@ function menuClick(menu: string, node: any) {
       positionType.value = SpecPositionType.Below;
       SpecItemCreateShow.value = true;
       break;
-
     default:
       break;
   }
@@ -117,4 +117,41 @@ function menuClick(menu: string, node: any) {
 function handleSuccess() {
   emit('success');
 }
+const tmp = [
+  {
+    id: 1,
+    key: 'FBLT',
+    project_id: 'a3b2c3ff-8466-47de-8675-6ed5e071515b',
+    spec_id: 1,
+    summary: 'asdfasdf',
+    description: 'asdfasdf',
+    priority: '',
+    status: '',
+    reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
+    type: 'Folder',
+    path: '100',
+    depth: 1,
+    parent_id: 0,
+    custom_fields: null,
+    created_at: '2024-12-19T08:37:50.606Z',
+    updated_at: '2024-12-19T08:37:50.606Z',
+    sequence: 100,
+    has_children: false,
+  },
+];
+
+async function getSpecRootItems() {
+  try {
+    let resp = await API.getSpecRootItems();
+    console.log('getSpecRootItems', resp);
+    if (resp.success) {
+      nodes.value = resp.result;
+      console.log('nodes', nodes.value);
+    }
+  } catch (error) {
+    console.error('Failed to fetch spec root items', error);
+  }
+}
+// nodes.value = tmp as SpecItem[];
+await getSpecRootItems();
 </script>

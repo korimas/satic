@@ -1,4 +1,9 @@
 import { neon, NeonQueryFunction } from '@neondatabase/serverless';
+import { types } from '@neondatabase/serverless';
+
+types.setTypeParser(types.builtins.INT8, (val) => {
+  return val === null ? null : parseInt(val, 10);
+});
 
 export abstract class BaseApiHandler {
   protected sql: NeonQueryFunction<any, any>;
