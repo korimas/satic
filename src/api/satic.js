@@ -46,6 +46,14 @@ let API = {
       data: data,
     });
   },
+
+  getSpecRootItems() {
+    return request('/spec_items', 'get', {
+      params: {
+        depth: 1,
+      },
+    });
+  },
 };
 
 export default API;

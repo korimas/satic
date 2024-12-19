@@ -8,15 +8,35 @@ export class SpecItemsHandler extends BaseApiHandler {
     const id = url.searchParams.get('id');
     if (id) {
       // get detail
-      const result = await this.sql`SELECT * FROM spec_items WHERE id = ${id}`;
-      if (!Array.isArray(result) || result.length === 0) {
-        throw new Error(`Spec item not found: ${id}`);
-      }
-      return result[0];
+      return await this.getSpecItem(id);
     }
+
+    const depth = url.searchParams.get('depth');
+    if (depth) {
+      // get list by depth
+      return await this.getRootItems();
+    }
+
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;
     return result;
+  }
+
+  protected async getSpecItem(id: string) {
+    const result = await this.sql`SELECT * FROM spec_items WHERE id = ${id}`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return null;
+    }
+    return result[0] as SpecItem;
+  }
+
+  protected async getRootItems() {
+    const result = await this
+      .sql`SELECT * FROM spec_items WHERE depth = 1 ORDER BY sequence ASC`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return [];
+    }
+    return result as SpecItem[];
   }
 
   protected async getLastItem(depth: number) {
@@ -100,7 +120,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         console.log('insert as last, pre last:', lastItem);
         let spec_item = payload.item;
         spec_item.sequence = lastItem.sequence + 100;
-        spec_item.path = (lastItem.sequence + 100).toString();
+        spec_item.path = spec_item.sequence.toString();
         spec_item.depth = 1;
         spec_item.parent_id = null;
         spec_item.has_children = false;
