@@ -80,7 +80,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         let ref_pre = await this.getPrevItem(ref_item.sequence);
         let aboveSequence = 0;
         if (!ref_pre) {
-          aboveSequence = ref_item.sequence + 0 / 2;
+          aboveSequence = (ref_item.sequence + 0) / 2;
         } else {
           aboveSequence = (ref_pre.sequence + ref_item.sequence) / 2;
         }

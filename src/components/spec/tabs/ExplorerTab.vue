@@ -13,6 +13,15 @@
       <q-btn unelevated round size="sm" icon="input">
         <q-tooltip class="bg-grey-3 text-black">导入</q-tooltip>
       </q-btn>
+      <q-btn
+        unelevated
+        round
+        size="sm"
+        icon="refresh"
+        @click="getSpecRootItems"
+      >
+        <q-tooltip class="bg-grey-3 text-black">刷新</q-tooltip>
+      </q-btn>
       <q-space />
       <q-btn unelevated size="sm" icon="more_horiz" padding="xs">
         <q-menu auto-close>
@@ -37,7 +46,7 @@
     <MiTree
       class="col-grow"
       style="margin-top: 1px"
-      :nodes="nodes"
+      :nodes="SpecNodes"
       :item-menus="SpecTreeItemMenus"
       :empty-menus="SpecTreeEmptyMenus"
       @doubleClick="doubleClick"
@@ -64,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useDocumentStore } from 'stores/document';
 import SpecItemCreate from 'components/spec/SpecItemCreate.vue';
 import MiTree from 'components/base/MiTree.vue';
@@ -81,7 +90,7 @@ const store = useDocumentStore();
 const emit = defineEmits(['close', 'success']);
 const SpecItemCreateShow = ref(false);
 // const nodes = ref<SpecItem[]>(store.DocEntrys as SpecItem[]);
-const nodes = ref<SpecItem[]>([]);
+const SpecNodes = ref<SpecItem[]>([]);
 const operationNode = ref<SpecItem>({} as SpecItem);
 const positionType = ref(SpecPositionType.Above);
 
@@ -117,41 +126,21 @@ function menuClick(menu: string, node: SpecItem) {
 function handleSuccess() {
   emit('success');
 }
-const tmp = [
-  {
-    id: 1,
-    key: 'FBLT',
-    project_id: 'a3b2c3ff-8466-47de-8675-6ed5e071515b',
-    spec_id: 1,
-    summary: 'asdfasdf',
-    description: 'asdfasdf',
-    priority: '',
-    status: '',
-    reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
-    type: 'Folder',
-    path: '100',
-    depth: 1,
-    parent_id: 0,
-    custom_fields: null,
-    created_at: '2024-12-19T08:37:50.606Z',
-    updated_at: '2024-12-19T08:37:50.606Z',
-    sequence: 100,
-    has_children: false,
-  },
-];
 
 async function getSpecRootItems() {
   try {
-    let resp = await API.getSpecRootItems();
+    const resp = await API.getSpecRootItems();
     console.log('getSpecRootItems', resp);
     if (resp.success) {
-      nodes.value = resp.result;
-      console.log('nodes', nodes.value);
+      SpecNodes.value = resp.result;
+      console.log('nodes', SpecNodes.value);
     }
   } catch (error) {
     console.error('Failed to fetch spec root items', error);
   }
 }
-// nodes.value = tmp as SpecItem[];
-await getSpecRootItems();
+
+onMounted(() => {
+  getSpecRootItems();
+});
 </script>

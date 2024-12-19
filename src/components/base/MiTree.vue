@@ -6,7 +6,7 @@
     <q-tree
       class="mitree"
       no-transition
-      :nodes="nodes"
+      :nodes="props.nodes"
       dense
       node-key="key"
       ref="treeRef"
@@ -96,9 +96,9 @@ const expanded = ref([]);
 const treeRef = ref();
 let nodes = props.nodes;
 // 给每个node添加属性lazy
-nodes.forEach((node) => {
-  node.lazy = node.has_children;
-});
+// nodes.forEach((node) => {
+//   node.lazy = node.has_children;
+// });
 let moveType = -1;
 let positionIndicator: HTMLElement | null = null;
 let lastSelected = '';

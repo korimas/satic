@@ -146,6 +146,7 @@ async function getAllPrjects() {
   const resp = await API.getAllPrjects();
 
   rows.value = resp.result;
+  console.log('rows', rows.value);
   projectLoading.value = false;
 }
 
