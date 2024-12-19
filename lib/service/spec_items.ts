@@ -1,3 +1,4 @@
+import { SpecItem } from 'src/data/structs';
 import { BaseApiHandler } from './base';
 
 export class SpecItemsHandler extends BaseApiHandler {
@@ -18,15 +19,74 @@ export class SpecItemsHandler extends BaseApiHandler {
     return result;
   }
 
+  protected async getLastItem(depth: number) {
+    const last = await this
+      .sql`SELECT * FROM spec_items WHERE depth = ${depth} ORDER BY sequence DESC LIMIT 1`;
+    if (!Array.isArray(last) || last.length === 0) {
+      return null;
+    }
+    return last[0] as SpecItem;
+  }
+
+  protected async getItem(id: string) {
+    const result = await this.sql`SELECT * FROM spec_items WHERE id = ${id}`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return null;
+    }
+    return result[0] as SpecItem;
+  }
+
+  protected async getPrevItem(sequence: number) {
+    const pre = await this
+      .sql`SELECT * FROM spec_items WHERE sequence < ${sequence} ORDER BY sequence DESC LIMIT 1`;
+    if (!Array.isArray(pre) || pre.length === 0) {
+      return null;
+    }
+    return pre[0] as SpecItem;
+  }
+
+  protected async getNextItem(sequence: number) {
+    const next = await this
+      .sql`SELECT * FROM spec_items WHERE sequence > ${sequence} ORDER BY sequence ASC LIMIT 1`;
+    if (!Array.isArray(next) || next.length === 0) {
+      return null;
+    }
+    return next[0] as SpecItem;
+  }
+
+  protected async getSequence(type: string, ref_item: SpecItem) {
+    switch (type) {
+      case 'above':
+        let ref_pre = await this.getPrevItem(ref_item.sequence);
+        let aboveSequence = 0;
+        if (!ref_pre) {
+          aboveSequence = ref_item.sequence + 0 / 2;
+        } else {
+          aboveSequence = (ref_pre.sequence + ref_item.sequence) / 2;
+        }
+        return aboveSequence;
+      case 'below':
+        let ref_next = await this.getNextItem(ref_item.sequence);
+        let belowSequence = 0;
+        if (!ref_next) {
+          belowSequence = ref_item.sequence + 100;
+        } else {
+          belowSequence = (ref_item.sequence + ref_next.sequence) / 2;
+        }
+        return belowSequence;
+      default:
+        throw new Error('Invalid position type');
+    }
+  }
+
   protected async handlePost(req: Request) {
     const payload = await req.json();
     console.log('payload:', payload);
 
     if (!payload.position || payload.position.item === -1) {
       // insert as last
-      const last = await this
-        .sql`SELECT * FROM spec_items WHERE depth = 1 ORDER BY sequence DESC LIMIT 1`;
-      if (!Array.isArray(last) || last.length === 0) {
+      const lastItem = await this.getLastItem(1);
+      if (!lastItem) {
         // insert as first
         console.log('insert as first');
         let spec_item = payload.item;
@@ -36,21 +96,32 @@ export class SpecItemsHandler extends BaseApiHandler {
         spec_item.parent_id = null;
         spec_item.has_children = false;
         return await this.createSpecItem(spec_item);
+      } else {
+        console.log('insert as last, pre last:', lastItem);
+        let spec_item = payload.item;
+        spec_item.sequence = lastItem.sequence + 100;
+        spec_item.path = (lastItem.sequence + 100).toString();
+        spec_item.depth = 1;
+        spec_item.parent_id = null;
+        spec_item.has_children = false;
+        return await this.createSpecItem(spec_item);
       }
-      console.log('insert as last, pre last:', last[0]);
-      // let spec_item = payload.item;
-      // if (last.length > 0 && last[0] && typeof last[0] === 'object') {
-      //   spec_item.sequence = (last[0] as Record<string, any>).sequence + 100;
-      // } else {
-      //   throw new Error('Invalid last item');
-      // }
-      // spec_item.path = '100';
-      // spec_item.depth = 1;
-      // spec_item.parent_id = null;
-      // spec_item.has_children = false;
-      // return await this.createSpecItem(spec_item);
     }
     console.log('insert as position');
+    // get ref item
+    let ref_item = await this.getItem(payload.position.item);
+    if (!ref_item) {
+      throw new Error('Ref item not found');
+    }
+
+    let sequence = await this.getSequence(payload.position.type, ref_item);
+    let spec_item = payload.item;
+    spec_item.sequence = sequence;
+    spec_item.path = ref_item.path;
+    spec_item.depth = ref_item.depth;
+    spec_item.parent_id = ref_item.parent_id;
+    spec_item.has_children = false;
+    return await this.createSpecItem(spec_item);
   }
 
   protected async createSpecItem(spec_item: any) {
