@@ -36,6 +36,8 @@ export interface SpecItem {
   status: string;
   reporter_id: string;
   type: string;
+  sequence: number;
+  has_children: boolean;
 
   path: string; // 路径<>.<>.<> TODO： 限制深度最大10
   depth: number;

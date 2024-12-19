@@ -1,5 +1,8 @@
 <template>
-  <div class="q-gutter-sm">
+  <div
+    class="q-gutter-sm"
+    style="width: 100%; margin-top: 1px; overflow-x: scroll"
+  >
     <q-tree
       class="mitree"
       no-transition
@@ -19,7 +22,7 @@
         <div class="column fit">
           <div
             style="margin-bottom: 2px; margin-top: 2px"
-            class="row items-center fit mitree-item cursor-pointer"
+            class="row items-center fit mitree-item cursor-pointer no-wrap"
             draggable="true"
             @drop="drop($event, prop.key)"
             @dragenter="dragEnter"
@@ -30,24 +33,38 @@
             @contextmenu.prevent="onRightClick($event, prop.node)"
           >
             <q-icon
-              :name="prop.node.icon"
+              :name="getItemIcon(prop.node.type)"
               style="margin-right: 3px; margin-left: 1px"
               :color="prop.node.color"
             />
-            {{ prop.node.label }}
+            <div style="white-space: nowrap">
+              {{ prop.node.summary }}
+            </div>
           </div>
         </div>
       </template>
     </q-tree>
     <!-- 右键菜单 -->
-    <q-menu context-menu>
-      <q-list dense style="min-width: 200px">
+    <q-menu context-menu @hide="RightClieckedNode = null">
+      <q-list dense style="min-width: 200px" v-if="RightClieckedNode">
         <q-item
           clickable
           v-close-popup
-          v-for="menu in menus"
+          v-for="menu in itemMenus"
           :key="menu.name"
-          @click="onMenuItemClick(menu.name, menu.name)"
+          @click="onMenuItemClick(menu.name)"
+        >
+          <q-item-section>{{ menu.name }}</q-item-section>
+        </q-item>
+      </q-list>
+
+      <q-list dense style="min-width: 200px" v-else>
+        <q-item
+          clickable
+          v-close-popup
+          v-for="menu in emptyMenus"
+          :key="menu.name"
+          @click="onMenuItemClick(menu.name)"
         >
           <q-item-section>{{ menu.name }}</q-item-section>
         </q-item>
@@ -58,22 +75,30 @@
 
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue';
+import { getItemIcon } from 'src/data/style';
 
 interface Props {
   nodes: Array<any>;
-  menus: Array<any>;
+  itemMenus: Array<any>;
+  emptyMenus: Array<any>;
 }
 const props = withDefaults(defineProps<Props>(), {
   nodes: () => [],
-  menus: () => [],
+  itemMenus: () => [],
+  emptyMenus: () => [],
 });
 
 const emit = defineEmits(['doubleClick', 'singleClick', 'menuClick']);
 
 const Selected = ref('');
+const RightClieckedNode = ref(null);
 const expanded = ref([]);
 const treeRef = ref();
 let nodes = props.nodes;
+// 给每个node添加属性lazy
+nodes.forEach((node) => {
+  node.lazy = node.has_children;
+});
 let moveType = -1;
 let positionIndicator: HTMLElement | null = null;
 let lastSelected = '';
@@ -96,12 +121,13 @@ function doubleClick(val: MouseEvent) {
 
 function onRightClick(event: MouseEvent, node: any) {
   // event.preventDefault();
+  console.log('Right Click: ' + node.key);
   Selected.value = node.key;
-  console.log('Right Click: ' + node.label);
+  RightClieckedNode.value = node;
 }
 
-function onMenuItemClick(menuName: string, item: string) {
-  emit('menuClick', menuName, Selected.value);
+function onMenuItemClick(menuName: string) {
+  emit('menuClick', menuName, RightClieckedNode.value);
 }
 
 // TODO: 做成emit

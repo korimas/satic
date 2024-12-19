@@ -81,18 +81,31 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, ref } from 'vue';
+import { defineEmits, ref, defineProps } from 'vue';
 import MiWindow from 'components/base/MiWindow.vue';
 import { SpecItem } from 'src/data/structs';
 import { SpecItemTypes, SpecItemTypeStyle } from 'src/data/style';
 // import MiInput from '../base/MiInput.vue';
 import API from 'src/api/satic';
 import { useStateStore } from 'src/stores/state';
+import { on } from 'events';
+
 const store = useStateStore();
 
 const emit = defineEmits(['close', 'success']);
 let submintLoading = ref(false);
 let newSpecItem = ref<SpecItem>(getSpecItem());
+
+const props = defineProps({
+  refNode: {
+    type: Object,
+    default: () => ({}),
+  },
+  positionType: {
+    type: Number,
+    default: 1,
+  },
+});
 
 function getSpecItem() {
   return {
@@ -106,6 +119,8 @@ function getSpecItem() {
     status: '',
     reporter_id: '',
     type: '',
+    sequence: 0,
+    has_children: false,
 
     path: '',
     depth: 0,
@@ -120,7 +135,15 @@ async function createSpecItem() {
   submintLoading.value = true;
   newSpecItem.value.key = store.State.curProject.key; // TODO: key由后台根据project_id自动生成
   newSpecItem.value.project_id = store.State.curProject.id;
-  let resp = await API.createSpecItem(newSpecItem.value);
+  console.log('refNode', props.refNode);
+  console.log('positionType', props.positionType);
+  let resp = await API.createSpecItem({
+    position: {
+      type: props.positionType,
+      item: props.refNode ? props.refNode.id : -1,
+    },
+    item: newSpecItem.value,
+  });
   submintLoading.value = false;
   if (resp.success) {
     emit('close');
@@ -131,6 +154,7 @@ async function createSpecItem() {
 }
 
 function close() {
+  onReset();
   emit('close');
 }
 

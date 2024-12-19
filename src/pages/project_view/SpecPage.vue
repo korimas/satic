@@ -1,10 +1,5 @@
 <template>
-  <q-splitter
-    v-model="splitterModel"
-    unit="px"
-    :limits="splitterLimits"
-    style="height: calc(100vh - 51px); overflow: auto"
-  >
+  <q-splitter v-model="splitterModel" unit="px" :limits="splitterLimits">
     <template v-slot:before>
       <div class="row no-wrap">
         <div class="sidebar-menu">
@@ -58,7 +53,7 @@
             </q-tab>
           </q-tabs>
         </div>
-        <div class="sidebar-content">
+        <div class="sidebar-content" style="overflow-x: hidden">
           <q-tab-panels v-model="CurrentTab" vertical keep-alive class="fit">
             <q-tab-panel name="Explorer" class="no-padding">
               <ExplorerTab />
@@ -80,9 +75,6 @@
       <ContentBox />
     </template>
   </q-splitter>
-
-
-  
 </template>
 
 <script setup lang="ts">
@@ -118,7 +110,7 @@ const ContentBox = defineAsyncComponent({
   timeout: 15000,
 });
 
-const splitterMin = 300;
+const splitterMin = 350;
 let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
 
