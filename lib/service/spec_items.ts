@@ -22,14 +22,14 @@ export class SpecItemsHandler extends BaseApiHandler {
     const payload = await req.json();
     console.log('payload:', payload);
 
-    if (!payload.position || payload.position.sequence === -1) {
+    if (!payload.position || payload.position.item === -1) {
       // insert as last
       const last = await this
         .sql`SELECT * FROM spec_items WHERE depth = 1 ORDER BY sequence DESC LIMIT 1`;
       if (!Array.isArray(last) || last.length === 0) {
         // insert as first
         console.log('insert as first');
-        let spec_item = payload.spec_item;
+        let spec_item = payload.item;
         spec_item.sequence = 100;
         spec_item.path = '100';
         spec_item.depth = 1;
@@ -39,6 +39,7 @@ export class SpecItemsHandler extends BaseApiHandler {
       }
       console.log('insert as last');
     }
+    console.log('insert as position');
   }
 
   protected async createSpecItem(spec_item: any) {
