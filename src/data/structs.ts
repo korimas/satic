@@ -45,4 +45,7 @@ export interface SpecItem {
   custom_fields: any;
   created_at: string;
   updated_at: string;
+
+  // extra properties
+  lazy?: boolean; // added lazy property
 }

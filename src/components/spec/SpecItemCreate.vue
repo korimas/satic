@@ -102,8 +102,8 @@ const props = defineProps({
     default: () => ({}),
   },
   positionType: {
-    type: Number,
-    default: 1,
+    type: String,
+    default: 'above',
   },
 });
 

@@ -52,6 +52,9 @@
       @doubleClick="doubleClick"
       @menu-click="menuClick"
     />
+    <q-inner-loading :showing="loadingTree">
+      <q-spinner-gears size="50px" color="primary" />
+    </q-inner-loading>
   </div>
 
   <q-drawer
@@ -93,7 +96,7 @@ const SpecItemCreateShow = ref(false);
 const SpecNodes = ref<SpecItem[]>([]);
 const operationNode = ref<SpecItem>({} as SpecItem);
 const positionType = ref(SpecPositionType.Above);
-
+let loadingTree = ref(false);
 function doubleClick(node: string) {
   console.log(node);
 }
@@ -129,11 +132,17 @@ function handleSuccess() {
 
 async function getSpecRootItems() {
   try {
+    loadingTree.value = true;
     const resp = await API.getSpecRootItems();
     console.log('getSpecRootItems', resp);
     if (resp.success) {
+      loadingTree.value = false;
       SpecNodes.value = resp.result;
-      console.log('nodes', SpecNodes.value);
+
+      SpecNodes.value.forEach((node) => {
+        node.lazy = node.has_children;
+        node.key = node.key + '-' + node.id;
+      });
     }
   } catch (error) {
     console.error('Failed to fetch spec root items', error);

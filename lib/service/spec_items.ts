@@ -86,6 +86,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         }
         return aboveSequence;
       case 'below':
+      case 'child':
         let ref_next = await this.getNextItem(ref_item.sequence);
         let belowSequence = 0;
         if (!ref_next) {
@@ -94,6 +95,7 @@ export class SpecItemsHandler extends BaseApiHandler {
           belowSequence = (ref_item.sequence + ref_next.sequence) / 2;
         }
         return belowSequence;
+
       default:
         throw new Error('Invalid position type');
     }
@@ -139,7 +141,8 @@ export class SpecItemsHandler extends BaseApiHandler {
     spec_item.sequence = sequence;
     spec_item.path = ref_item.path;
     spec_item.depth = ref_item.depth;
-    spec_item.parent_id = ref_item.parent_id;
+    spec_item.parent_id =
+      payload.position.type === 'child' ? ref_item.id : ref_item.parent_id;
     spec_item.has_children = false;
     return await this.createSpecItem(spec_item);
   }
