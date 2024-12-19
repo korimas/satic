@@ -20,6 +20,7 @@ export class SpecItemsHandler extends BaseApiHandler {
 
   protected async handlePost(req: Request) {
     const payload = await req.json();
+    console.log('payload:', payload);
 
     if (!payload.position || payload.position.sequence === -1) {
       // insert as last
