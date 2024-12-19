@@ -117,7 +117,7 @@ function getSpecItem() {
     description: '',
     priority: '',
     status: '',
-    reporter_id: '',
+    reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
     type: '',
     sequence: 0,
     has_children: false,

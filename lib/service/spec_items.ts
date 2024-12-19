@@ -37,7 +37,18 @@ export class SpecItemsHandler extends BaseApiHandler {
         spec_item.has_children = false;
         return await this.createSpecItem(spec_item);
       }
-      console.log('insert as last');
+      console.log('insert as last, pre last:', last[0]);
+      // let spec_item = payload.item;
+      // if (last.length > 0 && last[0] && typeof last[0] === 'object') {
+      //   spec_item.sequence = (last[0] as Record<string, any>).sequence + 100;
+      // } else {
+      //   throw new Error('Invalid last item');
+      // }
+      // spec_item.path = '100';
+      // spec_item.depth = 1;
+      // spec_item.parent_id = null;
+      // spec_item.has_children = false;
+      // return await this.createSpecItem(spec_item);
     }
     console.log('insert as position');
   }
