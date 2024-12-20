@@ -21,7 +21,7 @@
       <template v-slot:default-header="prop">
         <div class="column fit">
           <div
-            style="margin-bottom: 2px; margin-top: 2px"
+            style="margin-bottom: 2px; margin-top: 2px; white-space: nowrap"
             class="row items-center fit mitree-item cursor-pointer no-wrap"
             draggable="true"
             @drop="drop($event, prop.key)"
@@ -37,9 +37,7 @@
               style="margin-right: 3px; margin-left: 1px"
               :color="prop.node.color"
             />
-            <div style="white-space: nowrap">
-              {{ prop.node.summary }}
-            </div>
+            {{ prop.node.summary }}
           </div>
         </div>
       </template>
