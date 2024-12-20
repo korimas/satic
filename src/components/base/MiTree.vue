@@ -86,7 +86,13 @@ const props = withDefaults(defineProps<Props>(), {
   emptyMenus: () => [],
 });
 
-const emit = defineEmits(['doubleClick', 'singleClick', 'menuClick']);
+const emit = defineEmits([
+  'doubleClick',
+  'singleClick',
+  'menuClick',
+  'lazyLoad',
+  'updatenodes',
+]);
 
 const Selected = ref('');
 const RightClieckedNode = ref(null);
@@ -138,47 +144,7 @@ function onLazyLoad({
   fail: () => void;
 }) {
   console.log('LazyLoad: ' + key);
-  setTimeout(() => {
-    if (key === 'SWRS-2') {
-      done([
-        {
-          key: 'SWRS-20',
-          label: 'Sleep Mode',
-          icon: 'folder',
-          lazy: true,
-        },
-        {
-          key: 'SWRS-21',
-          label: 'Standby Mode',
-          icon: 'folder',
-          lazy: true,
-        },
-        {
-          key: 'SWRS-22',
-          label: 'Normal Mode',
-          icon: 'folder',
-          lazy: true,
-        },
-      ]);
-    } else if (key === 'SWRS-20') {
-      done([
-        {
-          key: 'SWRS-201',
-          label: 'Stop Polygon',
-          icon: 'tips_and_updates',
-          lazy: false,
-        },
-        {
-          key: 'SWRS-202',
-          label: 'Stop Galvo',
-          icon: 'tips_and_updates',
-          lazy: false,
-        },
-      ]);
-    } else {
-      done([]);
-    }
-  }, 250);
+  emit('lazyLoad', node, key, done, fail);
 }
 
 // 获取指定node的parent(q-tree_node)

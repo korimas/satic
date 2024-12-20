@@ -17,9 +17,24 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await this.getRootItems();
     }
 
+    const parent_id = url.searchParams.get('parent_id');
+    if (parent_id) {
+      // get list by parent_id
+      return await this.getSpecItemsByParentId(parent_id);
+    }
+
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;
     return result;
+  }
+
+  protected async getSpecItemsByParentId(parent_id: string) {
+    const result = await this
+      .sql`SELECT * FROM spec_items WHERE parent_id = ${parent_id} ORDER BY sequence ASC`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return [];
+    }
+    return result as SpecItem[];
   }
 
   protected async getSpecItem(id: string) {
