@@ -200,7 +200,7 @@ export class SpecItemsHandler extends BaseApiHandler {
 
     const result = await this.sql`
       DELETE FROM spec_items
-      WHERE id = ANY(${payload.ids}::id[])
+      WHERE id = ANY(${payload.ids}::bigint[])
       AND has_children = false
       RETURNING id
       `;
