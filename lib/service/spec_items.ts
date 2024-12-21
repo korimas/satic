@@ -89,15 +89,40 @@ export class SpecItemsHandler extends BaseApiHandler {
     return next[0] as SpecItem;
   }
 
-  protected async getSequence(type: string, ref_item: SpecItem) {
+  protected async resortAllItems() {
+    const items = (await this
+      .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
+    let step = 5;
+    let sequence = 0;
+    for (const item of items) {
+      sequence += step;
+      await this
+        .sql`UPDATE spec_items SET sequence = ${sequence} WHERE id = ${item.id}`;
+    }
+  }
+
+  protected async getSequence(
+    type: string,
+    ref_item: SpecItem
+  ): Promise<number> {
     switch (type) {
       case 'above':
         let ref_pre = await this.getPrevItem(ref_item.sequence);
         let aboveSequence = 0;
         if (!ref_pre) {
-          aboveSequence = (ref_item.sequence + 0) / 2;
+          aboveSequence = (ref_item.sequence + 0) / 2; // first item
         } else {
-          aboveSequence = (ref_pre.sequence + ref_item.sequence) / 2;
+          aboveSequence = Math.floor(
+            (ref_pre.sequence + ref_item.sequence) / 2
+          ); // between
+          if (
+            aboveSequence === ref_pre.sequence ||
+            aboveSequence === ref_item.sequence
+          ) {
+            // 已经没有空间插入新的item，需要重新排序
+            await this.resortAllItems();
+            return await this.getSequence(type, ref_item);
+          }
         }
         return aboveSequence;
       case 'below':
