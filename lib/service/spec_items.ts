@@ -109,6 +109,10 @@ export class SpecItemsHandler extends BaseApiHandler {
         let aboveSequence = 0;
         if (!ref_pre) {
           aboveSequence = Math.floor((ref_item.sequence + 0) / 2); // first item
+          if (aboveSequence === ref_item.sequence) {
+            // 已经没有空间插入新的item，需要重新排序
+            return -1;
+          }
         } else {
           aboveSequence = Math.floor(
             (ref_pre.sequence + ref_item.sequence) / 2
