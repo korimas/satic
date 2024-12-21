@@ -95,6 +95,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     console.log('resortAllItems');
     const items = (await this
       .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
+    console.log('items:', items);
     let sequence = 0;
     for (const item of items) {
       sequence += SequenceStep;
