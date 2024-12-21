@@ -111,6 +111,7 @@ async function lazyLoadChildren(
   console.log('lazy load children: ', key);
   let resp = await API.getSpecChildItems(key);
   if (resp.success) {
+    reformatNodes(resp.result);
     done(resp.result);
   } else {
     fail();
@@ -146,6 +147,13 @@ function handleSuccess() {
   emit('success');
 }
 
+function reformatNodes(nodes: SpecItem[]) {
+  nodes.forEach((node) => {
+    node.lazy = node.has_children;
+    node.key = node.id.toString();
+  });
+}
+
 async function getSpecRootItems() {
   try {
     loadingTree.value = true;
@@ -155,10 +163,7 @@ async function getSpecRootItems() {
       loadingTree.value = false;
       SpecNodes.value = resp.result;
 
-      SpecNodes.value.forEach((node) => {
-        node.lazy = node.has_children;
-        node.key = node.id.toString();
-      });
+      reformatNodes(SpecNodes.value);
     }
   } catch (error) {
     console.error('Failed to fetch spec root items', error);
