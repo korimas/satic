@@ -105,7 +105,6 @@ const Selected = ref('');
 const RightClieckedNode = ref(null);
 const expanded = ref([]);
 const treeRef = ref();
-let nodes = props.nodes;
 
 let moveType = -1;
 let positionIndicator: HTMLElement | null = null;
@@ -151,10 +150,7 @@ function onLazyLoad({
   fail: () => void;
 }) {
   console.log('LazyLoad: ' + key);
-  console.log('LazyLoad: ' + node);
   emit('lazyLoad', node, key, done, fail);
-
-  // done(parent data)
 }
 
 // 获取指定node的parent(q-tree_node)
@@ -210,6 +206,8 @@ function getNodeByKey(
 }
 
 function moveToChildren(fromResult: any, toResult: any) {
+  let nodes = props.nodes;
+
   if (!fromResult || !toResult) return;
 
   // 如果能在from节点或它的children中能找到to（代表把parent移到children中，禁止）
@@ -237,6 +235,8 @@ function moveToChildren(fromResult: any, toResult: any) {
 }
 
 function moveAbove(fromResult: any, toResult: any) {
+  let nodes = props.nodes;
+
   // 同一个node，直接返回
   if (fromResult.node.key === toResult.node.key) return;
 
@@ -262,6 +262,8 @@ function moveAbove(fromResult: any, toResult: any) {
 }
 
 function moveBelow(fromResult: any, toResult: any) {
+  let nodes = props.nodes;
+
   // 同一个node，直接返回
   if (fromResult.node.key === toResult.node.key) return;
 
@@ -285,6 +287,8 @@ function moveBelow(fromResult: any, toResult: any) {
 }
 
 function moveNode(from: string, to: string) {
+  let nodes = props.nodes;
+
   // from, to是key
 
   if (moveType === -1) return;
