@@ -99,14 +99,19 @@ export class SpecItemsHandler extends BaseApiHandler {
     let sequence = 0;
     let failed = [];
     let last_failed_length = 0;
+    let retry = 0;
     while (items.length > 0) {
       failed = []; // 清空failed数组
 
       for (const item of items) {
         try {
-          sequence += SequenceStep;
+          if (retry === 0) {
+            // 第一次重排，重新计算sequence
+            sequence = sequence + SequenceStep;
+            item.sequence = sequence;
+          }
           await this
-            .sql`UPDATE spec_items SET sequence = ${sequence} WHERE id = ${item.id}`;
+            .sql`UPDATE spec_items SET sequence = ${item.sequence} WHERE id = ${item.id}`;
         } catch (error) {
           failed.push(item);
         }
@@ -119,6 +124,7 @@ export class SpecItemsHandler extends BaseApiHandler {
       }
       last_failed_length = failed.length;
       items = failed;
+      retry++;
     }
   }
 
