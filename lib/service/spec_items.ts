@@ -1,7 +1,7 @@
 import { SpecItem } from 'src/data/structs';
 import { BaseApiHandler } from './base';
 
-const SequenceStep = 5;
+const SequenceStep = 100;
 export class SpecItemsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
     //get query params
@@ -250,6 +250,63 @@ export class SpecItemsHandler extends BaseApiHandler {
 
   protected async setSpecHasChildren(id: number) {
     await this.sql`UPDATE spec_items SET has_children = true WHERE id = ${id}`;
+  }
+
+  protected async moveItem(id: number, position: string, ref_item_id: number) {
+    let item = await this.getItem(id.toString());
+    if (!item) {
+      throw new Error('Item not found');
+    }
+    const old_parent_id = item.parent_id;
+
+    let ref_item = await this.getItem(ref_item_id.toString());
+    if (!ref_item) {
+      throw new Error('Ref item not found');
+    }
+
+    let sequence = await this.getSequence(position, ref_item);
+    if (sequence === -1) {
+      await this.resortAllItems();
+      // 重新获取ref_item
+      ref_item = await this.getItem(ref_item_id.toString());
+      if (!ref_item) {
+        throw new Error('Ref item not found');
+      }
+      sequence = await this.getSequence(position, ref_item);
+    }
+    if (sequence === -1) {
+      throw new Error('No space to insert new item');
+    }
+
+    item.sequence = sequence;
+    item.path = ref_item.path;
+    item.depth = ref_item.depth;
+    item.parent_id = ref_item.parent_id;
+
+    if (position === 'child') {
+      item.path = `${ref_item.path}/${ref_item.id}`;
+      item.depth = ref_item.depth + 1;
+      item.parent_id = ref_item.id;
+    }
+    await this
+      .sql`UPDATE spec_items SET sequence = ${item.sequence}, path = ${item.path}, depth = ${item.depth}, 
+      parent_id = ${item.parent_id} WHERE id = ${id}`;
+
+    // 更新ref_item的has_children状态
+    if (position === 'child') {
+      await this.setSpecHasChildren(ref_item.id);
+    }
+
+    // 更新原来的parent item的has_children状态
+    if (item.parent_id) {
+      let children = await this.getSpecItemsByParentId(
+        old_parent_id.toString()
+      );
+      if (children.length === 0) {
+        await this
+          .sql`UPDATE spec_items SET has_children = false WHERE id = ${item.parent_id}`;
+      }
+    }
   }
 
   protected async createSpecItem(spec_item: any) {
