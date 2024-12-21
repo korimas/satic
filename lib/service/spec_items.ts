@@ -1,6 +1,7 @@
 import { SpecItem } from 'src/data/structs';
 import { BaseApiHandler } from './base';
 
+const SequenceStep = 5;
 export class SpecItemsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
     //get query params
@@ -92,10 +93,9 @@ export class SpecItemsHandler extends BaseApiHandler {
   protected async resortAllItems() {
     const items = (await this
       .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
-    let step = 5;
     let sequence = 0;
     for (const item of items) {
-      sequence += step;
+      sequence += SequenceStep;
       await this
         .sql`UPDATE spec_items SET sequence = ${sequence} WHERE id = ${item.id}`;
     }
@@ -130,7 +130,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         let ref_next = await this.getNextItem(ref_item.sequence);
         let belowSequence = 0;
         if (!ref_next) {
-          belowSequence = ref_item.sequence + 100;
+          belowSequence = ref_item.sequence + SequenceStep;
         } else {
           belowSequence = (ref_item.sequence + ref_next.sequence) / 2;
         }
@@ -152,7 +152,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         // insert as first
         console.log('insert as first');
         let spec_item = payload.item;
-        spec_item.sequence = 100;
+        spec_item.sequence = SequenceStep;
         spec_item.path = '/';
         spec_item.depth = 1;
         spec_item.parent_id = null;
@@ -161,7 +161,7 @@ export class SpecItemsHandler extends BaseApiHandler {
       } else {
         console.log('insert as last, pre last:', lastItem);
         let spec_item = payload.item;
-        spec_item.sequence = lastItem.sequence + 100;
+        spec_item.sequence = lastItem.sequence + SequenceStep;
         spec_item.path = '/';
         spec_item.depth = 1;
         spec_item.parent_id = null;
