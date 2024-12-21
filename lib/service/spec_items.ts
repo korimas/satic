@@ -102,6 +102,9 @@ export class SpecItemsHandler extends BaseApiHandler {
       await this
         .sql`UPDATE spec_items SET sequence = ${sequence} WHERE id = ${item.id}`;
     }
+    const updated_items = (await this
+      .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
+    console.log('items:', updated_items);
   }
 
   protected async getSequence(type: string, ref_item: SpecItem) {
