@@ -126,6 +126,7 @@ export class SpecItemsHandler extends BaseApiHandler {
       items = failed;
       retry++;
     }
+    console.log('success resort, retry count:', retry);
   }
 
   protected async getSequence(type: string, ref_item: SpecItem) {
@@ -163,6 +164,14 @@ export class SpecItemsHandler extends BaseApiHandler {
           belowSequence = Math.floor(
             (ref_item.sequence + ref_next.sequence) / 2
           ); // between
+
+          if (
+            belowSequence === ref_item.sequence ||
+            belowSequence === ref_next.sequence
+          ) {
+            // 已经没有空间插入新的item，需要重新排序
+            return -1;
+          }
         }
         console.log('belowSequence:', belowSequence);
         return belowSequence;
