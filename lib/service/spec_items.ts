@@ -111,7 +111,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         let ref_pre = await this.getPrevItem(ref_item.sequence);
         let aboveSequence = 0;
         if (!ref_pre) {
-          aboveSequence = (ref_item.sequence + 0) / 2; // first item
+          aboveSequence = Math.floor((ref_item.sequence + 0) / 2); // first item
         } else {
           aboveSequence = Math.floor(
             (ref_pre.sequence + ref_item.sequence) / 2
@@ -125,6 +125,7 @@ export class SpecItemsHandler extends BaseApiHandler {
             return await this.getSequence(type, ref_item);
           }
         }
+        console.log('aboveSequence:', aboveSequence);
         return aboveSequence;
       case 'below':
       case 'child':
@@ -135,6 +136,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         } else {
           belowSequence = Math.floor((ref_item.sequence + ref_next.sequence) / 2);
         }
+        console.log('belowSequence:', belowSequence);
         return belowSequence;
 
       default:
