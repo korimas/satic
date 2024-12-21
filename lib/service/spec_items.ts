@@ -102,10 +102,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
   }
 
-  protected async getSequence(
-    type: string,
-    ref_item: SpecItem
-  ): Promise<number> {
+  protected async getSequence(type: string, ref_item: SpecItem) {
     switch (type) {
       case 'above':
         let ref_pre = await this.getPrevItem(ref_item.sequence);
@@ -121,8 +118,7 @@ export class SpecItemsHandler extends BaseApiHandler {
             aboveSequence === ref_item.sequence
           ) {
             // 已经没有空间插入新的item，需要重新排序
-            await this.resortAllItems();
-            return await this.getSequence(type, ref_item);
+            return -1;
           }
         }
         console.log('aboveSequence:', aboveSequence);
@@ -134,7 +130,9 @@ export class SpecItemsHandler extends BaseApiHandler {
         if (!ref_next) {
           belowSequence = ref_item.sequence + SequenceStep;
         } else {
-          belowSequence = Math.floor((ref_item.sequence + ref_next.sequence) / 2);
+          belowSequence = Math.floor(
+            (ref_item.sequence + ref_next.sequence) / 2
+          );
         }
         console.log('belowSequence:', belowSequence);
         return belowSequence;
@@ -180,6 +178,18 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
 
     let sequence = await this.getSequence(payload.position.type, ref_item);
+    if (sequence === -1) {
+      await this.resortAllItems();
+      // 重新获取ref_item
+      ref_item = await this.getItem(payload.position.item);
+      if (!ref_item) {
+        throw new Error('Ref item not found');
+      }
+      sequence = await this.getSequence(payload.position.type, ref_item);
+    }
+    if (sequence === -1) {
+      throw new Error('No space to insert new item');
+    }
     let spec_item = payload.item;
     spec_item.sequence = sequence;
     spec_item.path = ref_item.path;
