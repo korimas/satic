@@ -165,7 +165,9 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
     spec_item.has_children = false;
     let result = await this.createSpecItem(spec_item);
-    await this.setSpecHasChildren(ref_item.id);
+    if (payload.position.type === 'child') {
+      await this.setSpecHasChildren(ref_item.id);
+    }
     return result;
   }
 
