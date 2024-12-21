@@ -198,10 +198,11 @@ export class SpecItemsHandler extends BaseApiHandler {
       throw new Error('Invalid ids array');
     }
 
-    const result = await this.sql`  
-        DELETE FROM spec_items  
-        WHERE id = ANY(${payload.ids}::uuid[])  
-        RETURNING id  
+    const result = await this.sql`
+      DELETE FROM spec_items
+      WHERE id = ANY(${payload.ids}::id[])
+      AND has_children = false
+      RETURNING id
       `;
 
     return result;

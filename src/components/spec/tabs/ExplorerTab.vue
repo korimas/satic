@@ -118,7 +118,7 @@ async function lazyLoadChildren(
   }
 }
 
-function menuClick(menu: string, node: SpecItem) {
+async function menuClick(menu: string, node: SpecItem) {
   console.log('menu click: ', menu, node);
   operationNode.value = node;
   switch (menu) {
@@ -137,6 +137,9 @@ function menuClick(menu: string, node: SpecItem) {
     case SpecTreeMenusAction.Create:
       positionType.value = SpecPositionType.Below;
       SpecItemCreateShow.value = true;
+      break;
+    case SpecTreeMenusAction.Delete:
+      await API.deleteSpecItems([node.id]);
       break;
     default:
       break;

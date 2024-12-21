@@ -62,6 +62,14 @@ let API = {
       },
     });
   },
+
+  deleteSpecItems(ids) {
+    return request('/spec_items', 'delete', {
+      data: {
+        ids: ids,
+      },
+    });
+  },
 };
 
 export default API;
