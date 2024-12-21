@@ -92,6 +92,7 @@ export class SpecItemsHandler extends BaseApiHandler {
 
   protected async resortAllItems() {
     // TODO: 优化，不要每次都更新所有的item
+    console.log('resortAllItems');
     const items = (await this
       .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
     let sequence = 0;
@@ -132,11 +133,11 @@ export class SpecItemsHandler extends BaseApiHandler {
         let ref_next = await this.getNextItem(ref_item.sequence);
         let belowSequence = 0;
         if (!ref_next) {
-          belowSequence = ref_item.sequence + SequenceStep;
+          belowSequence = ref_item.sequence + SequenceStep; // last item
         } else {
           belowSequence = Math.floor(
             (ref_item.sequence + ref_next.sequence) / 2
-          );
+          ); // between
         }
         console.log('belowSequence:', belowSequence);
         return belowSequence;
