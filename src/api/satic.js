@@ -54,6 +54,14 @@ let API = {
       },
     });
   },
+
+  getSpecChildItems(parentId) {
+    return request('/spec_items', 'get', {
+      params: {
+        parent_id: parentId,
+      },
+    });
+  },
 };
 
 export default API;

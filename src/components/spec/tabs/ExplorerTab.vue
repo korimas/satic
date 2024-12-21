@@ -51,6 +51,7 @@
       :empty-menus="SpecTreeEmptyMenus"
       @doubleClick="doubleClick"
       @menu-click="menuClick"
+      @lazy-load="lazyLoadChildren"
     />
     <q-inner-loading :showing="loadingTree">
       <q-spinner-gears size="50px" color="primary" />
@@ -101,6 +102,21 @@ function doubleClick(node: string) {
   console.log(node);
 }
 
+async function lazyLoadChildren(
+  node: any,
+  key: string,
+  done: (children: any[]) => void,
+  fail: () => void
+) {
+  console.log('lazy load children: ', key);
+  let resp = await API.getSpecChildItems(key);
+  if (resp.success) {
+    done(resp.result);
+  } else {
+    fail();
+  }
+}
+
 function menuClick(menu: string, node: SpecItem) {
   console.log('menu click: ', menu, node);
   operationNode.value = node;
@@ -141,7 +157,7 @@ async function getSpecRootItems() {
 
       SpecNodes.value.forEach((node) => {
         node.lazy = node.has_children;
-        node.key = node.key + '-' + node.id;
+        node.key = node.id.toString();
       });
     }
   } catch (error) {

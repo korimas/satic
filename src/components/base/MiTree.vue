@@ -86,13 +86,20 @@ const props = withDefaults(defineProps<Props>(), {
   emptyMenus: () => [],
 });
 
-const emit = defineEmits([
-  'doubleClick',
-  'singleClick',
-  'menuClick',
-  'lazyLoad',
-  'updatenodes',
-]);
+const emit = defineEmits<{
+  // 使用类型声明的方式定义复杂事件
+  lazyLoad: [
+    node: any,
+    key: string,
+    resolve: (children: any[]) => void,
+    reject: () => void
+  ];
+  // 使用简单类型声明方式定义简单事件
+  doubleClick: [selectKey: string];
+  singleClick: [selectKey: string];
+  menuClick: [menuName: string, node: any];
+  updatenodes: [];
+}>();
 
 const Selected = ref('');
 const RightClieckedNode = ref(null);
@@ -144,7 +151,10 @@ function onLazyLoad({
   fail: () => void;
 }) {
   console.log('LazyLoad: ' + key);
+  console.log('LazyLoad: ' + node);
   emit('lazyLoad', node, key, done, fail);
+
+  // done(parent data)
 }
 
 // 获取指定node的parent(q-tree_node)
