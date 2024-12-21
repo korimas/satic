@@ -100,6 +100,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     let failed = [];
     let last_failed_length = 0;
     while (items.length > 0) {
+      failed = []; // 清空failed数组
 
       for (const item of items) {
         try {
@@ -110,13 +111,13 @@ export class SpecItemsHandler extends BaseApiHandler {
           failed.push(item);
         }
       }
-      
-      if (last_failed_length === items.length) {
+
+      if (last_failed_length === failed.length) {
         // 无法更新，退出循环
         console.log('无法更新，退出循环');
         break;
       }
-      last_failed_length = items.length
+      last_failed_length = failed.length;
       items = failed;
     }
   }
