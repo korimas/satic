@@ -93,18 +93,32 @@ export class SpecItemsHandler extends BaseApiHandler {
   protected async resortAllItems() {
     // TODO: 优化，不要每次都更新所有的item
     console.log('resortAllItems');
-    const items = (await this
+    let items = (await this
       .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
     console.log('items:', items);
     let sequence = 0;
-    for (const item of items) {
-      sequence += SequenceStep;
-      await this
-        .sql`UPDATE spec_items SET sequence = ${sequence} WHERE id = ${item.id}`;
+    let failed = [];
+    let last_failed_length = 0;
+    while (items.length > 0) {
+
+      for (const item of items) {
+        try {
+          sequence += SequenceStep;
+          await this
+            .sql`UPDATE spec_items SET sequence = ${sequence} WHERE id = ${item.id}`;
+        } catch (error) {
+          failed.push(item);
+        }
+      }
+      
+      if (last_failed_length === items.length) {
+        // 无法更新，退出循环
+        console.log('无法更新，退出循环');
+        break;
+      }
+      last_failed_length = items.length
+      items = failed;
     }
-    const updated_items = (await this
-      .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
-    console.log('updated_items:', updated_items);
   }
 
   protected async getSequence(type: string, ref_item: SpecItem) {
