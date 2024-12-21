@@ -121,14 +121,14 @@ export class SpecItemsHandler extends BaseApiHandler {
     console.log('payload:', payload);
 
     if (!payload.position || payload.position.item === -1) {
-      // insert as last
+      // insert to root
       const lastItem = await this.getLastItem(1);
       if (!lastItem) {
         // insert as first
         console.log('insert as first');
         let spec_item = payload.item;
         spec_item.sequence = 100;
-        spec_item.path = '100';
+        spec_item.path = '/';
         spec_item.depth = 1;
         spec_item.parent_id = null;
         spec_item.has_children = false;
@@ -137,7 +137,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         console.log('insert as last, pre last:', lastItem);
         let spec_item = payload.item;
         spec_item.sequence = lastItem.sequence + 100;
-        spec_item.path = spec_item.sequence.toString();
+        spec_item.path = '/';
         spec_item.depth = 1;
         spec_item.parent_id = null;
         spec_item.has_children = false;
@@ -159,7 +159,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     spec_item.parent_id = ref_item.parent_id;
 
     if (payload.position.type === 'child') {
-      spec_item.path = `${ref_item.path}.${sequence}`;
+      spec_item.path = `${ref_item.path}/${ref_item.id}`;
       spec_item.depth = ref_item.depth + 1;
       spec_item.parent_id = ref_item.id;
     }
@@ -198,13 +198,38 @@ export class SpecItemsHandler extends BaseApiHandler {
       throw new Error('Invalid ids array');
     }
 
-    const result = await this.sql`
+    const result = (await this.sql`
       DELETE FROM spec_items
       WHERE id = ANY(${payload.ids}::bigint[])
       AND has_children = false
-      RETURNING id
-      `;
+      RETURNING id, parent_id
+      `) as any[];
 
-    return result;
+    console.log('result:', result);
+    const deletedIds = result.map(
+      (item: { id: number; parent_id: number }) => item.id
+    );
+    const parentIds = result.map(
+      (item: { id: number; parent_id: number }) => item.parent_id
+    );
+
+    console.log('deletedIds:', deletedIds);
+    console.log('parentIds:', parentIds);
+    // Update parent items' has_children status
+    for (const parentId of parentIds) {
+      if (parentId) {
+        const children = (await this.sql`
+          SELECT id FROM spec_items WHERE parent_id = ${parentId}
+        `) as any[];
+        console.log('children:', children);
+        if (children.length === 0) {
+          await this.sql`
+            UPDATE spec_items SET has_children = false WHERE id = ${parentId}
+          `;
+        }
+      }
+    }
+
+    return deletedIds;
   }
 }
