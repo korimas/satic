@@ -48,4 +48,7 @@ export interface SpecItem {
 
   // extra properties
   lazy?: boolean; // added lazy property
+  children?: SpecItem[];
+  expandable?: boolean;
+  selectable?: boolean;
 }

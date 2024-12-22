@@ -69,7 +69,7 @@
   >
     <SpecItemCreate
       @close="SpecItemCreateShow = !SpecItemCreateShow"
-      @success="handleSuccess"
+      @success-create="handleSuccessCreate"
       :ref-node="operationNode"
       :position-type="positionType"
     ></SpecItemCreate>
@@ -146,7 +146,33 @@ async function menuClick(menu: string, node: SpecItem) {
   }
 }
 
-function handleSuccess() {
+function handleSuccessCreate(
+  positionType: SpecPositionType,
+  refNode: SpecItem,
+  createdItem: SpecItem
+) {
+  console.log('handleSuccessCreate', positionType, refNode, createdItem);
+
+  switch (positionType) {
+    case SpecPositionType.Above:
+      // 更新nodes
+      const index = SpecNodes.value.findIndex((node) => node.id === refNode.id);
+      SpecNodes.value.splice(index, 0, createdItem);
+
+      break;
+    case SpecPositionType.Below:
+      break;
+    case SpecPositionType.Child:
+      // refNode.lazy = false;
+      refNode.has_children = true;
+      refNode.children = refNode.children || [];
+      refNode.children.push(createdItem);
+      refNode.expandable = true;
+      // createdItem.selectable = true;
+      break;
+    default:
+      break;
+  }
   emit('success');
 }
 

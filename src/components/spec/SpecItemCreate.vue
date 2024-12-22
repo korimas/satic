@@ -92,7 +92,7 @@ import { on } from 'events';
 
 const store = useStateStore();
 
-const emit = defineEmits(['close', 'success']);
+const emit = defineEmits(['close', 'successCreate']);
 let submintLoading = ref(false);
 let newSpecItem = ref<SpecItem>(getSpecItem());
 
@@ -137,19 +137,20 @@ async function createSpecItem() {
   newSpecItem.value.project_id = store.State.curProject.id;
   console.log('refNode', props.refNode);
   console.log('positionType', props.positionType);
-  let resp = await API.createSpecItem({
+  const data = {
     position: {
       type: props.positionType,
       item: props.refNode ? props.refNode.id : -1,
     },
     item: newSpecItem.value,
-  });
+  };
+  let resp = await API.createSpecItem(data);
   submintLoading.value = false;
   if (resp.success) {
     emit('close');
     // reset form
     onReset();
-    emit('success');
+    emit('successCreate', data.position.type, props.refNode, resp.result);
   }
 }
 
