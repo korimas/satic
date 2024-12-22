@@ -163,7 +163,7 @@ function handleSuccessCreate(
     case SpecPositionType.Below:
       break;
     case SpecPositionType.Child:
-      // refNode.lazy = false;
+      refNode.lazy = false;
       refNode.has_children = true;
       refNode.children = refNode.children || [];
       refNode.children.push(createdItem);
