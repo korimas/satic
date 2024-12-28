@@ -7,7 +7,7 @@
     <!--<q-infinite-scroll @load="onLoad" :offset="250" :scroll-target="scrollTargetRef">-->
 
     <div
-      v-for="(item, index) in items"
+      v-for="(item, index) in specStore.curSpec.contentNodes"
       :key="index"
       class="caption doc-content"
     >
@@ -125,11 +125,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useDocumentStore } from 'stores/document';
-const store = useDocumentStore();
+import { useSpecStore } from 'src/stores/spec';
+const specStore = useSpecStore();
 
 const scrollTargetRef = ref();
-const items = ref(store.DocEntrys);
+// const items = ref([]);
 let expanded = ref(false);
 let ShowCommentDialogFlag = ref(false);
 let CommentReqId = ref('');
@@ -234,6 +234,7 @@ function OpenEdit(item: any) {
 function CloseEdit(item: any) {
   item.openEdit = false;
 }
+
 </script>
 
 <style>

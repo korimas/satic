@@ -20,17 +20,21 @@ export class SpecTree {
 
   public async init() {
     await this.loadRootSpecs();
+    await this.loadContentSpecs();
   }
 
   public async loadContentSpecs() {
-    const resp = await API.getSpecContentItems();
+    console.log('loadContentSpecs', this.treeNodes[0]);
+    const resp = await API.getSpecItemsNearBy(this.treeNodes[0].id);
     if (resp.success) {
       const specs = resp.result;
       this.contentNodes = specs;
     }
+    return resp.success
   }
 
   public async loadRootSpecs() {
+    console.log('loadRootSpecs');
     const resp = await API.getSpecRootItems();
     if (resp.success) {
       const specs = resp.result;
