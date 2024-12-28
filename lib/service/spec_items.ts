@@ -24,9 +24,37 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await this.getSpecItemsByParentId(parent_id);
     }
 
+    const near_id = url.searchParams.get('near_id');
+    if (near_id) {
+      // get list by near_id
+      return await this.getSpecItemsByNearId(near_id);
+    }
+
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;
     return result;
+  }
+
+  protected async getSpecItemsByNearId(near_id: string) {
+    const near = await this.getItem(near_id);
+    if (!near) {
+      return [];
+    }
+    // 查询near_id上面25条数据
+    let above = await this.sql`SELECT * FROM spec_items WHERE sequence < 
+      ${near.sequence} ORDER BY sequence DESC LIMIT 25`; // 25
+
+    // 查询near_id下面25条数据
+    let below = await this.sql`SELECT * FROM spec_items WHERE sequence > 
+      ${near.sequence} ORDER BY sequence ASC LIMIT 25`; // 25
+    if (!Array.isArray(above)) {
+      above = [];
+    }
+    if (!Array.isArray(below)) {
+      below = [];
+    }
+    const result = [...above, near, ...below];
+    return result as SpecItem[];
   }
 
   protected async getSpecItemsByParentId(parent_id: string) {

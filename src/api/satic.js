@@ -70,6 +70,14 @@ let API = {
       },
     });
   },
+
+  getSpecItemsNearBy(id) {
+    return request('/spec_items', 'get', {
+      params: {
+        near_id: id,
+      },
+    });
+  },
 };
 
 export default API;

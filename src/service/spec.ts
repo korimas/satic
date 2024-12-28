@@ -3,12 +3,14 @@ import { SpecItem } from 'src/data/structs';
 import { SpecPositionType } from 'src/data/constances';
 
 export class SpecTree {
-  public treeNodes: any[];
-  public nodesMap: Map<number, SpecItem>;
+  public treeNodes: SpecItem[];
+  public treeNodesMap: Map<number, SpecItem>;
+  public contentNodes: SpecItem[];
 
   constructor() {
     this.treeNodes = [];
-    this.nodesMap = new Map<number, SpecItem>();
+    this.treeNodesMap = new Map<number, SpecItem>();
+    this.contentNodes = [];
   }
 
   public reformatSpec(spec: SpecItem) {
@@ -20,26 +22,34 @@ export class SpecTree {
     await this.loadRootSpecs();
   }
 
+  public async loadContentSpecs() {
+    const resp = await API.getSpecContentItems();
+    if (resp.success) {
+      const specs = resp.result;
+      this.contentNodes = specs;
+    }
+  }
+
   public async loadRootSpecs() {
     const resp = await API.getSpecRootItems();
     if (resp.success) {
       const specs = resp.result;
-      this.nodesMap = new Map<number, SpecItem>();
+      this.treeNodesMap.clear();
       this.treeNodes = [];
       specs.forEach((spec: SpecItem) => {
         this.reformatSpec(spec);
-        this.nodesMap.set(spec.id, spec);
+        this.treeNodesMap.set(spec.id, spec);
         this.treeNodes.push(spec);
       });
     }
   }
 
   public findNodeById(id: number) {
-    return this.nodesMap.get(id);
+    return this.treeNodesMap.get(id);
   }
 
   public findNodeByKey(key: string) {
-    return this.nodesMap.get(parseInt(key));
+    return this.treeNodesMap.get(parseInt(key));
   }
 
   public async loadChildren(key: string) {
@@ -51,7 +61,7 @@ export class SpecTree {
       }
       children.forEach((child: SpecItem) => {
         this.reformatSpec(child);
-        this.nodesMap.set(child.id, child);
+        this.treeNodesMap.set(child.id, child);
       });
 
       const node = this.findNodeByKey(key);
@@ -135,7 +145,7 @@ export class SpecTree {
         refNode.expandable = true;
         break;
     }
-    this.nodesMap.set(createdItem.id, createdItem);
+    this.treeNodesMap.set(createdItem.id, createdItem);
   }
 
   public async loadChildrens(id: number) {
@@ -147,7 +157,7 @@ export class SpecTree {
       }
       children.forEach((child: SpecItem) => {
         this.reformatSpec(child);
-        this.nodesMap.set(child.id, child);
+        this.treeNodesMap.set(child.id, child);
       });
 
       return children;
@@ -162,7 +172,7 @@ export class SpecTree {
       if (!deletedItem) {
         return false;
       }
-      this.nodesMap.delete(id);
+      this.treeNodesMap.delete(id);
 
       if (deletedItem.parent_id === 0) {
         const index = this.treeNodes.indexOf(deletedItem);
