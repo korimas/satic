@@ -113,6 +113,9 @@ function tickedUpdate(ticked: string[]) {
 
 function deleteItems() {
   console.log('delete items: ', tickedItems.value);
+  if (tickedItems.value.length === 0) {
+    return;
+  }
   store.curSpec.deleteSpecItems(tickedItems.value);
 }
 
