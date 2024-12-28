@@ -6,6 +6,7 @@
     <q-tree
       class="mitree"
       no-transition
+      :tick-strategy="props.tickStrategy"
       :nodes="props.nodes"
       dense
       node-key="key"
@@ -14,7 +15,9 @@
       selected-color="primary"
       v-model:expanded="expanded"
       v-model:selected="Selected"
+      v-model:ticked="ticked"
       @update:selected="SelectedHandle"
+      @update:ticked="TickedHandle"
       :selection-type="'multiple'"
       @lazy-load="onLazyLoad"
     >
@@ -80,11 +83,13 @@ interface Props {
   nodes: Array<any>;
   itemMenus: Array<any>;
   emptyMenus: Array<any>;
+  tickStrategy: 'none' | 'strict' | 'leaf' | 'leaf-filtered' | undefined;
 }
 const props = withDefaults(defineProps<Props>(), {
   nodes: () => [],
   itemMenus: () => [],
   emptyMenus: () => [],
+  tickStrategy: 'none',
 });
 
 const emit = defineEmits<{
@@ -99,13 +104,14 @@ const emit = defineEmits<{
   doubleClick: [selectKey: string];
   singleClick: [selectKey: string];
   menuClick: [menuName: string, node: any, parentNode: any];
-  updatenodes: [];
+  tickedUpdate: [tickedNodes: Array<any>];
 }>();
 
 const Selected = ref('');
 const RightClieckedNode = ref<SpecItem | null>(null);
 const expanded = ref([]);
 const treeRef = ref();
+let ticked = ref([]);
 
 let moveType = -1;
 let positionIndicator: HTMLElement | null = null;
@@ -121,6 +127,10 @@ function SelectedHandle(selectKey: string) {
   }
   lastSelected = selectKey;
   emit('singleClick', selectKey);
+}
+
+function TickedHandle() {
+  emit('tickedUpdate', ticked.value);
 }
 
 function doubleClick(val: MouseEvent) {

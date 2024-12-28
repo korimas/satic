@@ -1,16 +1,16 @@
 <template>
   <div class="fit column no-wrap">
     <div class="row col-auto full-width q-pa-xs q-gutter-xs bg-grey-2">
-      <q-btn unelevated round size="sm" icon="task_alt">
+      <q-btn unelevated round size="sm" icon="task_alt" @click="switchTick">
         <q-tooltip class="bg-grey-3 text-black">批量选择</q-tooltip>
       </q-btn>
-      <q-btn unelevated round size="sm" icon="delete_forever">
+      <q-btn unelevated round size="sm" icon="delete_forever" @click="deleteItems">
         <q-tooltip class="bg-grey-3 text-black">删除</q-tooltip>
       </q-btn>
       <q-btn unelevated round size="sm" icon="output">
         <q-tooltip class="bg-grey-3 text-black">导出</q-tooltip>
       </q-btn>
-      <q-btn unelevated round size="sm" icon="input">
+      <q-btn unelevated round size="sm" icon="input" :disable="true">
         <q-tooltip class="bg-grey-3 text-black">导入</q-tooltip>
       </q-btn>
       <q-btn unelevated round size="sm" icon="refresh" @click="handleRefresh">
@@ -43,9 +43,11 @@
       :nodes="store.curSpec.treeNodes"
       :item-menus="SpecTreeItemMenus"
       :empty-menus="SpecTreeEmptyMenus"
+      :tick-strategy="tickStrategy"
       @doubleClick="doubleClick"
       @menu-click="menuClick"
       @lazy-load="lazyLoadChildren"
+      @ticked-update="tickedUpdate"
     />
     <q-inner-loading :showing="loadingTree">
       <q-spinner-gears size="50px" color="primary" />
@@ -80,7 +82,6 @@ import {
 } from 'src/data/style';
 import { SpecItem } from 'src/data/structs';
 import { SpecPositionType } from 'src/data/constances';
-import API from 'src/api/satic';
 import { useSpecStore } from 'src/stores/spec';
 
 // variables
@@ -90,6 +91,9 @@ const SpecItemCreateShow = ref(false); // 新建规范项窗口
 const operationNode = ref<SpecItem>({} as SpecItem); // 当前操作的节点
 const operationNodeParent = ref<SpecItem>({} as SpecItem); // 当前操作节点的父节点
 const positionType = ref(SpecPositionType.Above); // 新建规范项的位置
+
+let tickedItems = ref<string[]>([]); // 选中的规范项
+let tickStrategy = ref<'none' | 'strict' | 'leaf' | 'leaf-filtered'>('none');
 let loadingTree = ref(false);
 
 // functions
@@ -99,6 +103,21 @@ function doubleClick(node: string) {
 
 function handleRefresh() {
   store.curSpec.init();
+}
+
+function tickedUpdate(ticked: string[]) {
+  // TODO: 提高性能
+  console.log('ticked update: ', ticked);
+  tickedItems.value = ticked;
+}
+
+function deleteItems() {
+  console.log('delete items: ', tickedItems.value);
+  store.curSpec.deleteSpecItems(tickedItems.value);
+}
+
+function switchTick() {
+  tickStrategy.value = tickStrategy.value === 'none' ? 'strict' : 'none';
 }
 
 async function lazyLoadChildren(
@@ -134,7 +153,7 @@ async function menuClick(menu: string, node: SpecItem, parentNode: SpecItem) {
       SpecItemCreateShow.value = true;
       break;
     case SpecTreeMenusAction.Delete:
-      await store.curSpec.deleteSpecItem(node.id);
+      await store.curSpec.deleteSpecItems([node.id]);
       break;
     default:
       break;

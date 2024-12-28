@@ -30,7 +30,7 @@ export class SpecTree {
       const specs = resp.result;
       this.contentNodes = specs;
     }
-    return resp.success
+    return resp.success;
   }
 
   public async loadRootSpecs() {
@@ -169,34 +169,43 @@ export class SpecTree {
     return [];
   }
 
-  public async deleteSpecItem(id: number) {
-    const resp = await API.deleteSpecItems([id]);
+  public async deleteSpecItems(ids: number[] | string[]) {
+    const resp = await API.deleteSpecItems(ids);
     if (resp.success) {
-      const deletedItem = this.findNodeById(id);
-      if (!deletedItem) {
-        return false;
-      }
-      this.treeNodesMap.delete(id);
-
-      if (deletedItem.parent_id === 0) {
-        const index = this.treeNodes.indexOf(deletedItem);
-        this.treeNodes.splice(index, 1);
-        return true;
-      } else {
-        const parent = this.findNodeById(deletedItem.parent_id);
-        if (!parent || !parent.children) {
-          return false;
-        }
-        const index = parent.children.indexOf(deletedItem);
-        parent.children.splice(index, 1);
-        if (parent.children.length === 0) {
-          parent.has_children = false;
-          parent.expandable = false;
-        }
-        return true;
-      }
+      const deletedIDs = resp.result as number[]; // TODO: 显示未成功删除的消息
+      deletedIDs.forEach((id) => {
+        this.updateTreeAfterDelete(id);
+      });
+      return true;
     }
     return false;
+  }
+
+  public updateTreeAfterDelete(id: number | string) {
+    const intID = parseInt(id.toString());
+    const deletedItem = this.findNodeById(intID);
+    if (!deletedItem) {
+      return false;
+    }
+    this.treeNodesMap.delete(intID);
+
+    if (deletedItem.parent_id === 0) {
+      const index = this.treeNodes.indexOf(deletedItem);
+      this.treeNodes.splice(index, 1);
+      return true;
+    } else {
+      const parent = this.findNodeById(deletedItem.parent_id);
+      if (!parent || !parent.children) {
+        return false;
+      }
+      const index = parent.children.indexOf(deletedItem);
+      parent.children.splice(index, 1);
+      if (parent.children.length === 0) {
+        parent.has_children = false;
+        parent.expandable = false;
+      }
+      return true;
+    }
   }
 }
 
