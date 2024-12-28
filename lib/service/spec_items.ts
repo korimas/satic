@@ -233,7 +233,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     spec_item.sequence = sequence;
     spec_item.path = ref_item.path;
     spec_item.depth = ref_item.depth;
-    spec_item.parent_id = ref_item.parent_id;
+    spec_item.parent_id = ref_item.parent_id || 0;
 
     if (payload.position.type === 'child') {
       spec_item.path = `${ref_item.path}/${ref_item.id}`;
@@ -281,7 +281,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     item.sequence = sequence;
     item.path = ref_item.path;
     item.depth = ref_item.depth;
-    item.parent_id = ref_item.parent_id;
+    item.parent_id = ref_item.parent_id || 0;
 
     if (position === 'child') {
       item.path = `${ref_item.path}/${ref_item.id}`;

@@ -39,7 +39,7 @@ export interface SpecItem {
   sequence: number;
   has_children: boolean;
 
-  path: string; // 路径<>.<>.<> TODO： 限制深度最大10
+  path: string;
   depth: number;
   parent_id: number;
   custom_fields: any;

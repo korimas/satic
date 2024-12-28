@@ -74,6 +74,7 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue';
 import { getItemIcon } from 'src/data/style';
+import { SpecItem } from 'src/data/structs';
 
 interface Props {
   nodes: Array<any>;
@@ -97,12 +98,12 @@ const emit = defineEmits<{
   // 使用简单类型声明方式定义简单事件
   doubleClick: [selectKey: string];
   singleClick: [selectKey: string];
-  menuClick: [menuName: string, node: any];
+  menuClick: [menuName: string, node: any, parentNode: any];
   updatenodes: [];
 }>();
 
 const Selected = ref('');
-const RightClieckedNode = ref(null);
+const RightClieckedNode = ref<SpecItem | null>(null);
 const expanded = ref([]);
 const treeRef = ref();
 
@@ -134,7 +135,19 @@ function onRightClick(event: MouseEvent, node: any) {
 }
 
 function onMenuItemClick(menuName: string) {
-  emit('menuClick', menuName, RightClieckedNode.value);
+  let parentNode = null;
+
+  if (
+    RightClieckedNode.value !== null &&
+    RightClieckedNode.value.parent_id !== 0
+  ) {
+    console.log('parent_id:', RightClieckedNode.value.parent_id);
+    parentNode = treeRef.value.getNodeByKey(
+      RightClieckedNode.value.parent_id.toString()
+    );
+    console.log('parent:', parentNode);
+  }
+  emit('menuClick', menuName, RightClieckedNode.value, parentNode);
 }
 
 // TODO: 做成emit

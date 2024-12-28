@@ -1,6 +1,6 @@
 <template>
-  <div class="fit column">
-    <div class="row full-width q-pa-xs q-gutter-xs bg-grey-2">
+  <div class="fit column no-wrap">
+    <div class="row col-auto full-width q-pa-xs q-gutter-xs bg-grey-2">
       <q-btn unelevated round size="sm" icon="task_alt">
         <q-tooltip class="bg-grey-3 text-black">批量选择</q-tooltip>
       </q-btn>
@@ -13,13 +13,7 @@
       <q-btn unelevated round size="sm" icon="input">
         <q-tooltip class="bg-grey-3 text-black">导入</q-tooltip>
       </q-btn>
-      <q-btn
-        unelevated
-        round
-        size="sm"
-        icon="refresh"
-        @click="getSpecRootItems"
-      >
+      <q-btn unelevated round size="sm" icon="refresh" @click="handleRefresh">
         <q-tooltip class="bg-grey-3 text-black">刷新</q-tooltip>
       </q-btn>
       <q-space />
@@ -44,9 +38,9 @@
       </q-btn>
     </div>
     <MiTree
-      class="col-grow"
+      class="col"
       style="margin-top: 1px"
-      :nodes="SpecNodes"
+      :nodes="store.curSpec.treeNodes"
       :item-menus="SpecTreeItemMenus"
       :empty-menus="SpecTreeEmptyMenus"
       @doubleClick="doubleClick"
@@ -69,7 +63,6 @@
   >
     <SpecItemCreate
       @close="SpecItemCreateShow = !SpecItemCreateShow"
-      @success-create="handleSuccessCreate"
       :ref-node="operationNode"
       :position-type="positionType"
     ></SpecItemCreate>
@@ -77,8 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useDocumentStore } from 'stores/document';
+import { ref } from 'vue';
 import SpecItemCreate from 'components/spec/SpecItemCreate.vue';
 import MiTree from 'components/base/MiTree.vue';
 import {
@@ -89,17 +81,24 @@ import {
 import { SpecItem } from 'src/data/structs';
 import { SpecPositionType } from 'src/data/constances';
 import API from 'src/api/satic';
+import { useSpecStore } from 'src/stores/spec';
 
-const store = useDocumentStore();
+// variables
+const store = useSpecStore();
 const emit = defineEmits(['close', 'success']);
-const SpecItemCreateShow = ref(false);
-// const nodes = ref<SpecItem[]>(store.DocEntrys as SpecItem[]);
-const SpecNodes = ref<SpecItem[]>([]);
-const operationNode = ref<SpecItem>({} as SpecItem);
-const positionType = ref(SpecPositionType.Above);
+const SpecItemCreateShow = ref(false); // 新建规范项窗口
+const operationNode = ref<SpecItem>({} as SpecItem); // 当前操作的节点
+const operationNodeParent = ref<SpecItem>({} as SpecItem); // 当前操作节点的父节点
+const positionType = ref(SpecPositionType.Above); // 新建规范项的位置
 let loadingTree = ref(false);
+
+// functions
 function doubleClick(node: string) {
   console.log(node);
+}
+
+function handleRefresh() {
+  store.curSpec.init();
 }
 
 async function lazyLoadChildren(
@@ -109,18 +108,14 @@ async function lazyLoadChildren(
   fail: () => void
 ) {
   console.log('lazy load children: ', key);
-  let resp = await API.getSpecChildItems(key);
-  if (resp.success) {
-    reformatNodes(resp.result);
-    done(resp.result);
-  } else {
-    fail();
-  }
+  let childrens = await store.curSpec.loadChildrens(Number(key));
+  done(childrens);
 }
 
-async function menuClick(menu: string, node: SpecItem) {
-  console.log('menu click: ', menu, node);
+async function menuClick(menu: string, node: SpecItem, parentNode: SpecItem) {
+  console.log('menu click: ', menu, node, parentNode);
   operationNode.value = node;
+  operationNodeParent.value = parentNode;
   switch (menu) {
     case SpecTreeMenusAction.InsertAbove:
       positionType.value = SpecPositionType.Above;
@@ -139,67 +134,12 @@ async function menuClick(menu: string, node: SpecItem) {
       SpecItemCreateShow.value = true;
       break;
     case SpecTreeMenusAction.Delete:
-      await API.deleteSpecItems([node.id]);
+      await store.curSpec.deleteSpecItem(node.id);
       break;
     default:
       break;
   }
 }
 
-function handleSuccessCreate(
-  positionType: SpecPositionType,
-  refNode: SpecItem,
-  createdItem: SpecItem
-) {
-  console.log('handleSuccessCreate', positionType, refNode, createdItem);
-
-  switch (positionType) {
-    case SpecPositionType.Above:
-      // 更新nodes
-      const index = SpecNodes.value.findIndex((node) => node.id === refNode.id);
-      SpecNodes.value.splice(index, 0, createdItem);
-
-      break;
-    case SpecPositionType.Below:
-      break;
-    case SpecPositionType.Child:
-      refNode.lazy = false;
-      refNode.has_children = true;
-      refNode.children = refNode.children || [];
-      refNode.children.push(createdItem);
-      refNode.expandable = true;
-      // createdItem.selectable = true;
-      break;
-    default:
-      break;
-  }
-  emit('success');
-}
-
-function reformatNodes(nodes: SpecItem[]) {
-  nodes.forEach((node) => {
-    node.lazy = node.has_children;
-    node.key = node.id.toString();
-  });
-}
-
-async function getSpecRootItems() {
-  try {
-    loadingTree.value = true;
-    const resp = await API.getSpecRootItems();
-    console.log('getSpecRootItems', resp);
-    if (resp.success) {
-      loadingTree.value = false;
-      SpecNodes.value = resp.result;
-
-      reformatNodes(SpecNodes.value);
-    }
-  } catch (error) {
-    console.error('Failed to fetch spec root items', error);
-  }
-}
-
-onMounted(() => {
-  getSpecRootItems();
-});
+store.curSpec.init();
 </script>

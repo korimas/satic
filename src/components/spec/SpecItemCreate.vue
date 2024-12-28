@@ -85,16 +85,16 @@ import { defineEmits, ref, defineProps } from 'vue';
 import MiWindow from 'components/base/MiWindow.vue';
 import { SpecItem } from 'src/data/structs';
 import { SpecItemTypes, SpecItemTypeStyle } from 'src/data/style';
-// import MiInput from '../base/MiInput.vue';
-import API from 'src/api/satic';
 import { useStateStore } from 'src/stores/state';
-import { on } from 'events';
+import { useSpecStore } from 'src/stores/spec';
+import { allocateSpecItem } from 'src/service/spec';
 
 const store = useStateStore();
+const specStore = useSpecStore();
 
 const emit = defineEmits(['close', 'successCreate']);
 let submintLoading = ref(false);
-let newSpecItem = ref<SpecItem>(getSpecItem());
+let newSpecItem = ref<SpecItem>(allocateSpecItem());
 
 const props = defineProps({
   refNode: {
@@ -107,50 +107,21 @@ const props = defineProps({
   },
 });
 
-function getSpecItem() {
-  return {
-    id: 0,
-    key: '',
-    project_id: '',
-    spec_id: 1,
-    summary: '',
-    description: '',
-    priority: '',
-    status: '',
-    reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
-    type: '',
-    sequence: 0,
-    has_children: false,
-
-    path: '',
-    depth: 0,
-    parent_id: 0,
-    custom_fields: {},
-    created_at: '',
-    updated_at: '',
-  };
-}
-
 async function createSpecItem() {
   submintLoading.value = true;
   newSpecItem.value.key = store.State.curProject.key; // TODO: key由后台根据project_id自动生成
   newSpecItem.value.project_id = store.State.curProject.id;
   console.log('refNode', props.refNode);
   console.log('positionType', props.positionType);
-  const data = {
-    position: {
-      type: props.positionType,
-      item: props.refNode ? props.refNode.id : -1,
-    },
-    item: newSpecItem.value,
-  };
-  let resp = await API.createSpecItem(data);
+  const success = await specStore.curSpec.createSpecItem(
+    props.positionType,
+    props.refNode ? props.refNode.id : -1,
+    newSpecItem.value
+  );
   submintLoading.value = false;
-  if (resp.success) {
+  if (success) {
     emit('close');
-    // reset form
     onReset();
-    emit('successCreate', data.position.type, props.refNode, resp.result);
   }
 }
 
@@ -164,6 +135,6 @@ async function onSubmit() {
 }
 
 function onReset() {
-  newSpecItem.value = getSpecItem();
+  newSpecItem.value = allocateSpecItem();
 }
 </script>
