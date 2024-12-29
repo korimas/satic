@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
 import { sleep } from 'src/utils/time';
 
@@ -149,6 +149,35 @@ onUnmounted(() => {
     bottomObserver.disconnect();
   }
 });
+
+watch(  
+  () => specStore.curSpec.selectedNodeId,  
+  (newNodeId) => {  
+    console.log('scroll to node:', newNodeId);
+    if (!newNodeId || !scrollTargetRef.value) return;  
+
+    // 找到对应节点的索引  
+    const index = specStore.curSpec.contentNodes.findIndex(  
+      node => node.id === newNodeId  
+    );  
+    
+    if (index === -1) return;  
+
+    // 获取目标元素  
+    const targetElement = scrollTargetRef.value.children[index + 1]; // +1 是因为第一个子元素是 topSentinel  
+    
+    if (!targetElement) return;  
+
+    // 使用 scrollIntoView 平滑滚动到目标位置  
+    targetElement.scrollIntoView({  
+      behavior: 'smooth',  
+      block: 'center'  
+    });  
+  },  
+  {  
+    immediate: true // 立即执行一次  
+  }  
+);
 </script>
 
 <style>

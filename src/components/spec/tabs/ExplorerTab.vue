@@ -109,10 +109,10 @@ function doubleClick(node: string) {
   console.log(node);
 }
 
-function singleClick(node: string) {
+async function singleClick(node: string) {
   console.log(node);
-  store.curSpec.selectedNode = Number(node);
-  store.curSpec.loadContentSpecsNear(Number(node));
+  await store.curSpec.loadContentSpecsNear(Number(node));
+  store.curSpec.selectedNodeId = Number(node);
 }
 
 function handleRefresh() {
@@ -135,7 +135,6 @@ function deleteItems() {
 
 function switchTick() {
   tickStrategy.value = tickStrategy.value === 'none' ? 'strict' : 'none';
-
 }
 
 async function lazyLoadChildren(

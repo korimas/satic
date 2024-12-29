@@ -7,7 +7,7 @@ export class SpecTree {
   public treeNodesMap: Map<number, SpecItem>;
   public contentNodes: SpecItem[];
   public contentNodesMap: Map<number, SpecItem>;
-  public selectedNode: number;
+  public selectedNodeId: number;
   public inited: boolean;
 
   constructor() {
@@ -15,7 +15,7 @@ export class SpecTree {
     this.treeNodesMap = new Map<number, SpecItem>();
     this.contentNodes = [];
     this.contentNodesMap = new Map<number, SpecItem>();
-    this.selectedNode = -1;
+    this.selectedNodeId = -1;
     this.inited = false;
   }
 
