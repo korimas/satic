@@ -110,6 +110,7 @@ function doubleClick(node: string) {
 
 function singleClick(node: string) {
   console.log(node);
+  store.curSpec.selectedNode = Number(node);
   store.curSpec.loadContentSpecsNear(Number(node));
 }
 

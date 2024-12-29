@@ -7,12 +7,14 @@ export class SpecTree {
   public treeNodesMap: Map<number, SpecItem>;
   public contentNodes: SpecItem[];
   public contentNodesMap: Map<number, SpecItem>;
+  public selectedNode: number;
 
   constructor() {
     this.treeNodes = [];
     this.treeNodesMap = new Map<number, SpecItem>();
     this.contentNodes = [];
     this.contentNodesMap = new Map<number, SpecItem>();
+    this.selectedNode = -1;
   }
 
   public reformatSpec(spec: SpecItem) {

@@ -36,9 +36,24 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await this.getTopSpecItems(Number(top));
     }
 
+    const next = url.searchParams.get('next');
+    if (next) {
+      // get next item
+      return await this.getNextPageItems(Number(next));
+    }
+
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;
     return result;
+  }
+
+  protected async getNextPageItems(next: number) {
+    const result = await this
+      .sql`SELECT * FROM spec_items WHERE sequence > ${next} ORDER BY sequence ASC LIMIT 25`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return [];
+    }
+    return result as SpecItem[];
   }
 
   protected async getTopSpecItems(limit: number) {
