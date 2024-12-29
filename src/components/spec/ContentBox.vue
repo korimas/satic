@@ -174,14 +174,16 @@ function jumpToNode(nodeId: number) {
 
   // 使用 scrollIntoView 平滑滚动到目标位置
   targetElement.scrollIntoView({
-    behavior: 'auto',
-    block: 'start',
+    behavior: 'auto', // smooth or auto
+    block: 'start', // start, center, end
   });
 }
 
 watch(
   () => specStore.curSpec.selectedNodeId,
-  (newNodeId) => {
+  async (newNodeId) => {
+    if (!newNodeId || newNodeId < 0) return;
+    await specStore.curSpec.loadContentSpecsNear(newNodeId);
     console.log('scroll to node:', newNodeId);
     jumpToNode(newNodeId);
   },

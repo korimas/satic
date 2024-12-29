@@ -167,6 +167,8 @@ export class SpecTree {
       this.reformatSpec(created);
       this.updateTreeAfterCreate(positionType, refItemID, created);
       // TODO: update contentNodes
+      // await this.loadContentSpecsNear(created.id);
+      this.selectedNodeId = created.id;
 
       return true;
     }

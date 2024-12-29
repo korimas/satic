@@ -111,7 +111,6 @@ function doubleClick(node: string) {
 
 async function singleClick(node: string) {
   console.log(node);
-  await store.curSpec.loadContentSpecsNear(Number(node));
   store.curSpec.selectedNodeId = Number(node);
 }
 
