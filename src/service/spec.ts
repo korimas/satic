@@ -144,6 +144,7 @@ export class SpecTree {
       const created = resp.result;
       this.reformatSpec(created);
       this.updateTreeAfterCreate(positionType, refItemID, created);
+      // TODO: update contentNodes
 
       return true;
     }

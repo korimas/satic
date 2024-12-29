@@ -10,6 +10,7 @@
         size="sm"
         icon="delete_forever"
         @click="deleteItems"
+        :disable="tickStrategy === 'none'"
       >
         <q-tooltip class="bg-grey-3 text-black">删除</q-tooltip>
       </q-btn>
@@ -134,6 +135,7 @@ function deleteItems() {
 
 function switchTick() {
   tickStrategy.value = tickStrategy.value === 'none' ? 'strict' : 'none';
+
 }
 
 async function lazyLoadChildren(
