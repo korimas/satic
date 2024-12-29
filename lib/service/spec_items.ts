@@ -30,15 +30,30 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await this.getSpecItemsByNearId(near_id);
     }
 
+    const top = url.searchParams.get('top');
+    if (top) {
+      // get top list
+      return await this.getTopSpecItems();
+    }
+
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;
     return result;
   }
 
+  protected async getTopSpecItems() {
+    const result = await this
+      .sql`SELECT * FROM spec_items ORDER BY sequence ASC LIMIT 50`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return [];
+    }
+    return result as SpecItem[];
+  }
+
   protected async getSpecItemsByNearId(near_id: string) {
     const near = await this.getItem(near_id);
     if (!near) {
-      return [];
+      throw new Error('Item not found');
     }
     // 查询near_id上面25条数据
     let above = await this.sql`SELECT * FROM spec_items WHERE sequence < 
