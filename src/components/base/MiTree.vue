@@ -149,7 +149,8 @@ function onMenuItemClick(menuName: string) {
 
   if (
     RightClieckedNode.value !== null &&
-    RightClieckedNode.value.parent_id !== 0
+    RightClieckedNode.value.parent_id !== null &&
+    RightClieckedNode.value.parent_id > 0
   ) {
     console.log('parent_id:', RightClieckedNode.value.parent_id);
     parentNode = treeRef.value.getNodeByKey(
