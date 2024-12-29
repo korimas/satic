@@ -94,6 +94,14 @@ let API = {
       },
     });
   },
+
+  getPrevPageSpecItems(id) {
+    return request('/spec_items', 'get', {
+      params: {
+        prev: id,
+      },
+    });
+  },
 };
 
 export default API;

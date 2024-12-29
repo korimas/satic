@@ -42,6 +42,12 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await this.getNextPageItems(Number(next));
     }
 
+    const prev = url.searchParams.get('prev');
+    if (prev) {
+      // get prev item
+      return await this.getPrevPageItems(Number(prev));
+    }
+
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;
     return result;
@@ -50,6 +56,15 @@ export class SpecItemsHandler extends BaseApiHandler {
   protected async getNextPageItems(next: number) {
     const result = await this
       .sql`SELECT * FROM spec_items WHERE sequence > ${next} ORDER BY sequence ASC LIMIT 25`;
+    if (!Array.isArray(result) || result.length === 0) {
+      return [];
+    }
+    return result as SpecItem[];
+  }
+
+  protected async getPrevPageItems(prev: number) {
+    const result = await this
+      .sql`SELECT * FROM spec_items WHERE sequence < ${prev} ORDER BY sequence DESC LIMIT 25`;
     if (!Array.isArray(result) || result.length === 0) {
       return [];
     }

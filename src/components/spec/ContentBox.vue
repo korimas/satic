@@ -1,127 +1,163 @@
 <template>
   <div
     ref="scrollTargetRef"
-    class="q-pa-md fit"
+    class="q-pa-sm fit"
     style="max-height: calc(100vh - 51px); overflow: auto"
   >
-    <q-infinite-scroll
-      @load="onLoad"
-      :reverse="isReverse"
-      :offset="250"
-      :scroll-target="scrollTargetRef"
-      :disable="isDisabled"
-      @scroll="handleScroll"
+    <!-- Top sentinel for reverse scrolling -->
+    <div ref="topSentinel" class="sentinel"></div>
+    <div
+      v-for="(item, index) in specStore.curSpec.contentNodes"
+      :key="index"
+      class="caption doc-content"
     >
-      <div
-        v-for="(item, index) in specStore.curSpec.contentNodes"
-        :key="index"
-        class="caption doc-content"
+      <q-card
+        flat
+        class="q-hoverable"
+        style="white-space: pre-wrap; min-height: 120px"
       >
-        <q-card
-          flat
-          class="q-hoverable"
-          style="white-space: pre-wrap; min-height: 120px"
-        >
-          <span class="q-focus-helper"></span>
+        <span class="q-focus-helper"></span>
 
-          <q-card-section>
-            <div class="row items-center no-wrap">
-              <div class="col">
-                <div class="text-h6">{{ item.summary }}</div>
-              </div>
-
-              <div class="col-auto">
-                <q-btn round size="sm" flat icon="smart_toy">
-                  <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
-                </q-btn>
-
-                <q-btn round size="sm" flat icon="bug_report">
-                  <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
-                </q-btn>
-
-                <q-btn color="grey-7" round flat size="sm" icon="more_vert">
-                  <q-menu auto-close>
-                    <q-list dense>
-                      <q-item clickable>
-                        <q-item-section>Remove</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>Edit</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>Share</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-              </div>
+        <q-card-section>
+          <div class="row items-center no-wrap">
+            <div class="col">
+              <div class="text-h6">{{ item.summary }}</div>
             </div>
-          </q-card-section>
 
-          <q-card-section>
-            <div v-html="item.description" />
-          </q-card-section>
-        </q-card>
-      </div>
+            <div class="col-auto">
+              <q-btn round size="sm" flat icon="smart_toy">
+                <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
+              </q-btn>
 
-      <template v-slot:loading>
-        <div class="row justify-center q-my-md">
-          <q-spinner-dots color="primary" size="40px" />
-        </div>
-      </template>
-    </q-infinite-scroll>
+              <q-btn round size="sm" flat icon="bug_report">
+                <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
+              </q-btn>
+
+              <q-btn color="grey-7" round flat size="sm" icon="more_vert">
+                <q-menu auto-close>
+                  <q-list dense>
+                    <q-item clickable>
+                      <q-item-section>Remove</q-item-section>
+                    </q-item>
+                    <q-item clickable>
+                      <q-item-section>Edit</q-item-section>
+                    </q-item>
+                    <q-item clickable>
+                      <q-item-section>Share</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-section>
+          <div v-html="item.description" />
+        </q-card-section>
+      </q-card>
+    </div>
+
+    <!-- Bottom sentinel for forward scrolling -->
+    <div ref="bottomSentinel" class="sentinel"></div>
+
+    <div v-if="isLoading" class="row justify-center q-my-md">
+      <q-spinner-dots color="primary" size="40px" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
 import { sleep } from 'src/utils/time';
 
 const specStore = useSpecStore();
 const scrollTargetRef = ref();
-const isReverse = ref(false);
-const isDisabled = ref(true); // 初始设为 true
-let lastScrollTop = 0;
+const topSentinel = ref();
+const bottomSentinel = ref();
+const isLoading = ref(false);
 
-// 处理滚动事件
-const handleScroll = (event: Event) => {
-  console.log('handleScroll');
-  if (!scrollTargetRef.value) return;
+let topObserver: IntersectionObserver | null = null;
+let bottomObserver: IntersectionObserver | null = null;
 
-  const currentScrollTop = scrollTargetRef.value.scrollTop;
-  isReverse.value = currentScrollTop < lastScrollTop;
-  lastScrollTop = currentScrollTop;
-  console.log('isReverse:', isReverse.value);
-};
+async function loadContent(isReverse: boolean) {
+  if (isLoading.value) return;
 
-async function onLoad(index: any, done: any) {
+  isLoading.value = true;
   try {
-    const success = await specStore.curSpec.loadNextPageContentSpecs();
+    const success = isReverse
+      ? await specStore.curSpec.loadPrevPageContentSpecs()
+      : await specStore.curSpec.loadNextPageContentSpecs();
+
     if (!success) {
-      console.log('load next wait 1000s');
-      await sleep(1000); // 加载失败时延迟 1 秒
-      done(true); // stop TODO: need resume
+      console.log('load failed, waiting 1000ms');
+      await sleep(1000);
       return;
     }
-    done();
   } catch (error) {
-    console.log('load next wait 1000s');
-    await sleep(1000); // 加载失败时延迟 1 秒
-    done(); // 出错时停止加载
+    console.log('Error loading content:');
+    await sleep(1000);
+  } finally {
+    isLoading.value = false;
   }
 }
 
 onMounted(() => {
-  // 确保组件挂载后启用无限滚动
-  setTimeout(() => {
-    isDisabled.value = false;
-  }, 100);
+  // Options for the Intersection Observer
+  const options = {
+    root: scrollTargetRef.value,
+    rootMargin: '250px',
+    threshold: 0,
+  };
+
+  // Create observer for top sentinel (reverse scrolling)
+  topObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      console.log('top', entry.isIntersecting);
+      if (entry.isIntersecting) {
+        loadContent(true);
+      }
+    });
+  }, options);
+
+  // Create observer for bottom sentinel (forward scrolling)
+  bottomObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      console.log('bottom', entry.isIntersecting);
+      if (entry.isIntersecting) {
+        loadContent(false);
+      }
+    });
+  }, options);
+
+  // Start observing the sentinels
+  if (topSentinel.value) {
+    topObserver.observe(topSentinel.value);
+  }
+  if (bottomSentinel.value) {
+    bottomObserver.observe(bottomSentinel.value);
+  }
+});
+
+onUnmounted(() => {
+  // Cleanup observers
+  if (topObserver) {
+    topObserver.disconnect();
+  }
+  if (bottomObserver) {
+    bottomObserver.disconnect();
+  }
 });
 </script>
 
 <style>
 .q-splitter__panel {
   z-index: auto;
+}
+
+.sentinel {
+  height: 1px;
+  width: 100%;
 }
 </style>

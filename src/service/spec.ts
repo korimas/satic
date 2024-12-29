@@ -62,8 +62,29 @@ export class SpecTree {
     return resp.success;
   }
 
+  public async loadPrevPageContentSpecs() {
+    const firstNode = this.contentNodes[0];
+    if (!firstNode) {
+      throw new Error('No first node found');
+    }
+    console.log('loadPrevPageContentSpecs', firstNode.sequence);
+    const resp = await API.getPrevPageSpecItems(firstNode.sequence);
+    if (resp.success) {
+      const specs = resp.result;
+      specs.forEach((spec: SpecItem) => {
+        this.contentNodesMap.set(spec.id, spec);
+        this.contentNodes.unshift(spec);
+      });
+
+      if (specs.length < 25) {
+        // eatch page has 25 items
+        return false;
+      }
+    }
+    return resp.success;
+  }
+
   public async loadNextPageContentSpecs() {
-    console.log('load next page', this.contentNodes);
     const lastNode = this.contentNodes[this.contentNodes.length - 1];
     if (!lastNode) {
       throw new Error('No last node found');
@@ -77,7 +98,8 @@ export class SpecTree {
         this.contentNodes.push(spec);
       });
 
-      if (specs.length < 25) { // eatch page has 25 items
+      if (specs.length < 25) {
+        // eatch page has 25 items
         return false;
       }
     }
