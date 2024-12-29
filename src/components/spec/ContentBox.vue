@@ -84,7 +84,7 @@ let bottomObserver: IntersectionObserver | null = null;
 async function loadContent(isReverse: boolean) {
   if (isLoading.value) return;
 
-  const firstNode = specStore.curSpec.contentNodes[0];
+  const topNode = specStore.curSpec.contentNodes[0];
 
   isLoading.value = true;
   try {
@@ -104,9 +104,9 @@ async function loadContent(isReverse: boolean) {
     isLoading.value = false;
   }
 
-  if (isReverse) {
-    // Scroll to the top of the new content
-    jumpToNode(firstNode.id);
+  if (isReverse && topNode) {
+    // 如果是向上滚动，加载完数据后，跳转到原来的位置
+    jumpToNode(topNode.id);
   }
 }
 
