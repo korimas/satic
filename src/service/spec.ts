@@ -188,7 +188,7 @@ export class SpecTree {
     switch (positionType) {
       case SpecPositionType.Above:
       case SpecPositionType.Below:
-        if (refNode.parent_id === 0) {
+        if (refNode.parent_id === 0 || !refNode.parent_id) {
           const index = this.treeNodes.indexOf(refNode);
           if (positionType === SpecPositionType.Below) {
             this.treeNodes.splice(index + 1, 0, createdItem);
