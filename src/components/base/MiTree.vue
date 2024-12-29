@@ -1,7 +1,7 @@
 <template>
   <div
     class="q-gutter-sm"
-    style="width: 100%; margin-top: 1px"
+    style="width: 100%; margin-top: 1px; overflow-x: auto"
   >
     <q-tree
       class="mitree"
