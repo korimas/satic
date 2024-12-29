@@ -6,11 +6,13 @@ export class SpecTree {
   public treeNodes: SpecItem[];
   public treeNodesMap: Map<number, SpecItem>;
   public contentNodes: SpecItem[];
+  public contentNodesMap: Map<number, SpecItem>;
 
   constructor() {
     this.treeNodes = [];
     this.treeNodesMap = new Map<number, SpecItem>();
     this.contentNodes = [];
+    this.contentNodesMap = new Map<number, SpecItem>();
   }
 
   public reformatSpec(spec: SpecItem) {
@@ -27,18 +29,30 @@ export class SpecTree {
     console.log('loadTopContentSpecs');
     const resp = await API.getTopSpecItems();
     if (resp.success) {
+      this.contentNodesMap.clear();
       const specs = resp.result;
       this.contentNodes = specs;
+      specs.forEach((spec: SpecItem) => {
+        this.contentNodesMap.set(spec.id, spec);
+      });
     }
     return resp.success;
   }
 
   public async loadContentSpecsNear(id: number) {
     console.log('loadContentSpecs', id);
+    if (this.contentNodesMap.has(id)) {
+      return true;
+    }
+
     const resp = await API.getSpecItemsNearBy(id);
     if (resp.success) {
+      this.contentNodesMap.clear();
       const specs = resp.result;
       this.contentNodes = specs;
+      specs.forEach((spec: SpecItem) => {
+        this.contentNodesMap.set(spec.id, spec);
+      });
     }
     return resp.success;
   }
