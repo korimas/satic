@@ -84,6 +84,8 @@ let bottomObserver: IntersectionObserver | null = null;
 async function loadContent(isReverse: boolean) {
   if (isLoading.value) return;
 
+  const firstNode = specStore.curSpec.contentNodes[0];
+
   isLoading.value = true;
   try {
     const success = isReverse
@@ -100,6 +102,11 @@ async function loadContent(isReverse: boolean) {
     await sleep(1000);
   } finally {
     isLoading.value = false;
+  }
+
+  if (isReverse) {
+    // Scroll to the top of the new content
+    jumpToNode(firstNode.id);
   }
 }
 
@@ -150,33 +157,37 @@ onUnmounted(() => {
   }
 });
 
-watch(  
-  () => specStore.curSpec.selectedNodeId,  
-  (newNodeId) => {  
+function jumpToNode(nodeId: number) {
+  if (!nodeId || !scrollTargetRef.value) return;
+
+  // 找到对应节点的索引
+  const index = specStore.curSpec.contentNodes.findIndex(
+    (node) => node.id === nodeId
+  );
+
+  if (index === -1) return;
+
+  // 获取目标元素
+  const targetElement = scrollTargetRef.value.children[index + 1]; // +1 是因为第一个子元素是 topSentinel
+
+  if (!targetElement) return;
+
+  // 使用 scrollIntoView 平滑滚动到目标位置
+  targetElement.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
+}
+
+watch(
+  () => specStore.curSpec.selectedNodeId,
+  (newNodeId) => {
     console.log('scroll to node:', newNodeId);
-    if (!newNodeId || !scrollTargetRef.value) return;  
-
-    // 找到对应节点的索引  
-    const index = specStore.curSpec.contentNodes.findIndex(  
-      node => node.id === newNodeId  
-    );  
-    
-    if (index === -1) return;  
-
-    // 获取目标元素  
-    const targetElement = scrollTargetRef.value.children[index + 1]; // +1 是因为第一个子元素是 topSentinel  
-    
-    if (!targetElement) return;  
-
-    // 使用 scrollIntoView 平滑滚动到目标位置  
-    targetElement.scrollIntoView({  
-      behavior: 'smooth',  
-      block: 'center'  
-    });  
-  },  
-  {  
-    immediate: true // 立即执行一次  
-  }  
+    jumpToNode(newNodeId);
+  },
+  {
+    immediate: true, // 立即执行一次
+  }
 );
 </script>
 
