@@ -68,7 +68,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!Array.isArray(below)) {
       below = [];
     }
-    const result = [...above, near, ...below];
+    const result = [...above.reverse(), near, ...below];
     return result as SpecItem[];
   }
 

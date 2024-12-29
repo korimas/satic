@@ -4,7 +4,13 @@
       <q-btn unelevated round size="sm" icon="task_alt" @click="switchTick">
         <q-tooltip class="bg-grey-3 text-black">批量选择</q-tooltip>
       </q-btn>
-      <q-btn unelevated round size="sm" icon="delete_forever" @click="deleteItems">
+      <q-btn
+        unelevated
+        round
+        size="sm"
+        icon="delete_forever"
+        @click="deleteItems"
+      >
         <q-tooltip class="bg-grey-3 text-black">删除</q-tooltip>
       </q-btn>
       <q-btn unelevated round size="sm" icon="output">
@@ -45,6 +51,7 @@
       :empty-menus="SpecTreeEmptyMenus"
       :tick-strategy="tickStrategy"
       @doubleClick="doubleClick"
+      @single-click="singleClick"
       @menu-click="menuClick"
       @lazy-load="lazyLoadChildren"
       @ticked-update="tickedUpdate"
@@ -99,6 +106,11 @@ let loadingTree = ref(false);
 // functions
 function doubleClick(node: string) {
   console.log(node);
+}
+
+function singleClick(node: string) {
+  console.log(node);
+  store.curSpec.loadContentSpecsNear(Number(node));
 }
 
 function handleRefresh() {

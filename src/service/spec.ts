@@ -20,7 +20,7 @@ export class SpecTree {
 
   public async init() {
     await this.loadRootSpecs();
-    await this.loadContentSpecs();
+    await this.loadTopContentSpecs();
   }
 
   public async loadTopContentSpecs() {
@@ -33,9 +33,9 @@ export class SpecTree {
     return resp.success;
   }
 
-  public async loadContentSpecs() {
-    console.log('loadContentSpecs', this.treeNodes[0]);
-    const resp = await API.getSpecItemsNearBy(this.treeNodes[0].id);
+  public async loadContentSpecsNear(id: number) {
+    console.log('loadContentSpecs', id);
+    const resp = await API.getSpecItemsNearBy(id);
     if (resp.success) {
       const specs = resp.result;
       this.contentNodes = specs;
