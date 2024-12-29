@@ -86,6 +86,14 @@ let API = {
       },
     });
   },
+
+  getNextPageSpecItems(id) {
+    return request('/spec_items', 'get', {
+      params: {
+        next: id,
+      },
+    });
+  },
 };
 
 export default API;

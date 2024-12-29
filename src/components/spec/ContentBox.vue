@@ -1,6 +1,17 @@
 <template>
-  <div ref="scrollTargetRef" class="q-pa-md fit">
-    <q-infinite-scroll @load="onLoad" :reverse="isReverse" :offset="250">
+  <div
+    ref="scrollTargetRef"
+    class="q-pa-md fit"
+    style="max-height: calc(100vh - 51px); overflow: auto"
+  >
+    <q-infinite-scroll
+      @load="onLoad"
+      :reverse="isReverse"
+      :offset="250"
+      :scroll-target="scrollTargetRef"
+      :disable="isDisabled"
+      @scroll="handleScroll"
+    >
       <div
         v-for="(item, index) in specStore.curSpec.contentNodes"
         :key="index"
@@ -20,23 +31,11 @@
               </div>
 
               <div class="col-auto">
-                <q-btn
-                  round
-                  size="sm"
-                  flat
-                  icon="smart_toy"
-                  @click="GetReqAnalysis(item)"
-                >
+                <q-btn round size="sm" flat icon="smart_toy">
                   <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
                 </q-btn>
 
-                <q-btn
-                  round
-                  size="sm"
-                  flat
-                  icon="bug_report"
-                  @click="GetTestAnalysis(item)"
-                >
+                <q-btn round size="sm" flat icon="bug_report">
                   <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
                 </q-btn>
 
@@ -75,109 +74,50 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
+import { sleep } from 'src/utils/time';
+
 const specStore = useSpecStore();
-
 const scrollTargetRef = ref();
-// const items = ref([]);
-let expanded = ref(false);
-let ShowCommentDialogFlag = ref(false);
-let CommentReqId = ref('');
-let CommentReqDesc = ref('');
-let isReverse = ref(false);
+const isReverse = ref(false);
+const isDisabled = ref(true); // 初始设为 true
+let lastScrollTop = 0;
 
-function ShowCommentDialog(reqId: string, reqDesc: string) {
-  CommentReqId.value = reqId;
-  CommentReqDesc.value = reqDesc;
-  ShowCommentDialogFlag.value = true;
-}
+// 处理滚动事件
+const handleScroll = (event: Event) => {
+  console.log('handleScroll');
+  if (!scrollTargetRef.value) return;
 
-function onLoad(index: any, done: any) {
-  done();
-}
+  const currentScrollTop = scrollTargetRef.value.scrollTop;
+  isReverse.value = currentScrollTop < lastScrollTop;
+  lastScrollTop = currentScrollTop;
+  console.log('isReverse:', isReverse.value);
+};
 
-async function GetReqAnalysis(item: any) {
-  const detailResp = await fetch('/api/stream-requirement', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      //'Authorization': 'Bearer ' + Password.value
-    },
-    body: JSON.stringify({
-      model: 'gpt-4',
-      requirement: item.description,
-      temperature: 0.7,
-    }),
-  });
-
-  const detailReader = detailResp.body!.getReader();
-  const detailDecoder = new TextDecoder('utf-8');
-  let oldConsoleLog = window.console.log;
-  window.console.log = function () {
-    return;
-  };
-
-  item.comment = '';
-  while (true) {
-    const { value, done } = await detailReader.read();
-    expanded.value = true;
-    if (value) {
-      item.comment = item.comment + detailDecoder.decode(value);
+async function onLoad(index: any, done: any) {
+  try {
+    const success = await specStore.curSpec.loadNextPageContentSpecs();
+    if (!success) {
+      console.log('load next wait 1000s');
+      await sleep(1000); // 加载失败时延迟 1 秒
+      done(true);
+      return;
     }
-
-    if (done) {
-      break;
-    }
+    done();
+  } catch (error) {
+    console.log('load next wait 1000s');
+    await sleep(1000); // 加载失败时延迟 1 秒
+    done(); // 出错时停止加载
   }
-
-  window.console.log = oldConsoleLog;
 }
 
-async function GetTestAnalysis(item: any) {
-  const detailResp = await fetch('/api/stream-testpoint', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      //'Authorization': 'Bearer ' + Password.value
-    },
-    body: JSON.stringify({
-      model: 'gpt-4',
-      requirement: item.description,
-      temperature: 0.7,
-    }),
-  });
-
-  const detailReader = detailResp.body!.getReader();
-  const detailDecoder = new TextDecoder('utf-8');
-  let oldConsoleLog = window.console.log;
-  window.console.log = function () {
-    return;
-  };
-
-  item.comment = '';
-  while (true) {
-    const { value, done } = await detailReader.read();
-    expanded.value = true;
-    if (value) {
-      item.comment = item.comment + detailDecoder.decode(value);
-    }
-
-    if (done) {
-      break;
-    }
-  }
-
-  window.console.log = oldConsoleLog;
-}
-
-function OpenEdit(item: any) {
-  item.openEdit = true;
-}
-
-function CloseEdit(item: any) {
-  item.openEdit = false;
-}
+onMounted(() => {
+  // 确保组件挂载后启用无限滚动
+  setTimeout(() => {
+    isDisabled.value = false;
+  }, 100);
+});
 </script>
 
 <style>

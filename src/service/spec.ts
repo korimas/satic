@@ -8,6 +8,7 @@ export class SpecTree {
   public contentNodes: SpecItem[];
   public contentNodesMap: Map<number, SpecItem>;
   public selectedNode: number;
+  public inited: boolean;
 
   constructor() {
     this.treeNodes = [];
@@ -15,6 +16,7 @@ export class SpecTree {
     this.contentNodes = [];
     this.contentNodesMap = new Map<number, SpecItem>();
     this.selectedNode = -1;
+    this.inited = false;
   }
 
   public reformatSpec(spec: SpecItem) {
@@ -25,6 +27,7 @@ export class SpecTree {
   public async init() {
     await this.loadRootSpecs();
     await this.loadTopContentSpecs();
+    this.inited = true;
   }
 
   public async loadTopContentSpecs() {
@@ -54,6 +57,28 @@ export class SpecTree {
       this.contentNodes = specs;
       specs.forEach((spec: SpecItem) => {
         this.contentNodesMap.set(spec.id, spec);
+      });
+    }
+    return resp.success;
+  }
+
+  public async loadNextPageContentSpecs() {
+    console.log('load next page', this.contentNodes);
+    const lastNode = this.contentNodes[this.contentNodes.length - 1];
+    if (!lastNode) {
+      throw new Error('No last node found');
+    }
+    console.log('loadNextPageContentSpecs', lastNode.sequence);
+    const resp = await API.getNextPageSpecItems(lastNode.sequence);
+    if (resp.success) {
+      const specs = resp.result;
+
+      if (specs.length === 0) {
+        return false;
+      }
+      specs.forEach((spec: SpecItem) => {
+        this.contentNodesMap.set(spec.id, spec);
+        this.contentNodes.push(spec);
       });
     }
     return resp.success;
