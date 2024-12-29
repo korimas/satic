@@ -73,7 +73,7 @@ export class SpecTree {
     if (resp.success) {
       const specs = resp.result;
 
-      if (specs.length === 0) {
+      if (specs.length < 50) {
         return false;
       }
       specs.forEach((spec: SpecItem) => {
