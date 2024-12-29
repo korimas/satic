@@ -74,7 +74,7 @@ let API = {
   getTopSpecItems() {
     return request('/spec_items', 'get', {
       params: {
-        top: 50,
+        top: 25,
       },
     });
   },

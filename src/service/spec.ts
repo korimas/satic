@@ -72,14 +72,14 @@ export class SpecTree {
     const resp = await API.getNextPageSpecItems(lastNode.sequence);
     if (resp.success) {
       const specs = resp.result;
-
-      if (specs.length < 50) {
-        return false;
-      }
       specs.forEach((spec: SpecItem) => {
         this.contentNodesMap.set(spec.id, spec);
         this.contentNodes.push(spec);
       });
+
+      if (specs.length < 25) { // eatch page has 25 items
+        return false;
+      }
     }
     return resp.success;
   }

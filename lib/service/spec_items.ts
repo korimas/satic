@@ -70,13 +70,13 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!near) {
       throw new Error('Item not found');
     }
-    // 查询near_id上面25条数据
+    // 查询near_id上面12条数据
     let above = await this.sql`SELECT * FROM spec_items WHERE sequence < 
-      ${near.sequence} ORDER BY sequence DESC LIMIT 25`; // 25
+      ${near.sequence} ORDER BY sequence DESC LIMIT 12`; // 12
 
-    // 查询near_id下面25条数据
+    // 查询near_id下面12条数据
     let below = await this.sql`SELECT * FROM spec_items WHERE sequence > 
-      ${near.sequence} ORDER BY sequence ASC LIMIT 25`; // 25
+      ${near.sequence} ORDER BY sequence ASC LIMIT 12`; // 12
     if (!Array.isArray(above)) {
       above = [];
     }

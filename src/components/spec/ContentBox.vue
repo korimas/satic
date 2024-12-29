@@ -101,7 +101,7 @@ async function onLoad(index: any, done: any) {
     if (!success) {
       console.log('load next wait 1000s');
       await sleep(1000); // 加载失败时延迟 1 秒
-      done(true);
+      done(true); // stop TODO: need resume
       return;
     }
     done();
