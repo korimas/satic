@@ -174,7 +174,7 @@ function jumpToNode(nodeId: number) {
 
   // 使用 scrollIntoView 平滑滚动到目标位置
   targetElement.scrollIntoView({
-    behavior: 'smooth',
+    behavior: 'auto',
     block: 'start',
   });
 }
