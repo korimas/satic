@@ -71,6 +71,14 @@ let API = {
     });
   },
 
+  getTopSpecItems() {
+    return request('/spec_items', 'get', {
+      params: {
+        top: 50,
+      },
+    });
+  },
+
   getSpecItemsNearBy(id) {
     return request('/spec_items', 'get', {
       params: {

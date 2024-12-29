@@ -33,7 +33,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     const top = url.searchParams.get('top');
     if (top) {
       // get top list
-      return await this.getTopSpecItems();
+      return await this.getTopSpecItems(Number(top));
     }
 
     // get list
@@ -41,9 +41,9 @@ export class SpecItemsHandler extends BaseApiHandler {
     return result;
   }
 
-  protected async getTopSpecItems() {
+  protected async getTopSpecItems(limit: number) {
     const result = await this
-      .sql`SELECT * FROM spec_items ORDER BY sequence ASC LIMIT 50`;
+      .sql`SELECT * FROM spec_items ORDER BY sequence ASC LIMIT ${limit}`;
     if (!Array.isArray(result) || result.length === 0) {
       return [];
     }
