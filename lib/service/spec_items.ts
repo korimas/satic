@@ -229,10 +229,15 @@ export class SpecItemsHandler extends BaseApiHandler {
         return aboveSequence;
       case 'below':
       case 'child':
-        const ref_next = await this.getNextItem(ref_item.sequence, ref_item.depth);
+        let ref_next = await this.getNextItem(ref_item.sequence, ref_item.depth);
         let belowSequence = 0;
         if (!ref_next) {
-          belowSequence = ref_item.sequence + SequenceStep; // last item
+          const lastItem = await this.getTheLastItem();
+          if (!lastItem) {
+            belowSequence = SequenceStep; // first item
+          } else {
+            belowSequence = lastItem.sequence + SequenceStep; // last item
+          }
         } else {
           belowSequence = Math.floor(
             (ref_item.sequence + ref_next.sequence) / 2
@@ -261,6 +266,15 @@ export class SpecItemsHandler extends BaseApiHandler {
       return null;
     }
     return last[0] as SpecItem
+  }
+
+  protected async getTheLastItem() {
+    const last = await this
+      .sql`SELECT * FROM spec_items ORDER BY sequence DESC LIMIT 1`;
+    if (!Array.isArray(last) || last.length === 0) {
+      return null;
+    }
+    return last[0] as SpecItem;
   }
 
   protected async handlePost(req: Request) {
