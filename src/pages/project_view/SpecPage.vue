@@ -97,6 +97,7 @@ let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
 
 let isSiderBarContentShow = ref(true);
+let restoreSplitterModel = 0;
 
 let CurrentTab = ref('Explorer');
 let preTab = 'Explorer';
@@ -132,14 +133,13 @@ function EnterChat() {
 function hiddenShowSideContent(tabName: string) {
   if (CurrentTab.value === preTab && isSiderBarContentShow.value) {
     isSiderBarContentShow.value = false;
-    splitterMin = 57;
-    splitterModel.value = splitterMin;
-    splitterLimits.value = [splitterMin, Infinity];
+    restoreSplitterModel = splitterModel.value;
+    splitterModel.value = 57;
+    splitterLimits.value = [57, Infinity];
   } else {
     console.log("show side content")
-    splitterMin = 310;
     isSiderBarContentShow.value = true;
-    splitterModel.value = splitterMin;
+    splitterModel.value = restoreSplitterModel;
     splitterLimits.value = [splitterMin, Infinity];
   }
 }
