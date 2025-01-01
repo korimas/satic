@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, onUnmounted } from 'vue';
 import ExplorerTab from 'components/spec/tabs/ExplorerTab.vue';
 import MiLoading from 'components/base/MiLoading.vue';
 import { useStateStore } from 'src/stores/state';
@@ -142,7 +142,9 @@ function hiddenShowSideContent(tabName: string) {
     splitterLimits.value = [splitterMin, Infinity];
   }
 }
-
+onUnmounted(() => {
+  store.State.sideMenuShow = true;
+});
 </script>
 
 <style scoped>

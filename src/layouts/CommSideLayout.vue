@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import CommonSide from 'src/components/side/CommonSide.vue';
 import { useStateStore } from 'src/stores/state';
 const splitterMin = 280;
