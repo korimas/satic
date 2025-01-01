@@ -138,9 +138,11 @@ function hiddenShowSideContent(tabName: string) {
     splitterLimits.value = [57, Infinity];
   } else {
     console.log("show side content")
-    isSiderBarContentShow.value = true;
-    splitterModel.value = restoreSplitterModel;
-    splitterLimits.value = [splitterMin, Infinity];
+    if (!isSiderBarContentShow.value) {
+      isSiderBarContentShow.value = true;
+      splitterModel.value = restoreSplitterModel;
+      splitterLimits.value = [splitterMin, Infinity];
+    }
   }
 }
 onUnmounted(() => {
