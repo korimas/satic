@@ -27,8 +27,8 @@
             </q-tab>
           </q-tabs>
           <q-space />
-          <q-btn flat icon="o_vertical_split" @click="store.State.sideMenuShow = !store.State.sideMenuShow"
-            class="q-mb-md">
+          <q-btn :ripple="false" flat icon="o_vertical_split"
+            @click="store.State.sideMenuShow = !store.State.sideMenuShow" class="q-mb-md">
             <q-tooltip anchor="center right" self="center left" transition-show="scale" transition-hide="scale">
               Hide/Show
             </q-tooltip>
