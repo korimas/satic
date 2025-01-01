@@ -265,7 +265,7 @@ export class SpecTree {
     }
     this.treeNodesMap.delete(intID);
 
-    if (deletedItem.parent_id === 0) {
+    if (!deletedItem.parent_id || deletedItem.parent_id <= 0) {
       const index = this.treeNodes.indexOf(deletedItem);
       this.treeNodes.splice(index, 1);
       return true;
