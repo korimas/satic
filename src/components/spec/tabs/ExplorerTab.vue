@@ -7,12 +7,12 @@
       <q-btn unelevated round size="sm" icon="delete_forever" @click="deleteItems" :disable="tickStrategy === 'none'">
         <q-tooltip class="bg-grey-3 text-black">删除</q-tooltip>
       </q-btn>
-      <q-btn unelevated round size="sm" icon="output">
+      <!-- <q-btn unelevated round size="sm" icon="output">
         <q-tooltip class="bg-grey-3 text-black">导出</q-tooltip>
       </q-btn>
       <q-btn unelevated round size="sm" icon="input" :disable="true">
         <q-tooltip class="bg-grey-3 text-black">导入</q-tooltip>
-      </q-btn>
+      </q-btn> -->
       <q-btn unelevated round size="sm" icon="refresh" @click="handleRefresh">
         <q-tooltip class="bg-grey-3 text-black">刷新</q-tooltip>
       </q-btn>
