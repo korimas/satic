@@ -2,7 +2,7 @@
   <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
     <!-- Top sentinel for reverse scrolling -->
     <div ref="topSentinel" class="sentinel"></div>
-    <div v-if="isLoading" class="row justify-center q-my-md">
+    <div v-if="isReverseLoading" class="row justify-center q-my-md">
       <q-spinner-dots color="primary" size="40px" />
     </div>
 
