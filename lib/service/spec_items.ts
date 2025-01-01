@@ -229,9 +229,10 @@ export class SpecItemsHandler extends BaseApiHandler {
         return aboveSequence;
       case 'below':
       case 'child':
-        let ref_next = await this.getNextItem(ref_item.sequence, ref_item.depth);
+        let pre_item = ref_item;
+        let next_item = await this.getNextItem(ref_item.sequence, ref_item.depth);
         let belowSequence = 0;
-        if (!ref_next) {
+        if (!next_item) {
           const lastItem = await this.getTheLastItem();
           if (!lastItem) {
             belowSequence = SequenceStep; // first item
@@ -239,13 +240,21 @@ export class SpecItemsHandler extends BaseApiHandler {
             belowSequence = lastItem.sequence + SequenceStep; // last item
           }
         } else {
+          if (ref_item.has_children) {
+            const lastChild = await this.getTheLastChild(ref_item.id);
+            if (!lastChild) {
+              throw new Error('No last child found');
+            } else {
+              pre_item = lastChild; // last child
+            }
+          }
           belowSequence = Math.floor(
-            (ref_item.sequence + ref_next.sequence) / 2
+            (pre_item.sequence + next_item.sequence) / 2
           ); // between
 
           if (
-            belowSequence === ref_item.sequence ||
-            belowSequence === ref_next.sequence
+            belowSequence === pre_item.sequence ||
+            belowSequence === next_item.sequence
           ) {
             // 已经没有空间插入新的item，需要重新排序
             return -1;
