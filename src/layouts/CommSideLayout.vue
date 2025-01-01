@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onUnmounted } from 'vue';
+import { ref } from 'vue';
 import CommonSide from 'src/components/side/CommonSide.vue';
 import { useStateStore } from 'src/stores/state';
 const splitterMin = 280;
@@ -20,15 +20,6 @@ let splitterLimits = ref([splitterMin, Infinity]);
 let store = useStateStore();
 
 store.State.sideMenuShow = true;
-
-watch(() => store.State.sideMenuShow, (val) => {
-  console.log('sideMenuShow: ', val);
-  if (val) {
-    splitterModel.value = splitterMin;
-  } else {
-    splitterModel.value = 0;
-  }
-});
 
 </script>
 <style>
