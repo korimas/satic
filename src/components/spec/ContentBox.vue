@@ -9,6 +9,7 @@
         <q-card-section>
           <div class="row items-center no-wrap">
             <div class="col">
+              <!-- TODO： 根据depth设置不同的level header -->
               <div class="text-h6">{{ item.summary }}</div>
             </div>
 
@@ -40,7 +41,7 @@
           </div>
         </q-card-section>
 
-        <q-card-section v-if="item.description">
+        <q-card-section v-if="item.description" class="text-body1">
           <div v-html="item.description" />
         </q-card-section>
       </q-card>
