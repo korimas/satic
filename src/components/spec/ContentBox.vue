@@ -79,7 +79,7 @@ const topSentinel = ref();
 const bottomSentinel = ref();
 const isLoading = ref(false);
 const isReverseLoading = ref(false);
-const splitterMin = 300;
+const splitterMin = 280;
 let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
 

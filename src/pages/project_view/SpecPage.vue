@@ -110,7 +110,7 @@ const ContentBox = defineAsyncComponent({
   timeout: 15000,
 });
 
-const splitterMin = 350;
+const splitterMin = 310;
 let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
 
