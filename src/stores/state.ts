@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia';
-import { Project, SpecItem } from 'src/data/structs';
-import { SpecTree } from 'src/service/spec';
+import { Project } from 'src/data/structs';
 
 interface State {
   curProject: Project;
-  curSpec: SpecTree;
 }
 
 export const useStateStore = defineStore('state', {

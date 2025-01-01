@@ -4,14 +4,7 @@
       <q-btn unelevated round size="sm" icon="task_alt" @click="switchTick">
         <q-tooltip class="bg-grey-3 text-black">批量选择</q-tooltip>
       </q-btn>
-      <q-btn
-        unelevated
-        round
-        size="sm"
-        icon="delete_forever"
-        @click="deleteItems"
-        :disable="tickStrategy === 'none'"
-      >
+      <q-btn unelevated round size="sm" icon="delete_forever" @click="deleteItems" :disable="tickStrategy === 'none'">
         <q-tooltip class="bg-grey-3 text-black">删除</q-tooltip>
       </q-btn>
       <q-btn unelevated round size="sm" icon="output">
@@ -23,7 +16,12 @@
       <q-btn unelevated round size="sm" icon="refresh" @click="handleRefresh">
         <q-tooltip class="bg-grey-3 text-black">刷新</q-tooltip>
       </q-btn>
+
       <q-space />
+      <q-btn unelevated round size="sm" icon="o_chrome_reader_mode"
+        @click="store.contentDetailVisible = !store.contentDetailVisible" class="material-icons-outlined">
+        <q-tooltip class="bg-grey-3 text-black">展开详细</q-tooltip>
+      </q-btn>
       <q-btn unelevated size="sm" icon="more_horiz" padding="xs">
         <q-menu auto-close>
           <q-list dense style="margin: 3px">
@@ -44,38 +42,18 @@
         </q-menu>
       </q-btn>
     </div>
-    <MiTree
-      class="col"
-      style="margin-top: 1px"
-      :nodes="store.curSpec.treeNodes"
-      :item-menus="SpecTreeItemMenus"
-      :empty-menus="SpecTreeEmptyMenus"
-      :tick-strategy="tickStrategy"
-      @doubleClick="doubleClick"
-      @single-click="singleClick"
-      @menu-click="menuClick"
-      @lazy-load="lazyLoadChildren"
-      @ticked-update="tickedUpdate"
-    />
+    <MiTree class="col" style="margin-top: 1px" :nodes="store.curSpec.treeNodes" :item-menus="SpecTreeItemMenus"
+      :empty-menus="SpecTreeEmptyMenus" :tick-strategy="tickStrategy" @doubleClick="doubleClick"
+      @single-click="singleClick" @menu-click="menuClick" @lazy-load="lazyLoadChildren" @ticked-update="tickedUpdate" />
     <q-inner-loading :showing="loadingTree">
       <q-spinner-gears size="50px" color="primary" />
     </q-inner-loading>
   </div>
 
-  <q-drawer
-    side="right"
-    overlay
-    v-model="SpecItemCreateShow"
-    bordered
-    :width="$q.screen.width > 800 ? 800 : $q.screen.width"
-    :breakpoint="800"
-    style="z-index: 1000"
-  >
-    <SpecItemCreate
-      @close="SpecItemCreateShow = !SpecItemCreateShow"
-      :ref-node="operationNode"
-      :position-type="positionType"
-    ></SpecItemCreate>
+  <q-drawer side="right" overlay v-model="SpecItemCreateShow" bordered
+    :width="$q.screen.width > 800 ? 800 : $q.screen.width" :breakpoint="800" style="z-index: 1000">
+    <SpecItemCreate @close="SpecItemCreateShow = !SpecItemCreateShow" :ref-node="operationNode"
+      :position-type="positionType"></SpecItemCreate>
   </q-drawer>
 </template>
 

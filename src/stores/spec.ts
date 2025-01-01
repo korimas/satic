@@ -5,6 +5,7 @@ import { SpecTree } from 'src/service/spec';
 export const useSpecStore = defineStore('spec', {
   state: () => ({
     curSpec: new SpecTree(),
+    contentDetailVisible: false,
   }),
 
   actions: {

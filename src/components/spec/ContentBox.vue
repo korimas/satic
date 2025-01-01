@@ -1,61 +1,71 @@
 <template>
-  <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
-    <!-- Top sentinel for reverse scrolling -->
-    <div ref="topSentinel" class="sentinel"></div>
-    <div v-if="isReverseLoading" class="row justify-center q-my-md">
-      <q-spinner-dots color="primary" size="40px" />
-    </div>
 
-    <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
-      class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
-      <span class="q-focus-helper"></span>
-
-      <q-card-section>
-        <div class="row items-center no-wrap">
-          <div class="col">
-            <div class="text-h6">{{ item.summary }}</div>
-          </div>
-
-          <div class="col-auto">
-            <q-btn round size="sm" flat icon="smart_toy">
-              <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
-            </q-btn>
-
-            <q-btn round size="sm" flat icon="bug_report">
-              <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
-            </q-btn>
-
-            <q-btn color="grey-7" round flat size="sm" icon="more_vert">
-              <q-menu auto-close>
-                <q-list dense>
-                  <q-item clickable>
-                    <q-item-section>Remove</q-item-section>
-                  </q-item>
-                  <q-item clickable>
-                    <q-item-section>Edit</q-item-section>
-                  </q-item>
-                  <q-item clickable>
-                    <q-item-section>Share</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
-          </div>
+  <q-splitter reverse v-model="splitterModel" unit="px" :limits="splitterLimits"
+    :class="{ 'hide-splitter': !specStore.contentDetailVisible }">
+    <template v-slot:before>
+      <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
+        <!-- Top sentinel for reverse scrolling -->
+        <div ref="topSentinel" class="sentinel"></div>
+        <div v-if="isReverseLoading" class="row justify-center q-my-md">
+          <q-spinner-dots color="primary" size="40px" />
         </div>
-      </q-card-section>
 
-      <q-card-section v-if="item.description" class="text-body2">
-        <div v-html="item.description" />
-      </q-card-section>
-    </q-card>
+        <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
+          class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
+          <span class="q-focus-helper"></span>
 
-    <!-- Bottom sentinel for forward scrolling -->
-    <div ref="bottomSentinel" class="sentinel"></div>
+          <q-card-section>
+            <div class="row items-center no-wrap">
+              <div class="col">
+                <div class="text-h6">{{ item.summary }}</div>
+              </div>
 
-    <div v-if="isLoading" class="row justify-center q-my-md">
-      <q-spinner-dots color="primary" size="40px" />
-    </div>
-  </div>
+              <div class="col-auto">
+                <q-btn round size="sm" flat icon="smart_toy">
+                  <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
+                </q-btn>
+
+                <q-btn round size="sm" flat icon="bug_report">
+                  <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
+                </q-btn>
+
+                <q-btn color="grey-7" round flat size="sm" icon="more_vert">
+                  <q-menu auto-close>
+                    <q-list dense>
+                      <q-item clickable>
+                        <q-item-section>Remove</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>Edit</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>Share</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
+            </div>
+          </q-card-section>
+
+          <q-card-section v-if="item.description" class="text-body2">
+            <div v-html="item.description" />
+          </q-card-section>
+        </q-card>
+
+        <!-- Bottom sentinel for forward scrolling -->
+        <div ref="bottomSentinel" class="sentinel"></div>
+
+        <div v-if="isLoading" class="row justify-center q-my-md">
+          <q-spinner-dots color="primary" size="40px" />
+        </div>
+      </div>
+    </template>
+
+    <template v-slot:after>
+      <div v-if="specStore.contentDetailVisible">detail content</div>
+    </template>
+  </q-splitter>
 </template>
 
 <script setup lang="ts">
@@ -69,6 +79,10 @@ const topSentinel = ref();
 const bottomSentinel = ref();
 const isLoading = ref(false);
 const isReverseLoading = ref(false);
+const splitterMin = 300;
+let splitterModel = ref(splitterMin);
+let splitterLimits = ref([splitterMin, Infinity]);
+
 let hightTimer: ReturnType<typeof setTimeout> | null = null;
 let preTargetElement: any = null;
 
@@ -77,7 +91,7 @@ let bottomObserver: IntersectionObserver | null = null;
 
 async function loadContent(isReverse: boolean) {
   let loadingFlag = isReverse ? isReverseLoading : isLoading
-  if (loadingFlag.value) return;
+  if (isReverseLoading.value || isLoading.value) return;
 
   const topNode = specStore.curSpec.contentNodes[0];
 
@@ -204,6 +218,14 @@ watch(
 <style>
 .q-splitter__panel {
   z-index: auto;
+}
+
+.hide-splitter .q-splitter__after {
+  display: none !important;
+}
+
+.hide-splitter .q-splitter__separator {
+  display: none !important;
 }
 
 .sentinel {
