@@ -1,5 +1,6 @@
 <template>
-  <q-splitter v-model="splitterModel" unit="px" :limits="splitterLimits">
+  <q-splitter v-model="splitterModel" unit="px" :limits="splitterLimits"
+    :class="{ 'doc-side-hide-splitter': !isSiderBarContentShow }">
     <template v-slot:before>
       <div class="row no-wrap">
         <div class="sidebar-menu column">
@@ -147,7 +148,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .sidebar-menu {
   background: #f0f0f0;
   border-right: 1px solid #e6e6e6;
@@ -157,5 +158,9 @@ onUnmounted(() => {
 .sidebar-content {
   height: calc(100vh - 51px);
   width: 100%;
+}
+
+.doc-side-hide-splitter>.q-splitter__separator {
+  display: none !important;
 }
 </style>
