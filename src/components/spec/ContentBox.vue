@@ -1,21 +1,9 @@
 <template>
-  <div
-    ref="scrollTargetRef"
-    class="q-pa-sm fit"
-    style="max-height: calc(100vh - 51px); overflow: auto"
-  >
+  <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
     <!-- Top sentinel for reverse scrolling -->
     <div ref="topSentinel" class="sentinel"></div>
-    <div
-      v-for="(item, index) in specStore.curSpec.contentNodes"
-      :key="index"
-      class="caption doc-content"
-    >
-      <q-card
-        flat
-        class="q-hoverable"
-        style="white-space: pre-wrap; min-height: 120px"
-      >
+    <div v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" class="caption doc-content">
+      <q-card flat class="q-hoverable" style="white-space: pre-wrap; min-height: 80px">
         <span class="q-focus-helper"></span>
 
         <q-card-section>
@@ -52,7 +40,7 @@
           </div>
         </q-card-section>
 
-        <q-card-section>
+        <q-card-section v-if="item.description">
           <div v-html="item.description" />
         </q-card-section>
       </q-card>

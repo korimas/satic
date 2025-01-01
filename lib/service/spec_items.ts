@@ -154,9 +154,9 @@ export class SpecItemsHandler extends BaseApiHandler {
     return pre[0] as SpecItem;
   }
 
-  protected async getNextItem(sequence: number) {
+  protected async getNextItem(sequence: number, depth: number) {
     const next = await this
-      .sql`SELECT * FROM spec_items WHERE sequence > ${sequence} ORDER BY sequence ASC LIMIT 1`;
+      .sql`SELECT * FROM spec_items WHERE sequence > ${sequence} and depth = ${depth} ORDER BY sequence ASC LIMIT 1`;
     if (!Array.isArray(next) || next.length === 0) {
       return null;
     }
@@ -229,7 +229,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         return aboveSequence;
       case 'below':
       case 'child':
-        let ref_next = await this.getNextItem(ref_item.sequence);
+        const ref_next = await this.getNextItem(ref_item.sequence, ref_item.depth);
         let belowSequence = 0;
         if (!ref_next) {
           belowSequence = ref_item.sequence + SequenceStep; // last item
@@ -252,6 +252,15 @@ export class SpecItemsHandler extends BaseApiHandler {
       default:
         throw new Error('Invalid position type');
     }
+  }
+
+  protected async getTheLastChild(parent_id: number) {
+    const last = await this
+      .sql`SELECT * FROM spec_items WHERE parent_id = ${parent_id} ORDER BY sequence DESC LIMIT 1`;
+    if (!Array.isArray(last) || last.length === 0) {
+      return null;
+    }
+    return last[0] as SpecItem
   }
 
   protected async handlePost(req: Request) {
