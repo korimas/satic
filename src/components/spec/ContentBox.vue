@@ -2,6 +2,9 @@
   <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
     <!-- Top sentinel for reverse scrolling -->
     <div ref="topSentinel" class="sentinel"></div>
+    <div v-if="isLoading" class="row justify-center q-my-md">
+      <q-spinner-dots color="primary" size="40px" />
+    </div>
 
     <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
       class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
@@ -65,6 +68,7 @@ const scrollTargetRef = ref();
 const topSentinel = ref();
 const bottomSentinel = ref();
 const isLoading = ref(false);
+const isReverseLoading = ref(false);
 let hightTimer: ReturnType<typeof setTimeout> | null = null;
 let preTargetElement: any = null;
 
@@ -72,11 +76,12 @@ let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
 
 async function loadContent(isReverse: boolean) {
-  if (isLoading.value) return;
+  let loadingFlag = isReverse ? isReverseLoading : isLoading
+  if (loadingFlag.value) return;
 
   const topNode = specStore.curSpec.contentNodes[0];
 
-  isLoading.value = true;
+  loadingFlag.value = true;
   try {
     const success = isReverse
       ? await specStore.curSpec.loadPrevPageContentSpecs()
@@ -91,7 +96,7 @@ async function loadContent(isReverse: boolean) {
     console.log('Error loading content:');
     await sleep(1000);
   } finally {
-    isLoading.value = false;
+    loadingFlag.value = false;
   }
 
   if (isReverse && topNode) {
