@@ -2,50 +2,49 @@
   <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
     <!-- Top sentinel for reverse scrolling -->
     <div ref="topSentinel" class="sentinel"></div>
-    <div v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" class="caption doc-content">
-      <q-card flat class="q-hoverable" style="white-space: pre-wrap; min-height: 80px">
-        <span class="q-focus-helper"></span>
 
-        <q-card-section>
-          <div class="row items-center no-wrap">
-            <div class="col">
-              <!-- TODO： 根据depth设置不同的level header -->
-              <div class="text-h6">{{ item.summary }}</div>
-            </div>
+    <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
+      class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
+      <span class="q-focus-helper"></span>
 
-            <div class="col-auto">
-              <q-btn round size="sm" flat icon="smart_toy">
-                <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
-              </q-btn>
-
-              <q-btn round size="sm" flat icon="bug_report">
-                <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
-              </q-btn>
-
-              <q-btn color="grey-7" round flat size="sm" icon="more_vert">
-                <q-menu auto-close>
-                  <q-list dense>
-                    <q-item clickable>
-                      <q-item-section>Remove</q-item-section>
-                    </q-item>
-                    <q-item clickable>
-                      <q-item-section>Edit</q-item-section>
-                    </q-item>
-                    <q-item clickable>
-                      <q-item-section>Share</q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-btn>
-            </div>
+      <q-card-section>
+        <div class="row items-center no-wrap">
+          <div class="col">
+            <div class="text-h6">{{ item.summary }}</div>
           </div>
-        </q-card-section>
 
-        <q-card-section v-if="item.description" class="text-body1">
-          <div v-html="item.description" />
-        </q-card-section>
-      </q-card>
-    </div>
+          <div class="col-auto">
+            <q-btn round size="sm" flat icon="smart_toy">
+              <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
+            </q-btn>
+
+            <q-btn round size="sm" flat icon="bug_report">
+              <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
+            </q-btn>
+
+            <q-btn color="grey-7" round flat size="sm" icon="more_vert">
+              <q-menu auto-close>
+                <q-list dense>
+                  <q-item clickable>
+                    <q-item-section>Remove</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Edit</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>Share</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-section v-if="item.description" class="text-body2">
+        <div v-html="item.description" />
+      </q-card-section>
+    </q-card>
 
     <!-- Bottom sentinel for forward scrolling -->
     <div ref="bottomSentinel" class="sentinel"></div>
@@ -66,6 +65,8 @@ const scrollTargetRef = ref();
 const topSentinel = ref();
 const bottomSentinel = ref();
 const isLoading = ref(false);
+let hightTimer: ReturnType<typeof setTimeout> | null = null;
+let preTargetElement: any = null;
 
 let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
@@ -166,6 +167,19 @@ function jumpToNode(nodeId: number) {
     behavior: 'auto', // smooth or auto
     block: 'start', // start, center, end
   });
+
+  //让对应的节点高亮显示
+  targetElement.classList.add('bg-light-blue-1');
+  if (hightTimer) {
+    clearTimeout(hightTimer);
+    preTargetElement.classList.remove('bg-light-blue-1');
+  }
+  preTargetElement = targetElement;
+
+  // 1.5s 后取消高亮显示
+  hightTimer = setTimeout(() => {
+    targetElement.classList.remove('bg-light-blue-1');
+  }, 300);
 }
 
 watch(
