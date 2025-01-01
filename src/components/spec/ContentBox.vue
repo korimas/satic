@@ -1,7 +1,7 @@
 <template>
 
   <q-splitter reverse v-model="splitterModel" unit="px" :limits="splitterLimits"
-    :class="{ 'hide-splitter': !specStore.contentDetailVisible }">
+    :class="{ 'doc-hide-splitter': !specStore.contentDetailVisible }">
     <template v-slot:before>
       <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
         <!-- Top sentinel for reverse scrolling -->
@@ -220,11 +220,11 @@ watch(
   z-index: auto;
 }
 
-.hide-splitter .q-splitter__after {
+.doc-hide-splitter .q-splitter__after {
   display: none !important;
 }
 
-.hide-splitter .q-splitter__separator {
+.doc-hide-splitter .q-splitter__separator {
   display: none !important;
 }
 
