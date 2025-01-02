@@ -2,9 +2,9 @@
     <q-expansion-item expand-separator icon="view_list" label="DETAILS" default-opened header-class="bg-grey-2">
         <q-list bordered dense class="property-list">
             <q-item v-for="([key, value], index) in Object.entries(attributes)" :key="index" class="row">
-                <q-item-section class="col label-section text-grey-7 text-subtitle2 overflow-hidden"
-                    style="text-overflow: ellipsis; white-space: nowrap;">{{ key
-                    }}</q-item-section>
+                <q-item-section class="col label-section text-grey-7 text-subtitle2 overflow-hidden">
+                    {{ key }}
+                </q-item-section>
                 <q-item-section>{{ value }}</q-item-section>
             </q-item>
         </q-list>
@@ -13,9 +13,9 @@
     <q-expansion-item expand-separator icon="support" label="REFERENCES" default-opened header-class="bg-grey-2">
         <q-list bordered dense class="property-list">
             <q-item v-for="([key, value], index) in Object.entries(attributes)" :key="index" class="row">
-                <q-item-section class="col label-section text-grey-7 text-subtitle2 overflow-hidden"
-                    style="text-overflow: ellipsis; white-space: nowrap;">{{ key
-                    }}</q-item-section>
+                <q-item-section class="col label-section text-grey-7 text-subtitle2 overflow-hidden">
+                    {{ key }}
+                </q-item-section>
                 <q-item-section>{{ value }}</q-item-section>
             </q-item>
         </q-list>
@@ -23,9 +23,9 @@
     <q-expansion-item expand-separator icon="question_answer" label="COMMENTS" default-opened header-class="bg-grey-2">
         <q-list bordered dense class="property-list">
             <q-item v-for="([key, value], index) in Object.entries(attributes)" :key="index" class="row">
-                <q-item-section class="col label-section text-grey-7 text-subtitle2 overflow-hidden"
-                    style="text-overflow: ellipsis; white-space: nowrap;">{{ key
-                    }}</q-item-section>
+                <q-item-section class="col label-section text-grey-7 text-subtitle2 overflow-hidden">
+                    {{ key }}
+                </q-item-section>
                 <q-item-section>{{ value }}</q-item-section>
             </q-item>
         </q-list>
@@ -43,7 +43,7 @@ const attributes = ref({
     HWVersion: 'None',
     Components: 'Lidar-app',
     FusaRelated: 'No',
-    RTCCertificateeqCr: 'NA',
+    RTCCertificateeq: 'NA',
     TestCaseId: 'SWQT-325716'
 })
 
