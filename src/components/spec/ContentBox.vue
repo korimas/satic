@@ -12,6 +12,7 @@
 
         <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
           class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
+          <!-- v-ripple.early  -->
           <span class="q-focus-helper"></span>
 
           <q-card-section>
@@ -63,7 +64,7 @@
     </template>
 
     <template v-slot:after>
-      <div v-if="specStore.contentDetailVisible">detail content</div>
+      <SpecDetialSide v-if="specStore.contentDetailVisible" />
     </template>
   </q-splitter>
 </template>
@@ -72,6 +73,7 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
 import { sleep } from 'src/utils/time';
+import SpecDetialSide from './SpecDetialSide.vue';
 
 const specStore = useSpecStore();
 const scrollTargetRef = ref();
@@ -79,7 +81,7 @@ const topSentinel = ref();
 const bottomSentinel = ref();
 const isLoading = ref(false);
 const isReverseLoading = ref(false);
-const splitterMin = 280;
+const splitterMin = 330;
 let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
 
