@@ -2,9 +2,21 @@
     <div class="editor-wrapper rounded-borders	">
         <!-- 工具栏 -->
         <div class="editor-toolbar row q-gutter-xs q-mb-xs">
+            <q-btn dense flat @click="editor?.chain().focus().undo().run()"
+                :disabled="!editor?.can().chain().focus().undo().run()">
+                <q-icon name="undo" />
+                <q-tooltip class="bg-grey-3 text-black">Undo</q-tooltip>
+            </q-btn>
+            <q-btn dense flat @click="editor?.chain().focus().redo().run()"
+                :disabled="!editor?.can().chain().focus().redo().run()">
+                <q-icon name="redo" />
+                <q-tooltip class="bg-grey-3 text-black">Redo</q-tooltip>
+            </q-btn>
+            <q-separator :vertical="true" />
 
             <q-btn dense flat @click="editor.chain().focus().toggleBold().run()">
                 <q-icon name="format_bold" />
+                <q-tooltip class="bg-grey-3 text-black">Blod</q-tooltip>
             </q-btn>
 
             <q-btn dense flat @click="editor.chain().focus().toggleItalic().run()">
@@ -44,36 +56,36 @@
             </q-btn>
 
             <q-btn dense flat
-                @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()">
-                <q-icon name="o_grid_on" />
+                @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"
+                icon="o_grid_on">
             </q-btn>
+            <q-separator :vertical="true" />
+            <span v-if="editor.isActive('table')" class="q-gutter-xs">
 
-            <span v-if="editor.isActive('table')">
-
-                <q-btn @click="editor.chain().focus().deleteTable().run()">
-                    <q-icon name="img:icons/svg/delete_table.svg" />
+                <q-btn dense flat @click="editor.chain().focus().deleteTable().run()">
+                    <deleteTable />
                 </q-btn>
-                <!-- <q-btn @click="editor.chain().focus().addColumnBefore().run()">
-                    <q-icon name="add_col_before" />
+                <q-btn dense flat @click="editor.chain().focus().addColumnBefore().run()">
+                    <addColBefore />
                 </q-btn>
-                <q-btn @click="editor.chain().focus().addColumnAfter().run()">
-                    <q-icon name="add_col_after" />
+                <q-btn dense flat @click="editor.chain().focus().addColumnAfter().run()">
+                    <addColAfter />
                 </q-btn>
-                <q-btn @click="editor.chain().focus().deleteColumn().run()">
-                    <q-icon name="delete_col" />
+                <q-btn flat dense @click="editor.chain().focus().deleteColumn().run()">
+                    <deleteCol />
                 </q-btn>
-                <q-btn @click="editor.chain().focus().addRowBefore().run()">
+                <!-- <q-btn flat dense @click="editor.chain().focus().addRowBefore().run()">
                     <q-icon name="add_row_before" />
                 </q-btn>
-                <q-btn @click="editor.chain().focus().addRowAfter().run()">
+                <q-btn flat dense @click="editor.chain().focus().addRowAfter().run()">
                     <q-icon name="add_row_after" />
                 </q-btn>
-                <q-btn @click="editor.chain().focus().deleteRow().run()">
+                <q-btn flat dense @click="editor.chain().focus().deleteRow().run()">
                     <q-icon name="delete_row" />
-                </q-btn>
-                <q-btn @click="editor.chain().focus().toggleCellMerge().run()">
-                    <q-icon name="combine_cells" />
                 </q-btn> -->
+                <q-btn flat dense @click="editor.chain().focus().mergeOrSplit().run()">
+                    <combineCell />
+                </q-btn>
             </span>
 
         </div>
@@ -85,6 +97,11 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount } from 'vue';
+import deleteTable from '../icons/deleteTable.vue';
+import addColBefore from '../icons/addColBefore.vue';
+import addColAfter from '../icons/addColAfter.vue';
+import combineCell from '../icons/combineCell.vue';
+import deleteCol from '../icons/deleteCol.vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit'
 import Document from '@tiptap/extension-document'
