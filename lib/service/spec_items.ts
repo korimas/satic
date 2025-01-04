@@ -520,6 +520,13 @@ export class SpecItemsHandler extends BaseApiHandler {
     delete payload.id;
     const newobj = this.escapeSqlQuotes(payload);
 
+    console.log(`
+      UPDATE spec_items
+      SET summary = '${newobj.summary}', description = '${newobj.description}',
+      WHERE id = ${id}
+      RETURNING *
+    `)
+
     const result = (await this.sql`
       UPDATE spec_items
       SET summary = '${newobj.summary}', description = '${newobj.description}',
