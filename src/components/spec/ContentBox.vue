@@ -4,13 +4,10 @@
     :class="{ 'doc-hide-splitter': !specStore.contentDetailVisible, 'content-box-splitter': true }">
     <template v-slot:before>
       <div ref="scrollTargetRef" class="q-pa-sm fit" style="max-height: calc(100vh - 51px); overflow: auto">
-        <!-- Top sentinel for reverse scrolling -->
         <div ref="topSentinel" class="sentinel"></div>
         <div v-if="isReverseLoading" class="row justify-center q-my-md">
           <q-spinner-dots color="primary" size="40px" />
         </div>
-
-
 
         <div v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
           class="column doc-content hover-highlight q-px-md q-pb-md full-width"
@@ -27,13 +24,18 @@
             </div>
 
             <div class="col-auto q-ml-sm">
-              <q-btn round size="sm" flat icon="edit" v-if="!item.isInEdit" @click="item.isInEdit = true">
+              <q-btn v-if="!item.isInEdit" round size="sm" flat icon="edit" @click="openEdit(item)">
                 <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
               </q-btn>
-              <q-btn round size="sm" flat icon="done" v-else @click="updateSpecItem(item)" :loading="isUpdating">
-                <q-tooltip class="bg-grey-3 text-black">完成</q-tooltip>
+              <q-btn v-if="item.isInEdit" round size="sm" flat icon="done" @click="updateSpecItem(item)"
+                :loading="isUpdating">
+                <q-tooltip class="bg-grey-3 text-black">保存</q-tooltip>
               </q-btn>
-              <q-btn color="grey-7" round flat size="sm" icon="more_vert">
+              <q-btn v-if="item.isInEdit" round size="sm" flat icon="close" @click="closeEdit(item)">
+                <q-tooltip class="bg-grey-3 text-black">取消</q-tooltip>
+              </q-btn>
+
+              <q-btn v-if="!item.isInEdit" color="grey-7" round flat size="sm" icon="more_vert">
                 <q-menu auto-close>
                   <q-list dense>
                     <q-item clickable>
@@ -54,12 +56,11 @@
           <div v-if="item.description || item.isInEdit" class="full-width">
             <div v-html="item.description" class="ProseMirror" v-if="!item.isInEdit"
               style="max-width: 100%;overflow-x: auto;scrollbar-width: thin; -webkit-overflow-scrolling: touch;" />
-            <MiEditor v-model="item.description" v-else />
+            <MiEditor v-model="item.edit_content" v-else />
           </div>
 
         </div>
 
-        <!-- Bottom sentinel for forward scrolling -->
         <div ref="bottomSentinel" class="sentinel"></div>
 
         <div v-if="isLoading" class="row justify-center q-my-md">
@@ -109,15 +110,26 @@ let preTargetElement: any = null;
 let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
 
+function openEdit(item: SpecItem) {
+  item.edit_content = item.description;
+  item.isInEdit = true;
+}
+
+function closeEdit(item: SpecItem) {
+  item.isInEdit = false;
+  item.edit_content = '';
+}
+
 async function updateSpecItem(item: SpecItem) {
   isUpdating.value = true;
   console.log('update spec item:', item);
   const resp = await API.updateSpecItem(item.id, {
     summary: item.summary,
-    description: item.description,
+    description: item.edit_content,
   });
   if (resp.success) {
     item.isInEdit = false;
+    item.description = item.edit_content || '';
   }
   isUpdating.value = false;
 }
