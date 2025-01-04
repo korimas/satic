@@ -11,7 +11,7 @@
 
         <div v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
           class="column doc-content hover-highlight q-px-md q-pb-md full-width"
-          style="white-space: pre-wrap; min-height: 60px">
+          style="white-space: pre-wrap; min-height: 60px" @click="specStore.curSpec.jumpToTreeNodeItem = item">
 
           <div class="row items-center no-wrap q-my-md">
             <div class="col">
@@ -160,7 +160,7 @@ async function loadContent(isReverse: boolean) {
 
   if (isReverse && topNode) {
     // 如果是向上滚动，加载完数据后，跳转到原来的位置
-    jumpToNode(topNode.id);
+    jumpToContentNode(topNode.id);
   }
 }
 
@@ -211,7 +211,7 @@ onUnmounted(() => {
   }
 });
 
-function jumpToNode(nodeId: number) {
+function jumpToContentNode(nodeId: number) {
   if (!nodeId || !scrollTargetRef.value) return;
 
   // 找到对应节点的索引
@@ -247,12 +247,12 @@ function jumpToNode(nodeId: number) {
 }
 
 watch(
-  () => specStore.curSpec.selectedNodeId,
+  () => specStore.curSpec.jumpToContentNodeId,
   async (newNodeId) => {
     if (!newNodeId || newNodeId < 0) return;
     await specStore.curSpec.loadContentSpecsNear(newNodeId);
     console.log('scroll to node:', newNodeId);
-    jumpToNode(newNodeId);
+    jumpToContentNode(newNodeId);
   },
   {
     immediate: true, // 立即执行一次

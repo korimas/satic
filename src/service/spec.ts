@@ -8,6 +8,8 @@ export class SpecTree {
   public contentNodes: SpecItem[];
   public contentNodesMap: Map<number, SpecItem>;
   public selectedNodeId: number;
+  public jumpToContentNodeId: number;
+  public jumpToTreeNodeItem: SpecItem | null;
   public inited: boolean;
   public topNodeId: number;
   public bottomNodeId: number;
@@ -18,6 +20,8 @@ export class SpecTree {
     this.contentNodes = [];
     this.contentNodesMap = new Map<number, SpecItem>();
     this.selectedNodeId = -1;
+    this.jumpToContentNodeId = -1
+    this.jumpToTreeNodeItem = null;
     this.topNodeId = -1;
     this.bottomNodeId = -1;
     this.inited = false;
@@ -188,6 +192,7 @@ export class SpecTree {
       // TODO: update contentNodes
       // await this.loadContentSpecsNear(created.id);
       this.selectedNodeId = created.id;
+      this.jumpToContentNodeId = created.id;
 
       return true;
     }

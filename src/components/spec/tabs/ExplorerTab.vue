@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import SpecItemCreate from 'components/spec/SpecItemCreate.vue';
 import MiTree from 'components/base/MiTree.vue';
 import {
@@ -90,6 +90,7 @@ function doubleClick(node: string) {
 async function singleClick(node: string) {
   console.log(node);
   store.curSpec.selectedNodeId = Number(node);
+  store.curSpec.jumpToContentNodeId = Number(node);
 }
 
 function handleRefresh() {
@@ -153,6 +154,27 @@ async function menuClick(menu: string, node: SpecItem, parentNode: SpecItem) {
       break;
   }
 }
+
+function jumpToTreeNode(nodeId: number) {
+  const node = store.curSpec.findNodeById(nodeId);
+  if (!node) {
+    return;
+  }
+
+
+}
+
+watch(
+  () => store.curSpec.jumpToTreeNodeItem,
+  async (newNodeItem) => {
+    if (!newNodeItem || newNodeItem.id < 0) return;
+    const path = newNodeItem.path;
+    console.log('jump to node:', path);
+  },
+  {
+    immediate: true, // 立即执行一次
+  }
+);
 
 store.curSpec.init();
 </script>

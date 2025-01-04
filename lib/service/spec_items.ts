@@ -341,7 +341,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     spec_item.parent_id = ref_item.parent_id || 0;
 
     if (payload.position.type === 'child') {
-      spec_item.path = `${ref_item.path}/${ref_item.id}`;
+      spec_item.path = `${ref_item.path}${ref_item.id}/`;
       spec_item.depth = ref_item.depth + 1;
       spec_item.parent_id = ref_item.id;
     }
