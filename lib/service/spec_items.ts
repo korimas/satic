@@ -472,11 +472,22 @@ export class SpecItemsHandler extends BaseApiHandler {
     return deletedIds;
   }
 
-  private sqlifyObject(obj: any): string {
-    return Object.keys(obj)
-      .map(key => `${key} = ${obj[key]}`)
-      .join(', ');
-  }
+  private sqlifyObject(obj: any): string {  
+    return Object.keys(obj)  
+      .map(key => {  
+        const value = obj[key];  
+        // 处理 null 值  
+        if (value === null) {  
+          return `${key} = NULL`;  
+        }  
+        // 根据值的类型决定是否添加引号  
+        const formattedValue = typeof value === 'string'   
+          ? `'${value.replace(/'/g, "''")}'` // 字符串类型加引号，并转义单引号  
+          : value;  
+        return `${key} = ${formattedValue}`;  
+      })  
+      .join(', ');  
+  }  
 
   protected async handlePut(req: Request) {
     const payload = await req.json();
