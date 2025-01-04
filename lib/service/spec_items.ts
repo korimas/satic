@@ -516,12 +516,13 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
     console.log('payload:', payload);
 
-    const result = (await this.sql`
-      UPDATE spec_items
-      SET summary = $1, description = $2 
-      WHERE id = $3
-      RETURNING *
-    `, payload.summary, payload.description, payload.id) as any[];
+    const result = (await this.sql`  
+      UPDATE spec_items  
+      SET summary = ${payload.summary},   
+          description = ${payload.description}  
+      WHERE id = ${payload.id}  
+      RETURNING *  
+    `) as any[];  
 
     if (result.length === 0) {
       throw new Error('Failed to update spec item');
