@@ -20,6 +20,7 @@ export abstract class BaseApiHandler {
   protected abstract handleGet(req: Request): any;
   protected abstract handlePost(req: Request): any;
   protected abstract handleDelete(req: Request): any;
+  protected abstract handlePut(req: Request): any;
 
   public async handleRequest(req: Request): Promise<Response> {
     // Handle CORS preflight
@@ -51,6 +52,8 @@ export abstract class BaseApiHandler {
         return this.handlePost(req);
       case 'DELETE':
         return this.handleDelete(req);
+      case 'PUT':
+        return this.handlePut(req);
       default:
         throw new Error(`Unsupported method: ${req.method}`);
     }
