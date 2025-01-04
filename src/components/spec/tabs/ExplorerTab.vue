@@ -155,11 +155,24 @@ async function menuClick(menu: string, node: SpecItem, parentNode: SpecItem) {
   }
 }
 
-function jumpToTreeNode(nodeId: number) {
-  const node = store.curSpec.findNodeById(nodeId);
-  if (!node) {
+function jumpToTreeNode(nodeItem: SpecItem) {
+  console.log('jump to node:', nodeItem.path);
+
+  if (nodeItem.depth < 2){
+    // root node
+    
+  }
+
+  const parents = nodeItem.path.split('/');
+  if (parents.length === 0) {
     return;
   }
+
+  console.log('parents:', parents);
+  // const node = store.curSpec.findNodeById(nodeId);
+  // if (!node) {
+  //   return;
+  // }
 
 
 }
@@ -168,8 +181,7 @@ watch(
   () => store.curSpec.jumpToTreeNodeItem,
   async (newNodeItem) => {
     if (!newNodeItem || newNodeItem.id < 0) return;
-    const path = newNodeItem.path;
-    console.log('jump to node:', path);
+    jumpToTreeNode(newNodeItem);
   },
   {
     immediate: true, // 立即执行一次
