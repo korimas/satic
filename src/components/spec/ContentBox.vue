@@ -123,6 +123,12 @@ function closeEdit(item: SpecItem) {
 async function updateSpecItem(item: SpecItem) {
   isUpdating.value = true;
   console.log('update spec item:', item);
+  if (item.edit_content === item.description) {
+    // 没有修改内容
+    item.isInEdit = false;
+    isUpdating.value = false;
+    return;
+  }
   const resp = await API.updateSpecItem(item.id, {
     summary: item.summary,
     description: item.edit_content,
