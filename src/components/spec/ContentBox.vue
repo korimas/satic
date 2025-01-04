@@ -18,7 +18,11 @@
 
           <div class="row items-center no-wrap q-my-md">
             <div class="col">
-              <div style="font-size: 1.5em;" v-if="!item.isInEdit">{{ item.summary }}</div>
+              <div style="font-size: 1.5em;" v-if="!item.isInEdit">
+                {{ item.summary }}
+                <q-badge color="primary">v1.0</q-badge>
+              </div>
+
               <q-input class="bg-white" v-else v-model="item.summary" dense outlined />
             </div>
 
