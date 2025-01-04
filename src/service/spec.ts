@@ -275,6 +275,12 @@ export class SpecTree {
       const deletedIDs = resp.result as number[]; // TODO: 显示未成功删除的消息
       deletedIDs.forEach((id) => {
         this.updateTreeAfterDelete(id);
+        const content = this.contentNodesMap.get(id);
+        if (content) {
+          this.contentNodesMap.delete(id);
+          const index = this.contentNodes.indexOf(content);
+          this.contentNodes.splice(index, 1);
+        }
       });
       return true;
     }
