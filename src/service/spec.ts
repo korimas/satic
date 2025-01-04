@@ -280,6 +280,7 @@ export class SpecTree {
           this.contentNodesMap.delete(id);
           const index = this.contentNodes.indexOf(content);
           this.contentNodes.splice(index, 1);
+          // TODO: 更新其他属性
         }
       });
       return true;
