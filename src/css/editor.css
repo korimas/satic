@@ -16,10 +16,10 @@
 }
 
 /* 编辑器获得焦点时的样式 */
-.ProseMirror:focus {
+/* .ProseMirror:focus {
     border-color: #4299e1;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-}
+} */
 
 /* 编辑器内容区域样式 */
 .tiptap {

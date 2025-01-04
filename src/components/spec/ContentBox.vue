@@ -18,10 +18,11 @@
           <q-card-section>
             <div class="row items-center no-wrap">
               <div class="col">
-                <div class="text-h6">{{ item.summary }}</div>
+                <div class="text-h6" v-if="!item.isInEdit">{{ item.summary }}</div>
+                <q-input class="bg-white" v-else v-model="item.summary" dense hide-underline />
               </div>
 
-              <div class="col-auto">
+              <div class="col-auto q-ml-sm">
                 <q-btn round size="sm" flat icon="edit" v-if="!item.isInEdit" @click="item.isInEdit = true">
                   <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
                 </q-btn>
@@ -56,7 +57,7 @@
             </div>
           </q-card-section>
 
-          <q-card-section v-if="item.description" class="text-body2">
+          <q-card-section v-if="item.description || item.isInEdit" class="text-body2">
             <div v-html="item.description" class="ProseMirror" v-if="!item.isInEdit" />
             <MiEditor v-model="item.description" v-else />
           </q-card-section>
