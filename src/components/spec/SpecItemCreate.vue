@@ -1,21 +1,13 @@
 <template>
   <mi-window @close="close" title="Add Item">
     <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
-      <q-select
-        dense
-        filled
-        v-model="newSpecItem.type"
-        :options="SpecItemTypes"
-        stack-label
-      >
+      <q-select dense filled v-model="newSpecItem.type" :options="SpecItemTypes" stack-label>
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
-                <q-icon
-                  :name="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].icon"
-                  :color="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].color"
-                />
+                <q-icon :name="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].icon"
+                  :color="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].color" />
               </q-avatar>
             </q-item-section>
 
@@ -30,10 +22,8 @@
           <q-item v-else dense style="padding-left: 0px">
             <q-item-section avatar top style="margin: auto; min-width: 30px">
               <q-avatar square style="width: 26px; height: 26px">
-                <q-icon
-                  :name="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].icon"
-                  :color="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].color"
-                />
+                <q-icon :name="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].icon"
+                  :color="SpecItemTypeStyle[scope.opt as keyof typeof SpecItemTypeStyle].color" />
               </q-avatar>
             </q-item-section>
 
@@ -44,50 +34,45 @@
         </template>
       </q-select>
 
-      <q-input
-        dense
-        filled
-        v-model="newSpecItem.summary"
-        placeholder="Summary"
-      />
+      <q-input dense filled v-model="newSpecItem.summary" placeholder="Summary" />
 
-      <q-editor
-        v-model="newSpecItem.description"
-        placeholder="Description"
-        min-height="10rem"
-        :toolbar="[
-          ['removeFormat'],
-          ['undo', 'redo'],
-          ['left', 'center', 'right', 'justify'],
-          ['ordered', 'unordered'],
-          ['bold', 'italic', 'strike', 'underline'],
-          ['link', 'image'],
-          ['AI'],
-        ]"
-      />
+      <!-- <q-editor v-model="newSpecItem.description" placeholder="Description" min-height="10rem" :toolbar="[
+        ['removeFormat'],
+        ['undo', 'redo'],
+        ['left', 'center', 'right', 'justify'],
+        ['ordered', 'unordered'],
+        ['bold', 'italic', 'strike', 'underline'],
+        ['link', 'image'],
+        ['AI'],
+      ]" /> -->
+      <MiEditor v-model="newSpecItem.description" />
 
       <div class="row q-gutter-md">
         <q-space />
-        <q-btn
-          :loading="submintLoading"
-          unelevated
-          label="Submit"
-          type="submit"
-          color="primary"
-        />
+        <q-btn :loading="submintLoading" unelevated label="Submit" type="submit" color="primary" />
       </div>
     </q-form>
   </mi-window>
 </template>
 
 <script setup lang="ts">
-import { defineEmits, ref, defineProps } from 'vue';
+import { defineEmits, ref, defineProps, defineAsyncComponent } from 'vue';
 import MiWindow from 'components/base/MiWindow.vue';
 import { SpecItem } from 'src/data/structs';
 import { SpecItemTypes, SpecItemTypeStyle } from 'src/data/style';
 import { useStateStore } from 'src/stores/state';
 import { useSpecStore } from 'src/stores/spec';
 import { allocateSpecItem } from 'src/service/spec';
+import MiLoading from 'components/base/MiLoading.vue';
+
+
+// lazy import
+const MiEditor = defineAsyncComponent({
+  loader: () => import('components/base/MiEditor.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
 
 const store = useStateStore();
 const specStore = useSpecStore();

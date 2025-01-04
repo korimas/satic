@@ -13,7 +13,7 @@
         <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
           class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
           <!-- v-ripple.early  -->
-          <span class="q-focus-helper"></span>
+          <span class="q-focus-helper bg-blue-3"></span>
 
           <q-card-section>
             <div class="row items-center no-wrap">
@@ -50,7 +50,7 @@
           </q-card-section>
 
           <q-card-section v-if="item.description" class="text-body2">
-            <div v-html="item.description" />
+            <div v-html="item.description" class="ProseMirror" />
           </q-card-section>
         </q-card>
 
@@ -218,6 +218,8 @@ watch(
 </script>
 
 <style>
+@import 'src/css/editor.css';
+
 .q-splitter__panel {
   z-index: auto;
 }
