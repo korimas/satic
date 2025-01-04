@@ -10,58 +10,50 @@
           <q-spinner-dots color="primary" size="40px" />
         </div>
 
-        <q-card v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
-          class="q-hoverable caption doc-content" style="white-space: pre-wrap; min-height: 80px">
-          <!-- v-ripple.early  -->
-          <span class="q-focus-helper bg-blue-3"></span>
 
-          <q-card-section>
-            <div class="row items-center no-wrap">
-              <div class="col">
-                <div class="text-h6" v-if="!item.isInEdit">{{ item.summary }}</div>
-                <q-input class="bg-white" v-else v-model="item.summary" dense outlined />
-              </div>
 
-              <div class="col-auto q-ml-sm">
-                <q-btn round size="sm" flat icon="edit" v-if="!item.isInEdit" @click="item.isInEdit = true">
-                  <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
-                </q-btn>
-                <q-btn round size="sm" flat icon="done" v-else @click="item.isInEdit = false">
-                  <q-tooltip class="bg-grey-3 text-black">完成</q-tooltip>
-                </q-btn>
+        <div v-for="(item, index) in specStore.curSpec.contentNodes" :key="index" flat
+          class="column doc-content hover-highlight q-px-md q-pb-md full-width"
+          style="white-space: pre-wrap; min-height: 60px">
 
-                <!-- <q-btn round size="sm" flat icon="smart_toy">
-                  <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
-                </q-btn>
-
-                <q-btn round size="sm" flat icon="bug_report">
-                  <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
-                </q-btn> -->
-
-                <q-btn color="grey-7" round flat size="sm" icon="more_vert">
-                  <q-menu auto-close>
-                    <q-list dense>
-                      <q-item clickable>
-                        <q-item-section>Remove</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>Edit</q-item-section>
-                      </q-item>
-                      <q-item clickable>
-                        <q-item-section>Share</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-              </div>
+          <div class="row items-center no-wrap q-my-md">
+            <div class="col">
+              <div style="font-size: 1.5em;" v-if="!item.isInEdit">{{ item.summary }}</div>
+              <q-input class="bg-white" v-else v-model="item.summary" dense outlined />
             </div>
-          </q-card-section>
 
-          <q-card-section v-if="item.description || item.isInEdit" class="text-body2">
-            <div v-html="item.description" class="ProseMirror" v-if="!item.isInEdit" />
+            <div class="col-auto q-ml-sm">
+              <q-btn round size="sm" flat icon="edit" v-if="!item.isInEdit" @click="item.isInEdit = true">
+                <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
+              </q-btn>
+              <q-btn round size="sm" flat icon="done" v-else @click="item.isInEdit = false">
+                <q-tooltip class="bg-grey-3 text-black">完成</q-tooltip>
+              </q-btn>
+              <q-btn color="grey-7" round flat size="sm" icon="more_vert">
+                <q-menu auto-close>
+                  <q-list dense>
+                    <q-item clickable>
+                      <q-item-section>Remove</q-item-section>
+                    </q-item>
+                    <q-item clickable>
+                      <q-item-section>Edit</q-item-section>
+                    </q-item>
+                    <q-item clickable>
+                      <q-item-section>Share</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </div>
+          </div>
+
+          <div v-if="item.description || item.isInEdit" class="full-width">
+            <div v-html="item.description" class="ProseMirror" v-if="!item.isInEdit"
+              style="max-width: 100%;overflow-x: auto;scrollbar-width: thin; -webkit-overflow-scrolling: touch;" />
             <MiEditor v-model="item.description" v-else />
-          </q-card-section>
-        </q-card>
+          </div>
+
+        </div>
 
         <!-- Bottom sentinel for forward scrolling -->
         <div ref="bottomSentinel" class="sentinel"></div>
@@ -251,9 +243,17 @@ watch(
   display: none !important;
 }
 
-
 .sentinel {
   height: 1px;
   width: 100%;
+}
+
+.hover-highlight {
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+}
+
+.hover-highlight:hover {
+  background-color: rgba(0, 0, 0, 0.03);
 }
 </style>
