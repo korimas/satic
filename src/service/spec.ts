@@ -9,6 +9,8 @@ export class SpecTree {
   public contentNodesMap: Map<number, SpecItem>;
   public selectedNodeId: number;
   public inited: boolean;
+  public topNodeId: number;
+  public bottomNodeId: number;
 
   constructor() {
     this.treeNodes = [];
@@ -16,6 +18,8 @@ export class SpecTree {
     this.contentNodes = [];
     this.contentNodesMap = new Map<number, SpecItem>();
     this.selectedNodeId = -1;
+    this.topNodeId = -1;
+    this.bottomNodeId = -1;
     this.inited = false;
   }
 
@@ -40,6 +44,7 @@ export class SpecTree {
       specs.forEach((spec: SpecItem) => {
         this.contentNodesMap.set(spec.id, spec);
       });
+      this.topNodeId = this.contentNodes[0].id;
     }
     return resp.success;
   }
@@ -67,10 +72,16 @@ export class SpecTree {
     if (!firstNode) {
       throw new Error('No first node found');
     }
+
+    if (firstNode.id === this.topNodeId) {
+      return false;
+    }
+
     console.log('loadPrevPageContentSpecs', firstNode.sequence);
     const resp = await API.getPrevPageSpecItems(firstNode.sequence);
     if (resp.success) {
       const specs = resp.result;
+      console.log('loadPrevPageContentSpecs', specs);
       specs.forEach((spec: SpecItem) => {
         this.contentNodesMap.set(spec.id, spec);
         this.contentNodes.unshift(spec);
@@ -78,6 +89,7 @@ export class SpecTree {
 
       if (specs.length < 25) {
         // eatch page has 25 items
+        this.topNodeId = this.contentNodes[0].id;
         return false;
       }
     }
@@ -89,10 +101,16 @@ export class SpecTree {
     if (!lastNode) {
       throw new Error('No last node found');
     }
+
+    if (lastNode.id === this.bottomNodeId) {
+      return false;
+    }
+
     console.log('loadNextPageContentSpecs', lastNode.sequence);
     const resp = await API.getNextPageSpecItems(lastNode.sequence);
     if (resp.success) {
       const specs = resp.result;
+      console.log('loadNextPageContentSpecs', specs);
       specs.forEach((spec: SpecItem) => {
         this.contentNodesMap.set(spec.id, spec);
         this.contentNodes.push(spec);
@@ -100,6 +118,7 @@ export class SpecTree {
 
       if (specs.length < 25) {
         // eatch page has 25 items
+        this.bottomNodeId = specs[specs.length - 1].id;
         return false;
       }
     }

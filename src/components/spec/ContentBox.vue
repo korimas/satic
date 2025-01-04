@@ -122,8 +122,8 @@ async function loadContent(isReverse: boolean) {
       : await specStore.curSpec.loadNextPageContentSpecs();
 
     if (!success) {
-      console.log('load failed, waiting 1000ms');
-      await sleep(1000);
+      // console.log('load failed, waiting 1000ms');
+      // await sleep(1000);
       return;
     }
   } catch (error) {
