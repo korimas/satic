@@ -522,7 +522,7 @@ export class SpecItemsHandler extends BaseApiHandler {
           description = ${payload.description}  
       WHERE id = ${payload.id}  
       RETURNING *  
-    `) as any[];  
+    `) as any[];
 
     if (result.length === 0) {
       throw new Error('Failed to update spec item');
