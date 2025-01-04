@@ -19,7 +19,7 @@
             <div class="row items-center no-wrap">
               <div class="col">
                 <div class="text-h6" v-if="!item.isInEdit">{{ item.summary }}</div>
-                <q-input class="bg-white" v-else v-model="item.summary" dense hide-underline />
+                <q-input class="bg-white" v-else v-model="item.summary" dense outlined />
               </div>
 
               <div class="col-auto q-ml-sm">
