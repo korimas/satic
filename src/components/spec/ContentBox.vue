@@ -26,7 +26,7 @@
               <q-btn round size="sm" flat icon="edit" v-if="!item.isInEdit" @click="item.isInEdit = true">
                 <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
               </q-btn>
-              <q-btn round size="sm" flat icon="done" v-else @click="item.isInEdit = false">
+              <q-btn round size="sm" flat icon="done" v-else @click="updateSpecItem(item)" :loading="isUpdating">
                 <q-tooltip class="bg-grey-3 text-black">完成</q-tooltip>
               </q-btn>
               <q-btn color="grey-7" round flat size="sm" icon="more_vert">
@@ -76,6 +76,8 @@ import { useSpecStore } from 'src/stores/spec';
 import { sleep } from 'src/utils/time';
 import SpecDetialSide from './SpecDetialSide.vue';
 import MiLoading from 'components/base/MiLoading.vue';
+import { SpecItem } from 'src/data/structs';
+import API from 'src/api/satic';
 
 // lazy import
 const MiEditor = defineAsyncComponent({
@@ -95,12 +97,26 @@ const isReverseLoading = ref(false);
 const splitterMin = 330;
 let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
+let isUpdating = ref(false);
 
 let hightTimer: ReturnType<typeof setTimeout> | null = null;
 let preTargetElement: any = null;
 
 let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
+
+async function updateSpecItem(item: SpecItem) {
+  isUpdating.value = true;
+  console.log('update spec item:', item);
+  const resp = await API.updateSpecItem(item.id, {
+    summary: item.summary,
+    description: item.description,
+  });
+  if (resp.success) {
+    item.isInEdit = false;
+  }
+  isUpdating.value = false;
+}
 
 async function loadContent(isReverse: boolean) {
   let loadingFlag = isReverse ? isReverseLoading : isLoading

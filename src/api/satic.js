@@ -102,6 +102,13 @@ let API = {
       },
     });
   },
+
+  updateSpecItem(id, data) {
+    data.id = id;
+    return request(`/spec_items`, 'put', {
+      data: data,
+    });
+  }
 };
 
 export default API;

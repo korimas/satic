@@ -471,4 +471,34 @@ export class SpecItemsHandler extends BaseApiHandler {
 
     return deletedIds;
   }
+
+  private sqlifyObject(obj: any): string {
+    return Object.keys(obj)
+      .map(key => `${key} = ${obj[key]}`)
+      .join(', ');
+  }
+
+  protected async handlePut(req: Request) {
+    const payload = await req.json();
+    if (!payload.id) {
+      throw new Error('Invalid id');
+    }
+
+    const id = payload.id;
+    delete payload.id;
+    delete payload.created_at;
+    delete payload.updated_at;
+
+    const result = (await this.sql`
+      UPDATE spec_items
+      SET ${this.sqlifyObject(payload)}
+      WHERE id = ${id}
+      RETURNING *
+    `) as any[];
+
+    if (result.length === 0) {
+      throw new Error('Failed to update spec item');
+    }
+    return result[0];
+  }
 }
