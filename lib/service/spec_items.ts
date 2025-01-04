@@ -522,14 +522,14 @@ export class SpecItemsHandler extends BaseApiHandler {
 
     console.log(`
       UPDATE spec_items
-      SET summary = '${newobj.summary}', description = '${newobj.description}',
+      SET summary = '${newobj.summary}', description = '${newobj.description}'
       WHERE id = ${id}
       RETURNING *
     `)
 
     const result = (await this.sql`
       UPDATE spec_items
-      SET summary = '${newobj.summary}', description = '${newobj.description}',
+      SET summary = '${newobj.summary}', description = '${newobj.description}' 
       WHERE id = ${id}
       RETURNING *
     `) as any[];
