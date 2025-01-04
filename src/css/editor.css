@@ -27,6 +27,68 @@
     background-color: white;
 }
 
+/* 列表样式 */
+.ProseMirror ul,
+.ProseMirror ol {
+    padding-left: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.ProseMirror li {
+    position: relative;
+    padding: 0.2rem 0;
+    margin: 0.2rem 0;
+    line-height: 1.5;
+}
+
+/* 无序列表样式 */
+.ProseMirror ul li {
+    list-style-type: none;
+}
+
+.ProseMirror ul li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background-color: #666;
+    border-radius: 50%;
+    position: absolute;
+    left: -1rem;
+    top: 0.7rem;
+}
+
+/* 有序列表样式 */
+.ProseMirror ol {
+    counter-reset: list-counter;
+}
+
+.ProseMirror ol li {
+    list-style-type: none;
+    counter-increment: list-counter;
+}
+
+.ProseMirror ol li::before {
+    content: counter(list-counter) ".";
+    color: #666;
+    font-weight: 500;
+    position: absolute;
+    left: -1.5rem;
+    font-size: 0.9em;
+}
+
+/* 嵌套列表样式 */
+.ProseMirror ul ul,
+.ProseMirror ol ol,
+.ProseMirror ul ol,
+.ProseMirror ol ul {
+    margin: 0.2rem 0;
+}
+
+/* 确保列表项内的段落没有多余的边距 */
+.ProseMirror li p {
+    margin: 0;
+}
+
 /* 表格样式 */
 .ProseMirror table {
     border-collapse: collapse;
