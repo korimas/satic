@@ -489,32 +489,43 @@ export class SpecItemsHandler extends BaseApiHandler {
       .join(', ');
   }
 
+  private escapeSqlQuotes<T extends Record<string, any>>(obj: T): T {
+    const result = { ...obj };
+
+    for (const key in result) {
+      if (Object.prototype.hasOwnProperty.call(result, key)) {
+        const value = result[key];
+
+        // 检查值是否为字符串类型  
+        if (typeof value === 'string') {
+          // 将单引号替换为两个单引号  
+          result[key] = value.replace(/'/g, "''");
+        } else if (value !== null && typeof value === 'object') {
+          // 如果值是对象或数组，递归处理  
+          result[key] = this.escapeSqlQuotes(value);
+        }
+      }
+    }
+
+    return result;
+  }
   protected async handlePut(req: Request) {
     const payload = await req.json();
     if (!payload.id) {
       throw new Error('Invalid id');
     }
     console.log('payload:', payload);
+
     const id = payload.id;
     delete payload.id;
+    const newobj = this.escapeSqlQuotes(payload);
 
-    const sqlStr = `
+    const result = (await this.sql`
       UPDATE spec_items
-      SET ${this.sqlifyObject(payload)}
+      SET summary = '${newobj.summary}', description = '${newobj.description}',
       WHERE id = ${id}
       RETURNING *
-    `;
-    console.log('sqlStr:', sqlStr);
-    const result = (await this.sql`${sqlStr}`) as any[];
-
-
-
-    // const result = (await this.sql`
-    //   UPDATE spec_items
-    //   SET ${this.sqlifyObject(payload)}
-    //   WHERE id = ${id}
-    //   RETURNING *
-    // `) as any[];
+    `) as any[];
 
     if (result.length === 0) {
       throw new Error('Failed to update spec item');
