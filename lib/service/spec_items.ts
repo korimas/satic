@@ -472,22 +472,22 @@ export class SpecItemsHandler extends BaseApiHandler {
     return deletedIds;
   }
 
-  private sqlifyObject(obj: any): string {  
-    return Object.keys(obj)  
-      .map(key => {  
-        const value = obj[key];  
+  private sqlifyObject(obj: any): string {
+    return Object.keys(obj)
+      .map(key => {
+        const value = obj[key];
         // 处理 null 值  
-        if (value === null) {  
-          return `${key} = NULL`;  
-        }  
+        if (value === null) {
+          return `${key} = NULL`;
+        }
         // 根据值的类型决定是否添加引号  
-        const formattedValue = typeof value === 'string'   
+        const formattedValue = typeof value === 'string'
           ? `'${value.replace(/'/g, "''")}'` // 字符串类型加引号，并转义单引号  
-          : value;  
-        return `${key} = ${formattedValue}`;  
-      })  
-      .join(', ');  
-  }  
+          : value;
+        return `${key} = ${formattedValue}`;
+      })
+      .join(', ');
+  }
 
   protected async handlePut(req: Request) {
     const payload = await req.json();
@@ -497,22 +497,25 @@ export class SpecItemsHandler extends BaseApiHandler {
     console.log('payload:', payload);
     const id = payload.id;
     delete payload.id;
-    delete payload.created_at;
-    delete payload.updated_at;
 
-    const result = (await this.sql`
+    const sqlStr = `
       UPDATE spec_items
       SET ${this.sqlifyObject(payload)}
       WHERE id = ${id}
       RETURNING *
-    `) as any[];
+    `;
+    console.log('sqlStr:', sqlStr);
+    const result = (await this.sql`${sqlStr}`) as any[];
 
-    console.log(`
-      UPDATE spec_items
-      SET ${this.sqlifyObject(payload)}
-      WHERE id = ${id}
-      RETURNING *
-    `)
+
+
+    // const result = (await this.sql`
+    //   UPDATE spec_items
+    //   SET ${this.sqlifyObject(payload)}
+    //   WHERE id = ${id}
+    //   RETURNING *
+    // `) as any[];
+
     if (result.length === 0) {
       throw new Error('Failed to update spec item');
     }
