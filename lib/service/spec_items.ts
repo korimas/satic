@@ -499,12 +499,6 @@ export class SpecItemsHandler extends BaseApiHandler {
     delete payload.id;
     delete payload.created_at;
     delete payload.updated_at;
-    console.log(`
-      UPDATE spec_items
-      SET ${this.sqlifyObject(payload)}
-      WHERE id = ${id}
-      RETURNING *
-    `)
 
     const result = (await this.sql`
       UPDATE spec_items
@@ -513,6 +507,12 @@ export class SpecItemsHandler extends BaseApiHandler {
       RETURNING *
     `) as any[];
 
+    console.log(`
+      UPDATE spec_items
+      SET ${this.sqlifyObject(payload)}
+      WHERE id = ${id}
+      RETURNING *
+    `)
     if (result.length === 0) {
       throw new Error('Failed to update spec item');
     }
