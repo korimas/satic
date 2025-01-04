@@ -286,6 +286,6 @@ watch(
 }
 
 .hover-highlight:hover {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgb(227, 238, 245);
 }
 </style>
