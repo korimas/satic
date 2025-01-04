@@ -51,4 +51,5 @@ export interface SpecItem {
   children?: SpecItem[];
   expandable?: boolean;
   selectable?: boolean;
+  isInEdit?: boolean;
 }

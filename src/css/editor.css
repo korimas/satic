@@ -8,7 +8,11 @@
 /* 移除编辑器默认轮廓 */
 .ProseMirror {
     outline: none !important;
-    padding: 1px;
+    padding: 0;
+}
+
+.editor-wrapper .ProseMirror {
+    padding: 1rem !important;
 }
 
 /* 编辑器获得焦点时的样式 */

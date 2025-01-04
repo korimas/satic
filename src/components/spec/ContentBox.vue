@@ -22,13 +22,20 @@
               </div>
 
               <div class="col-auto">
-                <q-btn round size="sm" flat icon="smart_toy">
+                <q-btn round size="sm" flat icon="edit" v-if="!item.isInEdit" @click="item.isInEdit = true">
+                  <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
+                </q-btn>
+                <q-btn round size="sm" flat icon="done" v-else @click="item.isInEdit = false">
+                  <q-tooltip class="bg-grey-3 text-black">完成</q-tooltip>
+                </q-btn>
+
+                <!-- <q-btn round size="sm" flat icon="smart_toy">
                   <q-tooltip class="bg-grey-3 text-black">AI评审</q-tooltip>
                 </q-btn>
 
                 <q-btn round size="sm" flat icon="bug_report">
                   <q-tooltip class="bg-grey-3 text-black">AI测试分析</q-tooltip>
-                </q-btn>
+                </q-btn> -->
 
                 <q-btn color="grey-7" round flat size="sm" icon="more_vert">
                   <q-menu auto-close>
@@ -50,7 +57,8 @@
           </q-card-section>
 
           <q-card-section v-if="item.description" class="text-body2">
-            <div v-html="item.description" class="ProseMirror" />
+            <div v-html="item.description" class="ProseMirror" v-if="!item.isInEdit" />
+            <MiEditor v-model="item.description" v-else />
           </q-card-section>
         </q-card>
 
@@ -70,10 +78,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
 import { sleep } from 'src/utils/time';
 import SpecDetialSide from './SpecDetialSide.vue';
+import MiLoading from 'components/base/MiLoading.vue';
+
+// lazy import
+const MiEditor = defineAsyncComponent({
+  loader: () => import('components/base/MiEditor.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
+
 
 const specStore = useSpecStore();
 const scrollTargetRef = ref();
