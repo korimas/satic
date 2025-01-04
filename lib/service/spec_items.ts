@@ -483,11 +483,17 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!payload.id) {
       throw new Error('Invalid id');
     }
-
+    console.log('payload:', payload);
     const id = payload.id;
     delete payload.id;
     delete payload.created_at;
     delete payload.updated_at;
+    console.log(`
+      UPDATE spec_items
+      SET ${this.sqlifyObject(payload)}
+      WHERE id = ${id}
+      RETURNING *
+    `)
 
     const result = (await this.sql`
       UPDATE spec_items
