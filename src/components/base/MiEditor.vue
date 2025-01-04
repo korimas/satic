@@ -60,7 +60,7 @@
                 icon="o_grid_on">
             </q-btn>
             <q-separator :vertical="true" />
-            <span v-if="editor.isActive('table')" class="q-gutter-xs">
+            <span v-if="editor.isActive('table')">
 
                 <q-btn dense flat @click="editor.chain().focus().deleteTable().run()">
                     <deleteTable />
@@ -74,15 +74,15 @@
                 <q-btn flat dense @click="editor.chain().focus().deleteColumn().run()">
                     <deleteCol />
                 </q-btn>
-                <!-- <q-btn flat dense @click="editor.chain().focus().addRowBefore().run()">
-                    <q-icon name="add_row_before" />
+                <q-btn flat dense @click="editor.chain().focus().addRowBefore().run()">
+                    <addRowBefore />
                 </q-btn>
                 <q-btn flat dense @click="editor.chain().focus().addRowAfter().run()">
-                    <q-icon name="add_row_after" />
+                    <addRowAfter />
                 </q-btn>
                 <q-btn flat dense @click="editor.chain().focus().deleteRow().run()">
-                    <q-icon name="delete_row" />
-                </q-btn> -->
+                    <deleteRow />
+                </q-btn>
                 <q-btn flat dense @click="editor.chain().focus().mergeOrSplit().run()">
                     <combineCell />
                 </q-btn>
@@ -101,6 +101,9 @@ import deleteTable from '../icons/deleteTable.vue';
 import addColBefore from '../icons/addColBefore.vue';
 import addColAfter from '../icons/addColAfter.vue';
 import combineCell from '../icons/combineCell.vue';
+import addRowAfter from '../icons/addRowAfter.vue';
+import addRowBefore from '../icons/addRowBefore.vue';
+import deleteRow from '../icons/deleteRow.vue';
 import deleteCol from '../icons/deleteCol.vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit'
