@@ -160,7 +160,7 @@ function jumpToTreeNode(nodeItem: SpecItem) {
 
   if (nodeItem.depth < 2){
     // root node
-    
+
   }
 
   const parents = nodeItem.path.split('/');

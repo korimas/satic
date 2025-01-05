@@ -203,5 +203,9 @@ module.exports = configure(function (/* ctx */) {
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     },
+
+    chainWebpack: config => {
+      config.optimization.deduplication(true)
+    }
   };
 });
