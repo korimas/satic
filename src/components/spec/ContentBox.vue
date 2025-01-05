@@ -20,7 +20,7 @@
                 <q-badge color="primary">v1.0</q-badge>
               </div>
 
-              <q-input class="bg-white" v-else v-model="item.summary" dense outlined />
+              <q-input class="bg-white" v-else v-model="item.edit_summary" dense outlined />
             </div>
 
             <div class="col-auto q-ml-sm">
@@ -112,6 +112,7 @@ let bottomObserver: IntersectionObserver | null = null;
 
 function openEdit(item: SpecItem) {
   item.edit_content = item.description;
+  item.edit_summary = item.summary;
   item.isInEdit = true;
 }
 
@@ -123,19 +124,20 @@ function closeEdit(item: SpecItem) {
 async function updateSpecItem(item: SpecItem) {
   isUpdating.value = true;
   console.log('update spec item:', item);
-  if (item.edit_content === item.description) {
+  if (item.edit_content === item.description && item.summary === item.edit_summary) {
     // 没有修改内容
     item.isInEdit = false;
     isUpdating.value = false;
     return;
   }
   const resp = await API.updateSpecItem(item.id, {
-    summary: item.summary,
+    summary: item.edit_summary,
     description: item.edit_content,
   });
   if (resp.success) {
     item.isInEdit = false;
     item.description = item.edit_content || '';
+    item.summary = item.edit_summary || '';
   }
   isUpdating.value = false;
 }

@@ -33,6 +33,7 @@ export interface SpecItem {
   summary: string;
   description: string;
   edit_content?: string;
+  edit_summary?: string;
   priority: string;
   status: string;
   reporter_id: string;
