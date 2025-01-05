@@ -24,32 +24,39 @@
             </div>
 
             <div class="col-auto q-ml-sm">
-              <q-btn v-if="!item.isInEdit" round size="sm" flat icon="edit" @click="openEdit(item)">
-                <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
-              </q-btn>
-              <q-btn v-if="item.isInEdit" round size="sm" flat icon="done" @click="updateSpecItem(item)"
-                :loading="isUpdating">
-                <q-tooltip class="bg-grey-3 text-black">保存</q-tooltip>
-              </q-btn>
-              <q-btn v-if="item.isInEdit" round size="sm" flat icon="close" @click="closeEdit(item)">
-                <q-tooltip class="bg-grey-3 text-black">取消</q-tooltip>
-              </q-btn>
+              <span v-if="!item.isInEdit">
+                <q-btn round size="sm" flat icon="edit" @click="openEdit(item)">
+                  <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
+                </q-btn>
 
-              <q-btn v-if="!item.isInEdit" color="grey-7" round flat size="sm" icon="more_vert">
-                <q-menu auto-close>
-                  <q-list dense>
-                    <q-item clickable>
-                      <q-item-section>Remove</q-item-section>
-                    </q-item>
-                    <q-item clickable>
-                      <q-item-section>Edit</q-item-section>
-                    </q-item>
-                    <q-item clickable>
-                      <q-item-section>Share</q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-btn>
+                <q-btn round size="sm" flat icon="visibility" @click="SpecDetailShow = true">
+                  <q-tooltip class="bg-grey-3 text-black">详情</q-tooltip>
+                </q-btn>
+
+                <q-btn color="grey-7" round flat size="sm" icon="more_vert">
+                  <q-menu auto-close>
+                    <q-list dense>
+                      <q-item clickable>
+                        <q-item-section>Remove</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>Edit</q-item-section>
+                      </q-item>
+                      <q-item clickable>
+                        <q-item-section>Share</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </span>
+              <span v-else>
+                <q-btn round size="sm" flat icon="done" @click="updateSpecItem(item)" :loading="isUpdating">
+                  <q-tooltip class="bg-grey-3 text-black">保存</q-tooltip>
+                </q-btn>
+                <q-btn round size="sm" flat icon="close" @click="closeEdit(item)">
+                  <q-tooltip class="bg-grey-3 text-black">取消</q-tooltip>
+                </q-btn>
+              </span>
             </div>
           </div>
 
@@ -67,6 +74,16 @@
           <q-spinner-dots color="primary" size="40px" />
         </div>
       </div>
+
+      <q-drawer side="left" overlay v-model="SpecDetailShow" bordered
+        :width="$q.screen.width > 1000 ? $q.screen.width - 200 : $q.screen.width" :breakpoint="1000"
+        style="z-index: 1000">
+
+        <MiWindow title="Spec Detail" @close="SpecDetailShow = false">
+          <SpecDetialSide />
+        </MiWindow>
+
+      </q-drawer>
     </template>
 
     <template v-slot:after>
@@ -79,7 +96,6 @@
 import { ref, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
 import { sleep } from 'src/utils/time';
-import SpecDetialSide from './SpecDetialSide.vue';
 import MiLoading from 'components/base/MiLoading.vue';
 import { SpecItem } from 'src/data/structs';
 import API from 'src/api/satic';
@@ -87,6 +103,20 @@ import API from 'src/api/satic';
 // lazy import
 const MiEditor = defineAsyncComponent({
   loader: () => import('components/base/MiEditor.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
+
+const SpecDetialSide = defineAsyncComponent({
+  loader: () => import('components/spec/SpecDetialSide.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
+
+const MiWindow = defineAsyncComponent({
+  loader: () => import('components/base/MiWindow.vue'),
   loadingComponent: MiLoading,
   delay: 0,
   timeout: 15000,
@@ -100,9 +130,10 @@ const bottomSentinel = ref();
 const isLoading = ref(false);
 const isReverseLoading = ref(false);
 const splitterMin = 330;
-let splitterModel = ref(splitterMin);
-let splitterLimits = ref([splitterMin, Infinity]);
-let isUpdating = ref(false);
+const splitterModel = ref(splitterMin);
+const splitterLimits = ref([splitterMin, Infinity]);
+const isUpdating = ref(false);
+const SpecDetailShow = ref(false);
 
 let hightTimer: ReturnType<typeof setTimeout> | null = null;
 let preTargetElement: any = null;
