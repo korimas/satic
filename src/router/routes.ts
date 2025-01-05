@@ -51,6 +51,11 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    name: "signin",
+    path: '/satic/signin',
+    component: () => import('pages/signIn.vue'),
+  },
+  {
     // admin view
     path: '/satic/admin/dashboard',
     component: () => import('layouts/AdminLayout.vue'),
