@@ -289,11 +289,10 @@ watch(
 }
 
 .hover-highlight {
-  transition: background-color 0.2s ease;
-  border-radius: 4px;
+  border-left: 4px solid #fff;
 }
 
 .hover-highlight:hover {
-  background-color: rgba(0, 0, 0, 0.03);
+  border-left: 4px solid #5e98d1;
 }
 </style>
