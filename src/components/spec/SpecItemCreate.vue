@@ -1,6 +1,6 @@
 <template>
   <mi-window @close="close" title="Add Item">
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md q-pa-md">
       <q-select dense filled v-model="newSpecItem.type" :options="SpecItemTypes" stack-label>
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">

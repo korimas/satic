@@ -1,6 +1,6 @@
 <template>
   <mi-window @close="close" title="Add Issue">
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md q-pa-md">
       <q-select
         dense
         filled

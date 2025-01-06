@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="column fit no-wrap">
     <div v-if="showTitleBar" class="q-pa-sm q-gutter-sm row bg-grey-2" style="height: 56px">
       <div class="text-h6">{{ title }}</div>
       <q-space></q-space>
       <q-btn unelevated size="sm" icon="clear" color="red-4" @click="CloseWindow" v-close-popup />
     </div>
     <q-separator color="grey-4" />
-    <div class="q-pa-md bg-white">
+    <div class="bg-white fit overflow-auto">
       <slot></slot>
     </div>
   </div>

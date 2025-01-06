@@ -29,7 +29,7 @@
                   <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
                 </q-btn>
 
-                <q-btn round size="sm" flat icon="visibility" @click="SpecDetailShow = true">
+                <q-btn round size="sm" flat icon="visibility" @click="showSpecDetail(item)">
                   <q-tooltip class="bg-grey-3 text-black">详情</q-tooltip>
                 </q-btn>
 
@@ -75,14 +75,12 @@
         </div>
       </div>
 
-      <q-drawer side="left" overlay v-model="SpecDetailShow" bordered
+      <q-drawer side="left" overlay v-model="isSpecDetailShow" bordered
         :width="$q.screen.width > 1000 ? $q.screen.width - 200 : $q.screen.width" :breakpoint="1000"
         style="z-index: 1000">
-
-        <MiWindow title="Detail" @close="SpecDetailShow = false">
-          <!-- <SpecDetialSide /> -->
+        <MiWindow title="Detail" @close="isSpecDetailShow = false">
+          <SpecDetail />
         </MiWindow>
-
       </q-drawer>
     </template>
 
@@ -108,8 +106,10 @@ const MiEditor = defineAsyncComponent({
   timeout: 15000,
 });
 
-const SpecDetialSide = defineAsyncComponent({
-  loader: () => import('components/spec/SpecDetialSide.vue'),
+
+
+const SpecDetail = defineAsyncComponent({
+  loader: () => import('components/spec/SpecDetail.vue'),
   loadingComponent: MiLoading,
   delay: 0,
   timeout: 15000,
@@ -133,13 +133,18 @@ const splitterMin = 330;
 const splitterModel = ref(splitterMin);
 const splitterLimits = ref([splitterMin, Infinity]);
 const isUpdating = ref(false);
-const SpecDetailShow = ref(false);
+const isSpecDetailShow = ref(false);
 
 let hightTimer: ReturnType<typeof setTimeout> | null = null;
 let preTargetElement: any = null;
 
 let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
+
+function showSpecDetail(item: SpecItem) {
+  specStore.showDetailSpec = item;
+  isSpecDetailShow.value = true;
+}
 
 function openEdit(item: SpecItem) {
   item.edit_content = item.description;

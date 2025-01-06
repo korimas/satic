@@ -1,6 +1,6 @@
 <template>
   <mi-window @close="close" title="Add Project">
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md q-pa-md">
       <q-select
         prefix="Icon:"
         dense
