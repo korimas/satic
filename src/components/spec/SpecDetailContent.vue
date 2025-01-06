@@ -6,7 +6,13 @@
               style="max-width: 100%;overflow-x: auto;scrollbar-width: thin; -webkit-overflow-scrolling: touch;" 
               @click="editDescription"
         />
-        <MiEditor v-model="store.showDetailSpec.edit_content" v-else  class="q-mt-md" />
+        <div v-else class="column q-mt-md q-gutter-xs" >
+            <MiEditor v-model="store.showDetailSpec.edit_content"/>
+            <div class="row q-gutter-xs">
+            <q-btn label="Save" color="primary" @click="store.saveDescription" class="q-mt-md"/>
+            <q-btn label="Cancel" flat @click="store.showDetailSpec.isInEdit = false" class="q-mt-md"/>
+            </div>
+        </div>
     </div>
 </template>
 
