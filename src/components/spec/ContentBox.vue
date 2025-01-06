@@ -85,7 +85,7 @@
     </template>
 
     <template v-slot:after>
-      <SpecDetialSide v-if="specStore.contentDetailVisible" />
+      <!-- <SpecDetialSide v-if="specStore.contentDetailVisible" /> -->
     </template>
   </q-splitter>
 </template>
@@ -105,8 +105,6 @@ const MiEditor = defineAsyncComponent({
   delay: 0,
   timeout: 15000,
 });
-
-
 
 const SpecDetail = defineAsyncComponent({
   loader: () => import('components/spec/SpecDetail.vue'),

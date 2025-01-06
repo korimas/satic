@@ -108,16 +108,10 @@ import deleteRow from '../icons/deleteRow.vue';
 import deleteCol from '../icons/deleteCol.vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit'
-import Document from '@tiptap/extension-document'
-import Paragraph from '@tiptap/extension-paragraph'
-import Text from '@tiptap/extension-text'
-import Heading from '@tiptap/extension-heading'
 import Table from '@tiptap/extension-table'
 import TableCell from '@tiptap/extension-table-cell';
 import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
-import Gapcursor from "@tiptap/extension-gapcursor"
-
 
 const props = defineProps({
     modelValue: {
@@ -132,20 +126,18 @@ let editor = ref()
 editor.value = new Editor({
     content: props.modelValue,
     extensions: [
-        StarterKit,
-        Document,
-        Paragraph,
-        Text,
-        Heading.configure({
-            levels: [1, 2, 3],
-        }),
+        StarterKit.configure({  
+            // 可以在这里配置 StarterKit 中包含的扩展  
+            heading: {  
+                levels: [1, 2, 3]  
+            }  
+        }),  
         Table.configure({
             resizable: true,
         }),
         TableCell,
         TableRow,
         TableHeader,
-        Gapcursor,
     ],
     onUpdate: ({ editor }) => {
         // 当编辑器内容变化时，发送更新事件  
