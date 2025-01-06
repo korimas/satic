@@ -2,16 +2,16 @@
     <div class="column q-ma-md spec-detail">
         <q-input v-model="store.showDetailSpec.summary" filled  class="spec-title"/>
 
-        <div v-html="store.showDetailSpec.description" class="ProseMirror q-mt-md detail-content" v-if="!isInEdit"
+        <div v-html="store.showDetailSpec.description" class="ProseMirror q-mt-md detail-content" v-if="!store.showDetailSpec.isInEdit"
               style="max-width: 100%;overflow-x: auto;scrollbar-width: thin; -webkit-overflow-scrolling: touch;" 
               @click="editDescription"
         />
-        <MiEditor v-model="newDescription" v-else  class="q-mt-md" />
+        <MiEditor v-model="store.showDetailSpec.edit_content" v-else  class="q-mt-md" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
 import MiLoading from 'components/base/MiLoading.vue';
 
@@ -24,12 +24,10 @@ const MiEditor = defineAsyncComponent({
 });
 
 const store = useSpecStore();
-const isInEdit = ref(false);
-const newDescription = ref('');
 
 function editDescription() {
-    newDescription.value = store.showDetailSpec.description;
-    isInEdit.value = true;
+    store.showDetailSpec.edit_content = store.showDetailSpec.description;
+    store.showDetailSpec.isInEdit = true;
 }
 
 </script>

@@ -78,7 +78,7 @@
       <q-drawer side="left" overlay v-model="isSpecDetailShow" bordered
         :width="$q.screen.width > 1000 ? $q.screen.width - 200 : $q.screen.width" :breakpoint="1000"
         style="z-index: 1000">
-        <MiWindow title="Detail" @close="isSpecDetailShow = false">
+        <MiWindow title="Detail" @close="closeSpecDetail">
           <SpecDetail />
         </MiWindow>
       </q-drawer>
@@ -140,6 +140,13 @@ let preTargetElement: any = null;
 
 let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
+
+function closeSpecDetail() {
+  isSpecDetailShow.value = false
+  specStore.showDetailSpec.isInEdit = false;
+  specStore.showDetailSpec.edit_content = '';
+  specStore.showDetailSpec.edit_summary = '';
+}
 
 function showSpecDetail(item: SpecItem) {
   specStore.showDetailSpec = item;
