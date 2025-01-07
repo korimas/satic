@@ -18,7 +18,7 @@
 
             <q-timeline-entry title="Event Title" subtitle="February 22, 1986" :body="body" />
 
-            <q-timeline-entry title="Event Title" subtitle="February 22, 1986" :body="body" />
+            <q-timeline-entry title="Create" subtitle="February 22, 1986" />
         </q-timeline>
     </div>
 </template>
