@@ -167,6 +167,8 @@ async function updateSpecItem(item: SpecItem) {
   console.log('update spec item:', item);
   if (item.edit_content === item.description && item.summary === item.edit_summary) {
     // 没有修改内容
+    item.edit_content = '';
+    item.edit_summary = '';
     item.isInEdit = false;
     isUpdating.value = false;
     return;
