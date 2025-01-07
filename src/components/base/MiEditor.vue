@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, watch } from 'vue';
+import { ref, onBeforeUnmount, watch, onMounted } from 'vue';
 import deleteTable from '../icons/deleteTable.vue';
 import addColBefore from '../icons/addColBefore.vue';
 import addColAfter from '../icons/addColAfter.vue';
@@ -126,12 +126,12 @@ let editor = ref()
 editor.value = new Editor({
     content: props.modelValue,
     extensions: [
-        StarterKit.configure({  
+        StarterKit.configure({
             // 可以在这里配置 StarterKit 中包含的扩展  
-            heading: {  
-                levels: [1, 2, 3]  
-            }  
-        }),  
+            heading: {
+                levels: [1, 2, 3]
+            }
+        }),
         Table.configure({
             resizable: true,
         }),
@@ -155,6 +155,10 @@ watch(
         }
     }
 )
+
+onMounted(() => {
+    editor.value?.commands.focus()
+})
 
 onBeforeUnmount(() => {
     editor.value.destroy()
