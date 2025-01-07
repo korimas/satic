@@ -1,5 +1,5 @@
 <template>
-    <div class="comment-box fit">
+    <div class="column comment-box fit q-gutter-md">
         <div class="comment-edit row no-wrap fit">
             <q-avatar size="md">
                 <img src="/avatar/128.png" alt="avatar">
@@ -13,6 +13,17 @@
                 <div class="row q-gutter-xs">
                     <q-btn label="Save" color="primary" @click="updateComment" class="q-mt-md" :loading="isUpdating" />
                     <q-btn label="Cancel" flat @click="closeCommentEdit" class="q-mt-md" />
+                </div>
+            </div>
+        </div>
+        <div class="comment-list">
+            <div class="comment-item row no-wrap">
+                <q-avatar size="md">
+                    <img src="/avatar/128.png" alt="avatar">
+                </q-avatar>
+                <div class="column q-ml-md col-grow">
+                    <div class="text-grey-7">Zhiping Zhou</div>
+                    <div v-html="commentContent" />
                 </div>
             </div>
         </div>
@@ -35,6 +46,7 @@ const MiEditor = defineAsyncComponent({
 const comment = ref('');
 const isOpenCommentEdit = ref(false);
 const isUpdating = ref(false);
+const commentContent = ref('Lorem ipsum dolor sit amet consectetur adipisicing elit.');
 
 function openCommentEdit() {
     isOpenCommentEdit.value = true;
