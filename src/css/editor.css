@@ -115,7 +115,7 @@
 /* 表格单元格样式 */
 .ProseMirror table td,
 .ProseMirror table th {
-    min-width: 1em;
+    min-width: 200px;
     border: 1px solid #e0e0e0;
     padding: 8px 12px;
     vertical-align: top;
