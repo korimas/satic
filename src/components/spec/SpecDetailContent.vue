@@ -75,7 +75,7 @@ const MiEditor = defineAsyncComponent({
 
 const store = useSpecStore();
 const isUpdating = ref(false);
-const tab = ref('commnet');
+const tab = ref('comment');
 
 function editDescription() {
   if (window.getSelection()?.toString()) {
