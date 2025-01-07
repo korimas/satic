@@ -22,7 +22,7 @@
       <div class="q-mt-xs">
         <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="left"
           narrow-indicator>
-          <q-tab name="all" label="All" />
+          <!-- <q-tab name="all" label="All" /> -->
           <q-tab name="comment" label="Comment" />
           <q-tab name="history" label="History" />
         </q-tabs>
@@ -30,10 +30,10 @@
         <q-separator />
 
         <q-tab-panels v-model="tab">
-          <q-tab-panel name="all">
+          <!-- <q-tab-panel name="all">
             <div class="text-h6">All</div>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
+          </q-tab-panel> -->
 
           <q-tab-panel name="comment">
             <SpecDetailComment />
