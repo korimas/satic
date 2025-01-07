@@ -20,15 +20,8 @@
     <div class=" q-mt-lg">
       <div class="block-title" style="font-weight: 600;">Activity:</div>
       <div class="q-mt-xs">
-        <q-tabs
-          v-model="tab"
-          dense
-          class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
-          align="left"
-          narrow-indicator
-        >
+        <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="left"
+          narrow-indicator>
           <q-tab name="all" label="All" />
           <q-tab name="comment" label="Comment" />
           <q-tab name="history" label="History" />
@@ -36,7 +29,7 @@
 
         <q-separator />
 
-        <q-tab-panels v-model="tab" >
+        <q-tab-panels v-model="tab">
           <q-tab-panel name="all">
             <div class="text-h6">All</div>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -46,9 +39,8 @@
             <SpecDetailComment />
           </q-tab-panel>
 
-          <q-tab-panel name="history">
-            <div class="text-h6">History</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <q-tab-panel name="history" style="padding-top:0">
+            <SpecDetailHistory />
           </q-tab-panel>
         </q-tab-panels>
       </div>
@@ -74,6 +66,13 @@ const MiEditor = defineAsyncComponent({
 
 const SpecDetailComment = defineAsyncComponent({
   loader: () => import('components/spec/SpecDetailComment.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
+
+const SpecDetailHistory = defineAsyncComponent({
+  loader: () => import('components/spec/SpecDetailHistory.vue'),
   loadingComponent: MiLoading,
   delay: 0,
   timeout: 15000,
