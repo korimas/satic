@@ -62,7 +62,6 @@ async function updateEditDescription() {
   if (resp.success) {
     item.isInEdit = false;
     item.description = item.edit_content || '';
-    item.summary = item.edit_summary || '';
   }
   isUpdating.value = false;
 }
