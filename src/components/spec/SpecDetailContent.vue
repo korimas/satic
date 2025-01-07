@@ -2,7 +2,7 @@
   <div class="column q-ma-md spec-detail">
     <q-input v-model="store.showDetailSpec.summary" filled class="spec-title" />
 
-    <div class=" q-mt-md">
+    <div class=" q-mt-lg">
       <div class="block-title">Description:</div>
       <div v-html="store.showDetailSpec.description" class="ProseMirror detail-content"
         v-if="!store.showDetailSpec.isInEdit"
@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <div class=" q-mt-md">
+    <div class=" q-mt-lg">
       <div class="block-title" style="font-weight: 600;">Activity:</div>
       <div class="q-mt-xs">
         <q-tabs
@@ -43,8 +43,7 @@
           </q-tab-panel>
 
           <q-tab-panel name="comment">
-            <div class="text-h6">Comment</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <SpecDetailComment />
           </q-tab-panel>
 
           <q-tab-panel name="history">
@@ -68,6 +67,13 @@ import API from 'src/api/satic';
 // lazy import
 const MiEditor = defineAsyncComponent({
   loader: () => import('components/base/MiEditor.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
+
+const SpecDetailComment = defineAsyncComponent({
+  loader: () => import('components/spec/SpecDetailComment.vue'),
   loadingComponent: MiLoading,
   delay: 0,
   timeout: 15000,
