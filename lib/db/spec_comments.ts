@@ -29,7 +29,7 @@ export class SpecCommentDB {
     const result = await sql`
           SELECT * FROM spec_comments WHERE spec_item_id = ${specItemId}
         `;
-    if (!Array.isArray(result) || result.length === 0) {
+    if (!Array.isArray(result)) {
       throw new Error(`Comment not found by spec item: ${specItemId}`);
     }
     return result as SpecComment[];
