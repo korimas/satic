@@ -67,4 +67,8 @@ export interface SpecComment {
   is_deleted: boolean;
   created_at: string;
   updated_at: string;
+
+  // extra
+  isInEdit?: boolean;
+  edit_content?: string;
 }

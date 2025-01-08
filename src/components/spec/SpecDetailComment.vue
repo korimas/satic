@@ -11,20 +11,36 @@
             <div v-else class="column q-ml-md q-gutter-xs col-grow">
                 <MiEditor v-model="comment" />
                 <div class="row q-gutter-xs">
-                    <q-btn label="Save" color="primary" @click="updateComment" class="q-mt-md" :loading="isUpdating" />
+                    <q-btn label="Save" color="primary" @click="createComment" class="q-mt-md" :loading="isUpdating" />
                     <q-btn label="Cancel" flat @click="closeCommentEdit" class="q-mt-md" />
                 </div>
             </div>
         </div>
         <div class="comment-list">
-            <div v-for="(item, index) in comments" :key="index" class="comment-item row no-wrap">
+            <div v-for="(item, index) in comments" :key="index" class="comment-item row no-wrap q-mt-md">
                 <q-avatar size="md">
                     <img src="/avatar/128.png" alt="avatar">
                 </q-avatar>
                 <div class="column q-ml-md col-grow">
-                    <div class="text-grey-7">Zhiping Zhou</div>
-                    <div v-html="item.content" class="ProseMirror"/>
+                    <div class="row no-wrap">
+                        <div class="text-grey-7">Zhiping Zhou</div>
+                        <div class="q-ml-md">{{ formatLocalTime(item.created_at) }}</div>
+                    </div>
+                    <div v-if="!item.isInEdit" v-html="item.content" class="ProseMirror" />
+                    <div v-else class="column q-ml-md q-gutter-xs col-grow">
+                        <MiEditor v-model="item.edit_content" />
+                        <div class="row q-gutter-xs">
+                            <q-btn label="Save" color="primary" @click="updateComment" class="q-mt-md"
+                                :loading="isUpdating" />
+                            <q-btn label="Cancel" flat @click="closeCommentEdit" class="q-mt-md" />
+                        </div>
+                    </div>
+                    <div class="row no-wrap">
+                        <span class="text-button" @click="openCommentUpdate(item)">Edit</span>
+                        <span class="text-button q-ml-md" @click="closeCommentUpdate(item)">Delete</span>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -35,6 +51,8 @@ import { ref, defineAsyncComponent, onMounted } from 'vue';
 import MiLoading from 'components/base/MiLoading.vue';
 import API from 'src/api/satic';
 import { useSpecStore } from 'src/stores/spec';
+import { formatLocalTime } from 'src/utils/time';
+import { SpecComment } from 'src/data/structs';
 
 // lazy import
 const MiEditor = defineAsyncComponent({
@@ -50,6 +68,18 @@ const isUpdating = ref(false);
 // const commentContent = ref('Lorem ipsum dolor sit amet consectetur adipisicing elit.');
 const store = useSpecStore();
 const comments = ref<any>([]);
+
+function openCommentUpdate(item: SpecComment) {
+    console.log('open comment update');
+    item.edit_content = item.content;
+    item.isInEdit = true;
+}
+
+function closeCommentUpdate(item: SpecComment) {
+    console.log('close comment update');
+    item.isInEdit = false;
+    item.edit_content = '';
+}
 
 function openCommentEdit() {
     isOpenCommentEdit.value = true;
@@ -72,8 +102,8 @@ async function getAllComments() {
     }
 }
 
-async function updateComment() {
-    console.log('update comment');
+async function createComment() {
+    console.log('create comment');
     const resp = await API.createSpecComment({
         content: comment.value,
         spec_item_id: store.showDetailSpec.id,
@@ -107,7 +137,20 @@ onMounted(() => {
     cursor: text;
 }
 
-.comment-list .ProseMirror{
-    padding: 0;
+.comment-list .ProseMirror {
+    padding: 3px;
+}
+
+.comment-list .ProseMirror p {
+    margin: 0 0 3px 0;
+}
+
+.text-button {
+    color: #1976d2;
+    cursor: pointer;
+}
+
+.text-button:hover {
+    text-decoration: underline;
 }
 </style>
