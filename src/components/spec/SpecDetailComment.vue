@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue';
+import { ref, defineAsyncComponent, onMounted } from 'vue';
 import MiLoading from 'components/base/MiLoading.vue';
 import API from 'src/api/satic';
 import { useSpecStore } from 'src/stores/spec';
@@ -85,7 +85,9 @@ async function updateComment() {
     }
 }
 
-getAllComments();
+onMounted(() => {
+    getAllComments();
+});
 </script>
 
 <style>
