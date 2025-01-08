@@ -16,13 +16,13 @@ export class SpecCommentsHandler extends BaseApiHandler {
     // if (specItemId) {
     //   return SpecCommentDB.getCommentsBySpecItemId(this.sql, parseInt(specItemId));
     // }
-    return null;
+    return {};
   }
 
   protected async handlePost(req: Request) {
     // const payload = await req.json();
     // return SpecCommentDB.createComment(this.sql, payload);
-    return null;
+    return {};
   }
 
   protected async handleDelete(req: Request) {
@@ -36,6 +36,6 @@ export class SpecCommentsHandler extends BaseApiHandler {
   }
 
   protected async handlePut(req: Request) {
-    return null;
+    return {};
   }
 }
