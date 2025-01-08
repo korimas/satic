@@ -23,7 +23,7 @@
                 </q-avatar>
                 <div class="column q-ml-md col-grow">
                     <div class="text-grey-7">Zhiping Zhou</div>
-                    <div v-html="item.content" />
+                    <div v-html="item.content" class="ProseMirror"/>
                 </div>
             </div>
         </div>
