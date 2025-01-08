@@ -1,12 +1,12 @@
 <template>
     <div class="login-container row no-wrap">
         <!-- 左侧图示 -->
-        <div class="left-panel col-7 flex flex-center bg-blue-4">
+        <div class="left-panel col-8 flex flex-center bg-blue-7">
             <!-- <img src="https://via.placeholder.com/400x320" alt="Login Illustration" class="login-image" /> -->
         </div>
 
         <!-- 右侧登录表单 -->
-        <div class="right-panel col-5 flex flex-center">
+        <div class="right-panel col-4 flex flex-center">
             <div class="form-container" v-if="isShowSinIn">
                 <!-- <div class="logo-container">
                     <img src="https://via.placeholder.com/100" alt="Logo" class="logo" />
