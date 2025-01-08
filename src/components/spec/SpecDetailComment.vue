@@ -27,17 +27,17 @@
                         <div class="q-ml-md">{{ formatLocalTime(item.created_at) }}</div>
                     </div>
                     <div v-if="!item.isInEdit" v-html="item.content" class="ProseMirror" />
-                    <div v-else class="column q-ml-md q-gutter-xs col-grow">
+                    <div v-else class="column q-gutter-xs col-grow">
                         <MiEditor v-model="item.edit_content" />
                         <div class="row q-gutter-xs">
                             <q-btn label="Save" color="primary" @click="updateComment" class="q-mt-md"
                                 :loading="isUpdating" />
-                            <q-btn label="Cancel" flat @click="closeCommentEdit" class="q-mt-md" />
+                            <q-btn label="Cancel" flat @click="closeCommentUpdate(item)" class="q-mt-md" />
                         </div>
                     </div>
-                    <div class="row no-wrap">
+                    <div class="row no-wrap" v-if="!item.isInEdit">
                         <span class="text-button" @click="openCommentUpdate(item)">Edit</span>
-                        <span class="text-button q-ml-md" @click="closeCommentUpdate(item)">Delete</span>
+                        <span class="text-button q-ml-md" @click="deleteComment(item)">Delete</span>
                     </div>
                 </div>
 
