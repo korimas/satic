@@ -63,6 +63,9 @@ function closeCommentEdit() {
 
 async function getAllComments() {
     console.log('get all comments');
+    if (!store.showDetailSpec) {
+        return;
+    }
     const resp = await API.getSpecComments(store.showDetailSpec.id);
     if (resp.success) {
         comments.value = resp.result;
