@@ -35,6 +35,7 @@ export class SpecCommentsHandler extends BaseApiHandler {
   }
 
   protected async handlePut(req: Request) {
-    return
+    const payload = await req.json();
+    return await SpecCommentDB.updateComment(this.sql, payload);
   }
 }

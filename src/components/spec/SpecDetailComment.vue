@@ -102,6 +102,14 @@ async function getAllComments() {
     }
 }
 
+async function deleteComment(item: SpecComment) {
+    console.log('delete comment');
+    const resp = await API.deleteSpecComments([item.id]);
+    if (resp.success) {
+        comments.value = comments.value.filter((c: SpecComment) => c.id !== item.id);
+    }
+}
+
 async function createComment() {
     console.log('create comment');
     const resp = await API.createSpecComment({

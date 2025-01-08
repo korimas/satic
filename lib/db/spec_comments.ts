@@ -57,4 +57,14 @@ export class SpecCommentDB {
         `;
     return result;
   }
+
+  static async updateComment(sql: NeonQueryFunction<any, any>, comment: SpecComment) {
+    const result = await sql`
+          UPDATE spec_comments
+          SET content = ${comment.content}, is_edited = true, 
+          WHERE id = ${comment.id}
+          RETURNING *
+        `;
+    return result;
+  }
 }

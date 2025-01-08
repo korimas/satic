@@ -119,7 +119,14 @@ let API = {
         spec_item_id: specItemId,
       },
     });
-  }
+  },
+  deleteSpecComments(ids) {
+    return request('/spec_comments', 'delete', {
+      data: {
+        ids: ids,
+      },
+    });
+  },
 };
 
 export default API;
