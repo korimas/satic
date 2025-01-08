@@ -127,6 +127,12 @@ let API = {
       },
     });
   },
+  updateSpecComment(id, data) {
+    data.id = id;
+    return request(`/spec_comments`, 'put', {
+      data: data,
+    });
+  }
 };
 
 export default API;

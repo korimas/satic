@@ -30,7 +30,7 @@
                     <div v-else class="column q-gutter-xs col-grow">
                         <MiEditor v-model="item.edit_content" />
                         <div class="row q-gutter-xs">
-                            <q-btn label="Save" color="primary" @click="updateComment" class="q-mt-md"
+                            <q-btn label="Save" color="primary" @click="updateComment(item)" class="q-mt-md"
                                 :loading="isUpdating" />
                             <q-btn label="Cancel" flat @click="closeCommentUpdate(item)" class="q-mt-md" />
                         </div>
@@ -89,6 +89,20 @@ function openCommentEdit() {
 function closeCommentEdit() {
     isOpenCommentEdit.value = false;
     console.log('close comment edit');
+}
+
+async function updateComment(item: SpecComment) {
+    console.log('update comment');
+    isUpdating.value = true;
+    const resp = await API.updateSpecComment(item.id, {
+        content: item.edit_content,
+    });
+    if (resp.success) {
+        item.content = item.edit_content || '';
+        item.edit_content = '';
+        item.isInEdit = false;
+    }
+    isUpdating.value = false;
 }
 
 async function getAllComments() {
