@@ -48,4 +48,8 @@ export class ProjectsHandler extends BaseApiHandler {
 
     return result;
   }
+
+  protected async handlePut(req: Request) {
+    return
+  }
 }

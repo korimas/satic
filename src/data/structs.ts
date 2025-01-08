@@ -32,8 +32,6 @@ export interface SpecItem {
   spec_id: number;
   summary: string;
   description: string;
-  edit_content?: string;
-  edit_summary?: string;
   priority: string;
   status: string;
   reporter_id: string;
@@ -54,4 +52,18 @@ export interface SpecItem {
   expandable?: boolean;
   selectable?: boolean;
   isInEdit?: boolean;
+  edit_content?: string;
+  edit_summary?: string;
+}
+
+export interface SpecComment {
+  id: number;
+  parent_id: number;
+  spec_item_id: number;
+  reporter_id: string;
+  content: string;
+  is_edited: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
 }

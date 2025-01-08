@@ -49,4 +49,8 @@ export class IssuesHandler extends BaseApiHandler {
 
     return result;
   }
+
+  protected async handlePut(req: Request) {
+    return
+  }
 }
