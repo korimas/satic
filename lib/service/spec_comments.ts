@@ -22,6 +22,7 @@ export class SpecCommentsHandler extends BaseApiHandler {
   protected async handlePost(req: Request) {
     // const payload = await req.json();
     // return SpecCommentDB.createComment(this.sql, payload);
+    return null;
   }
 
   protected async handleDelete(req: Request) {
@@ -35,6 +36,6 @@ export class SpecCommentsHandler extends BaseApiHandler {
   }
 
   protected async handlePut(req: Request) {
-    return
+    return null;
   }
 }
