@@ -94,6 +94,6 @@ export abstract class BaseApiHandler {
         message: errorMessage,
       },
     }
-    return new Response(JSON.stringify(resp_obj), {
-    }
+    return new Response(JSON.stringify(resp_obj));
+  }
 }
