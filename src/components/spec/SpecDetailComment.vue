@@ -106,4 +106,8 @@ onMounted(() => {
     background-color: #f8f8f8;
     cursor: text;
 }
+
+.comment-list .ProseMirror{
+    padding: 0;
+}
 </style>
