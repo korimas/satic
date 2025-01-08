@@ -144,6 +144,7 @@ function closeSpecDetail() {
   specStore.showDetailSpec.isInEdit = false;
   specStore.showDetailSpec.edit_content = '';
   specStore.showDetailSpec.edit_summary = '';
+  specStore.specDetailTap = 'comment'
 }
 
 function showSpecDetail(item: SpecItem) {

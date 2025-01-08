@@ -20,7 +20,7 @@
     <div class=" q-mt-lg">
       <div class="block-title" style="font-weight: 600;">Activity:</div>
       <div class="q-mt-xs">
-        <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="left"
+        <q-tabs v-model="store.specDetailTap" dense class="text-grey" active-color="primary" indicator-color="primary" align="left"
           narrow-indicator>
           <!-- <q-tab name="all" label="All" /> -->
           <q-tab name="comment" label="Comment" />
@@ -29,7 +29,7 @@
 
         <q-separator />
 
-        <q-tab-panels v-model="tab">
+        <q-tab-panels v-model="store.specDetailTap">
           <!-- <q-tab-panel name="all">
             <div class="text-h6">All</div>
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -80,7 +80,6 @@ const SpecDetailHistory = defineAsyncComponent({
 
 const store = useSpecStore();
 const isUpdating = ref(false);
-const tab = ref('comment');
 
 function editDescription() {
   if (window.getSelection()?.toString()) {
