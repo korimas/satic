@@ -17,13 +17,13 @@
             </div>
         </div>
         <div class="comment-list">
-            <div class="comment-item row no-wrap">
+            <div v-for="(item, index) in comments" :key="index" class="comment-item row no-wrap">
                 <q-avatar size="md">
                     <img src="/avatar/128.png" alt="avatar">
                 </q-avatar>
                 <div class="column q-ml-md col-grow">
                     <div class="text-grey-7">Zhiping Zhou</div>
-                    <div v-html="commentContent" />
+                    <div v-html="item.content" />
                 </div>
             </div>
         </div>
@@ -34,6 +34,7 @@
 import { ref, defineAsyncComponent } from 'vue';
 import MiLoading from 'components/base/MiLoading.vue';
 import API from 'src/api/satic';
+import { useSpecStore } from 'src/stores/spec';
 
 // lazy import
 const MiEditor = defineAsyncComponent({
@@ -46,7 +47,9 @@ const MiEditor = defineAsyncComponent({
 const comment = ref('');
 const isOpenCommentEdit = ref(false);
 const isUpdating = ref(false);
-const commentContent = ref('Lorem ipsum dolor sit amet consectetur adipisicing elit.');
+// const commentContent = ref('Lorem ipsum dolor sit amet consectetur adipisicing elit.');
+const store = useSpecStore();
+const comments = ref<any>([]);
 
 function openCommentEdit() {
     isOpenCommentEdit.value = true;
@@ -58,9 +61,31 @@ function closeCommentEdit() {
     console.log('close comment edit');
 }
 
-function updateComment() {
-    console.log('update comment');
+async function getAllComments() {
+    console.log('get all comments');
+    const resp = await API.getSpecComments(store.showDetailSpec.id);
+    if (resp.success) {
+        comments.value = resp.result;
+    }
 }
+
+async function updateComment() {
+    console.log('update comment');
+    const resp = await API.createSpecComment({
+        content: comment.value,
+        spec_item_id: store.showDetailSpec.id,
+        reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
+        spec_id: store.showDetailSpec.spec_id,
+        parent_id: -1,
+    });
+    if (resp.success) {
+        comment.value = '';
+        isOpenCommentEdit.value = false;
+        comments.value.push(resp.result);
+    }
+}
+
+getAllComments();
 </script>
 
 <style>

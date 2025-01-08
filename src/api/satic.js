@@ -1,4 +1,3 @@
-import { getProject } from 'src/data/demo';
 import request from './requests';
 
 let API = {
@@ -107,6 +106,18 @@ let API = {
     data.id = id;
     return request(`/spec_items`, 'put', {
       data: data,
+    });
+  },
+  createSpecComment(data) {
+    return request('/spec_comments', 'post', {
+      data: data,
+    });
+  },
+  getSpecComments(specItemId) {
+    return request('/spec_comments', 'get', {
+      params: {
+        spec_item_id: specItemId,
+      },
     });
   }
 };

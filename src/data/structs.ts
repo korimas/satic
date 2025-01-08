@@ -60,6 +60,7 @@ export interface SpecComment {
   id: number;
   parent_id: number;
   spec_item_id: number;
+  spec_id: number;
   reporter_id: string;
   content: string;
   is_edited: boolean;
