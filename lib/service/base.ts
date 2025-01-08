@@ -86,13 +86,14 @@ export abstract class BaseApiHandler {
     errorCode = 0,
     errorMessage = ''
   ): Response {
-    return Response.json({
+    const resp_obj = {
       result: result,
       success: success,
       error: {
         code: errorCode,
         message: errorMessage,
       },
-    });
-  }
+    }
+    return new Response(JSON.stringify(resp_obj), {
+    }
 }
