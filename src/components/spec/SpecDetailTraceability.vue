@@ -1,5 +1,4 @@
 <template>
-
     <div class="traceability-container fit">
         <!-- 工具栏 -->
         <div class="bg-white">
@@ -16,10 +15,8 @@
 </template>
 
 <script setup lang="ts">
-
 import { onMounted, onUnmounted, ref } from 'vue'
 import * as d3 from 'd3'
-const treeContainer = ref<HTMLElement | null>(null)
 
 interface Node {
     id: string
@@ -43,11 +40,16 @@ interface Group {
     color: string
 }
 
-let svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
-let g: d3.Selection<SVGGElement, unknown, HTMLElement, any>
-let zoom: d3.ZoomBehavior<Element, unknown>
+const treeContainer = ref<HTMLElement | null>(null)
 
-const data = {
+// d3 相关所需的全局选择器
+let svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
+let gRoot: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+let zoomBehavior: d3.ZoomBehavior<Element, unknown>
+let simulation: d3.Simulation<d3.SimulationNodeDatum, undefined>
+
+// 测试数据
+const graphData = {
     nodes: [
         { id: "SR001", name: "当前item", type: "软件需求", group: "软件需求" },
         { id: "SA001", name: "上游item1", type: "系统架构", group: "系统架构" },
@@ -67,92 +69,110 @@ const data = {
     ]
 }
 
-const initializeGraph = () => {
-    // 清除现有内容  
-    d3.select("#tree-container").selectAll("*").remove()
+const initializeGraph = (width: number, height: number) => {
+    if (!treeContainer.value) return
 
-    const width = document.getElementById('tree-container')?.offsetWidth ?? 800
-    const height = 800
-    const margin = { top: 40, right: 40, bottom: 40, left: 40 }
+    // 清空容器内的内容
+    d3.select(treeContainer.value).selectAll("*").remove()
 
-    console.log(width, height)
-
-    svg = d3.select("#tree-container")
+    // 创建并配置 SVG
+    svg = d3.select(treeContainer.value)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
 
-    g = svg.append("g")
+    // 根容器
+    gRoot = svg.append("g")
 
-    zoom = d3.zoom()
+    // 设置缩放行为
+    zoomBehavior = d3.zoom()
         .scaleExtent([0.5, 2])
         .on("zoom", (event) => {
-            g.attr("transform", event.transform)
+            gRoot.attr("transform", event.transform)
         })
 
-    svg.call(zoom)
+    // 将缩放效果应用于 SVG
+    svg.call(zoomBehavior)
 
-    // 创建力导向图布局  
-    const simulation = d3.forceSimulation(data.nodes as d3.SimulationNodeDatum[])
-        .force("link", d3.forceLink(data.links)
+    // 创建力导向图
+    simulation = d3.forceSimulation(graphData.nodes as d3.SimulationNodeDatum[])
+        .force("link", d3.forceLink(graphData.links)
             .id((d: any) => d.id)
-            .distance(150))
+            .distance(150)
+        )
         .force("charge", d3.forceManyBody().strength(-1000))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .force("collision", d3.forceCollide().radius(80))
 
-    // 添加分组背景  
-    const groups = g.selectAll(".group")
-        .data(data.groups)
+    // 先渲染分组背景
+    const groupSelection = gRoot.selectAll(".group")
+        .data(graphData.groups)
         .enter()
         .append("g")
         .attr("class", "group")
 
-    const groupPaths = groups.append("rect")
+    groupSelection.append("rect")
         .attr("class", "group-container")
         .attr("fill", d => d.color)
         .attr("opacity", 0.2)
 
-    groups.append("text")
+    groupSelection.append("text")
         .attr("class", "group-label")
         .attr("dy", 20)
         .text(d => d.label)
 
-    // 创建贝塞尔曲线连接线  
-    const link = g.selectAll(".link")
-        .data(data.links)
+    // 绘制连线 (使用贝塞尔曲线)
+    const linkSelection = gRoot.selectAll(".link")
+        .data(graphData.links)
         .enter()
         .append("path")
         .attr("class", "link")
 
-    // 添加节点  
-    const node = g.selectAll(".node")
-        .data(data.nodes)
+    // 绘制节点
+    const nodeSelection = gRoot.selectAll(".node")
+        .data(graphData.nodes)
         .enter()
         .append("g")
         .attr("class", "node")
-        .call(d3.drag<any, Node>()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended))
+        .call(
+            d3.drag<any, Node>()
+                .on("start", (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0.3).restart()
+                    d.fx = d.x
+                    d.fy = d.y
+                })
+                .on("drag", (event, d) => {
+                    d.fx = event.x
+                    d.fy = event.y
+                })
+                .on("end", (event, d) => {
+                    if (!event.active) simulation.alphaTarget(0)
+                    d.fx = null
+                    d.fy = null
+                })
+        )
 
-    node.append("circle")
+    nodeSelection.append("circle")
         .attr("r", 8)
         .attr("fill", d => {
-            const group = data.groups.find(g => g.id === d.group)
-            return group ? group.color : "#fff"
+            const gObj = graphData.groups.find(g => g.id === d.group)
+            return gObj ? gObj.color : "#fff"
         })
+        .attr("stroke", "#666")
+        .attr("stroke-width", 2)
 
-    node.append("text")
+    nodeSelection.append("text")
         .attr("dx", 12)
         .attr("dy", ".35em")
         .text(d => d.name)
+        .attr("font-size", 12)
 
-    // 添加箭头标记  
+    // 创建箭头标记
     svg.append("defs").selectAll("marker")
         .data(["end"])
-        .enter().append("marker")
-        .attr("id", String)
+        .enter()
+        .append("marker")
+        .attr("id", d => d)
         .attr("viewBox", "0 -5 10 10")
         .attr("refX", 20)
         .attr("refY", 0)
@@ -163,134 +183,125 @@ const initializeGraph = () => {
         .attr("d", "M0,-5L10,0L0,5")
         .attr("fill", "#999")
 
-    link.attr("marker-end", "url(#end)")
+    linkSelection.attr("marker-end", "url(#end)")
 
-    // 更新力导向图  
+    // 每帧更新位置
     simulation.on("tick", () => {
-        // 更新连接线位置  
-        link.attr("d", (d: any) => {
+        // 更新连线位置
+        linkSelection.attr("d", (d: any) => {
             const dx = d.target.x - d.source.x
             const dy = d.target.y - d.source.y
             const dr = Math.sqrt(dx * dx + dy * dy)
             return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`
         })
 
-        // 更新节点位置  
-        node.attr("transform", (d: any) => `translate(${d.x},${d.y})`)
+        // 更新节点位置
+        nodeSelection.attr("transform", (d: any) => `translate(${d.x},${d.y})`)
 
-        // 更新分组背景位置和大小  
+        // 更新分组背景位置和大小
         const padding = 40
-        data.groups.forEach(group => {
-            const groupNodes = data.nodes.filter(n => n.group === group.id)
+        graphData.groups.forEach(group => {
+            const groupNodes = graphData.nodes.filter(n => n.group === group.id)
             if (groupNodes.length > 0) {
                 const minX = d3.min(groupNodes, (n: any) => n.x) - padding
                 const maxX = d3.max(groupNodes, (n: any) => n.x) + padding
                 const minY = d3.min(groupNodes, (n: any) => n.y) - padding
                 const maxY = d3.max(groupNodes, (n: any) => n.y) + padding
-                const width = maxX! - minX!
-                const height = maxY! - minY!
+                const w = (maxX || 0) - (minX || 0)
+                const h = (maxY || 0) - (minY || 0)
 
-                groups.filter(g => g.id === group.id)
-                    .select("rect")
-                    .attr("x", minX)
-                    .attr("y", minY)
-                    .attr("width", width)
-                    .attr("height", height)
+                const currentGroup = groupSelection.filter(d => d.id === group.id)
+                currentGroup.select("rect")
+                    .attr("x", minX || 0)
+                    .attr("y", minY || 0)
+                    .attr("width", w < 0 ? 0 : w)
+                    .attr("height", h < 0 ? 0 : h)
 
-                groups.filter(g => g.id === group.id)
-                    .select("text")
-                    .attr("x", minX! + 10)
-                    .attr("y", minY)
+                currentGroup.select("text")
+                    .attr("x", (minX || 0) + 10)
+                    .attr("y", (minY || 0))
             }
         })
     })
-
-    function dragstarted(event: any, d: Node) {
-        if (!event.active) simulation.alphaTarget(0.3).restart()
-        d.fx = d.x
-        d.fy = d.y
-    }
-
-    function dragged(event: any, d: Node) {
-        d.fx = event.x
-        d.fy = event.y
-    }
-
-    function dragended(event: any, d: Node) {
-        if (!event.active) simulation.alphaTarget(0)
-        d.fx = null
-        d.fy = null
-    }
-
-    // 初始居中视图  
-    // centerView()
+    // 在布局结束后再调用一次居中
+    simulation.on("end", () => {
+        centerView()
+    })
 }
 
+// 放大
 const zoomIn = () => {
-    svg.transition().call(zoom.scaleBy, 1.2)
+    svg.transition().call(zoomBehavior.scaleBy, 1.2)
 }
 
+// 缩小
 const zoomOut = () => {
-    svg.transition().call(zoom.scaleBy, 0.8)
+    svg.transition().call(zoomBehavior.scaleBy, 0.8)
 }
 
+// 居中视图
 const centerView = () => {
     if (!treeContainer.value) return
 
-    // 获取容器尺寸  
     const containerWidth = treeContainer.value.offsetWidth
-    const containerHeight = 800
-
-    // 获取图形的边界框  
-    const bounds = g.node()?.getBBox()
+    const containerHeight = treeContainer.value.offsetHeight
+    const bounds = gRoot.node()?.getBBox()
     if (!bounds) return
 
-    // 计算缩放比例，确保图形完全可见并留有边距  
     const padding = 40
     const scale = Math.min(
         containerWidth / (bounds.width + padding * 2),
         containerHeight / (bounds.height + padding * 2),
-        1.5 // 最大缩放限制  
+        1.5
     )
-
-    // 计算居中的平移距离  
     const translateX = (containerWidth - bounds.width * scale) / 2 - bounds.x * scale
     const translateY = (containerHeight - bounds.height * scale) / 2 - bounds.y * scale
 
-    // 应用变换  
     svg.transition()
-        .duration(750) // 添加动画效果  
+        .duration(750)
         .call(
-            zoom.transform,
-            d3.zoomIdentity
-                .translate(translateX, translateY)
-                .scale(scale)
+            zoomBehavior.transform,
+            d3.zoomIdentity.translate(translateX, translateY).scale(scale)
         )
 }
 
+// 监听挂载和卸载
 onMounted(() => {
-    initializeGraph()
-    window.addEventListener('resize', initializeGraph)
-})
+    if (!treeContainer.value) return
 
-onUnmounted(() => {
-    window.removeEventListener('resize', initializeGraph)
-}) 
+    // 初始加载
+    const containerWidth = treeContainer.value.offsetWidth
+    const containerHeight = 800 // 可根据需要动态修改
+    initializeGraph(containerWidth, containerHeight)
+
+    // 只在 resize 时，更新 SVG 宽高并重新居中
+    const onResize = () => {
+        const newWidth = treeContainer.value?.offsetWidth || containerWidth
+        const newHeight = treeContainer.value?.offsetHeight || 800
+        svg.attr("width", newWidth).attr("height", newHeight)
+        centerView()
+    }
+    window.addEventListener("resize", onResize)
+
+    onUnmounted(() => {
+        window.removeEventListener("resize", onResize)
+    })
+})
 </script>
 
 <style>
+.traceability-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
 .node {
     cursor: pointer;
 }
 
-.node circle {
-    fill: #fff;
-    stroke: #666;
-    stroke-width: 2px;
-}
-
-.node text {
-    font: 12px sans-serif;
+.node:hover circle {
+    fill: #f5f5f5;
 }
 
 .link {
@@ -299,17 +310,8 @@ onUnmounted(() => {
     stroke-width: 1.5px;
 }
 
-.selected circle {
-    fill: #e3f2fd;
-    stroke: #2196f3;
-}
-
-.node:hover circle {
-    fill: #f5f5f5;
-}
-
 .group-container {
-    fill: #f8f9fa;
+    fill: #f0f0f0;
     stroke: #dee2e6;
     stroke-width: 1px;
     rx: 8;
@@ -320,15 +322,5 @@ onUnmounted(() => {
     font-size: 14px;
     font-weight: bold;
     fill: #495057;
-}
-
-.tooltip {
-    position: absolute;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    pointer-events: none;
 }
 </style>
