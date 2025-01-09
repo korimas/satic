@@ -1,28 +1,25 @@
 <template>
 
-    <div class="container mx-auto p-4">
+    <div class="traceability-container fit">
         <!-- 工具栏 -->
-        <div class="bg-white p-4 mb-4 rounded shadow flex justify-between items-center">
-            <div class="space-x-2">
+        <div class="bg-white">
+            <div class="row q-gutter-sm">
                 <q-btn dense icon="zoom_in" @click="zoomIn" />
                 <q-btn dense icon="zoom_out" @click="zoomOut" />
-                <button @click="centerView" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                    居中
-                </button>
+                <q-btn dense icon="filter_center_focus" @click="centerView" />
             </div>
         </div>
 
         <!-- 图形展示区域 -->
-        <div class="bg-white rounded shadow p-4">
-            <div id="tree-container" class="w-full" style="height: 800px;"></div>
-        </div>
+        <div ref="treeContainer" id="tree-container" class="fit"></div>
     </div>
 </template>
 
 <script setup lang="ts">
 
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import * as d3 from 'd3'
+const treeContainer = ref<HTMLElement | null>(null)
 
 interface Node {
     id: string
@@ -77,6 +74,8 @@ const initializeGraph = () => {
     const width = document.getElementById('tree-container')?.offsetWidth ?? 800
     const height = 800
     const margin = { top: 40, right: 40, bottom: 40, left: 40 }
+
+    console.log(width, height)
 
     svg = d3.select("#tree-container")
         .append("svg")
@@ -224,7 +223,7 @@ const initializeGraph = () => {
     }
 
     // 初始居中视图  
-    centerView()
+    // centerView()
 }
 
 const zoomIn = () => {
@@ -236,14 +235,37 @@ const zoomOut = () => {
 }
 
 const centerView = () => {
-    const width = document.getElementById('tree-container')?.offsetWidth ?? 800
-    const height = 800
-    svg.transition().call(
-        zoom.transform,
-        d3.zoomIdentity
-            .translate(width / 2, height / 2)
-            .scale(1)
+    if (!treeContainer.value) return
+
+    // 获取容器尺寸  
+    const containerWidth = treeContainer.value.offsetWidth
+    const containerHeight = 800
+
+    // 获取图形的边界框  
+    const bounds = g.node()?.getBBox()
+    if (!bounds) return
+
+    // 计算缩放比例，确保图形完全可见并留有边距  
+    const padding = 40
+    const scale = Math.min(
+        containerWidth / (bounds.width + padding * 2),
+        containerHeight / (bounds.height + padding * 2),
+        1.5 // 最大缩放限制  
     )
+
+    // 计算居中的平移距离  
+    const translateX = (containerWidth - bounds.width * scale) / 2 - bounds.x * scale
+    const translateY = (containerHeight - bounds.height * scale) / 2 - bounds.y * scale
+
+    // 应用变换  
+    svg.transition()
+        .duration(750) // 添加动画效果  
+        .call(
+            zoom.transform,
+            d3.zoomIdentity
+                .translate(translateX, translateY)
+                .scale(scale)
+        )
 }
 
 onMounted(() => {
