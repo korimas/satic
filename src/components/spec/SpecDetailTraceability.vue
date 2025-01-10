@@ -55,12 +55,14 @@ const graphData = {
         { id: "SR002", name: "上游item2", type: "系统需求", group: "系统需求" },
         { id: "SR003", name: "上游item2", type: "系统需求", group: "系统需求" },
         { id: "SR001", name: "当前item", type: "软件需求", group: "软件需求" },
-        { id: "SD001", name: "下游item", type: "软件设计", group: "软件设计" }
+        { id: "SD001", name: "下游item2", type: "软件设计", group: "软件设计" },
+        { id: "SD002", name: "下游item1", type: "软件设计", group: "软件设计" }
     ],
     links: [
         { source: "SA001", target: "SR001" },
         { source: "SR002", target: "SR001" },
         { source: "SR003", target: "SR001" },
+        { source: "SR001", target: "SD002" },
         { source: "SR001", target: "SD001" }
     ],
     groups: [
@@ -434,6 +436,8 @@ onMounted(() => {
 }
 
 .group-container {
+    stroke: #ccc;
+    stroke-width: 1px;
     rx: 8;
     ry: 8;
 }
