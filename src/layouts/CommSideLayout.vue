@@ -11,8 +11,8 @@
   </q-splitter>
 
   <q-drawer side="right" overlay v-model="drawerStore.CreateSpecDrawer.show" bordered
-    :width="$q.screen.width > 800 ? 800 : $q.screen.width" :breakpoint="800" v-if="drawerStore.CreateSpecDrawer.alive">
-    <SpecCreate />
+    :width="$q.screen.width > 800 ? 800 : $q.screen.width" :breakpoint="800">
+    <SpecCreate v-if="drawerStore.CreateSpecDrawer.alive" />
   </q-drawer>
 
 </template>

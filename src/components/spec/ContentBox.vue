@@ -77,8 +77,8 @@
 
       <q-drawer side="left" overlay v-model="drawerStore.DetailSpecDrawer.show" bordered
         :width="$q.screen.width > 1000 ? $q.screen.width - 200 : $q.screen.width" :breakpoint="1000"
-        style="z-index: 1000" v-if="drawerStore.DetailSpecDrawer.alive">
-        <SpecDetail />
+        style="z-index: 1000">
+        <SpecDetail v-if="drawerStore.DetailSpecDrawer.alive" />
       </q-drawer>
     </template>
 
