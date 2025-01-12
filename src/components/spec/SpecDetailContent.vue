@@ -1,15 +1,15 @@
 <template>
   <div class="column q-ma-md spec-detail">
-    <q-input v-model="store.showDetailSpec.summary" filled class="spec-title" />
+    <q-input v-model="drawerStore.DetailSpecDrawer.data.summary" filled class="spec-title" />
 
     <div class=" q-mt-lg">
       <div class="block-title">Description:</div>
-      <div v-html="store.showDetailSpec.description" class="ProseMirror detail-content"
-        v-if="!store.showDetailSpec.isInEdit"
+      <div v-html="drawerStore.DetailSpecDrawer.data.description" class="ProseMirror detail-content"
+        v-if="!drawerStore.DetailSpecDrawer.data.isInEdit"
         style="max-width: 100%;overflow-x: auto;scrollbar-width: thin; -webkit-overflow-scrolling: touch;"
         @click="editDescription" />
       <div v-else class="column q-mt-md q-gutter-xs">
-        <MiEditor v-model="store.showDetailSpec.edit_content" />
+        <MiEditor v-model="drawerStore.DetailSpecDrawer.data.edit_content" />
         <div class="row q-gutter-xs">
           <q-btn label="Save" color="primary" @click="updateEditDescription" class="q-mt-md" :loading="isUpdating" />
           <q-btn label="Cancel" flat @click="cancelEditDescription" class="q-mt-md" />
@@ -20,8 +20,8 @@
     <div class=" q-mt-lg">
       <div class="block-title" style="font-weight: 600;">Activity:</div>
       <div class="q-mt-xs">
-        <q-tabs v-model="store.specDetailTap" dense class="text-grey" active-color="primary" indicator-color="primary"
-          align="left" narrow-indicator>
+        <q-tabs v-model="drawerStore.DetailSpecDrawer.currentTab" dense class="text-grey" active-color="primary"
+          indicator-color="primary" align="left" narrow-indicator>
           <q-tab name="comment" label="Comment" />
           <q-tab name="history" label="History" />
           <q-tab name="traceability" label="Traceability" />
@@ -29,7 +29,7 @@
 
         <q-separator />
 
-        <q-tab-panels v-model="store.specDetailTap" keep-alive>
+        <q-tab-panels v-model="drawerStore.DetailSpecDrawer.currentTab" keep-alive>
           <q-tab-panel name="traceability">
             <SpecDetailTraceability />
           </q-tab-panel>
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { defineAsyncComponent, ref } from 'vue';
-import { useSpecStore } from 'src/stores/spec';
+import { useDrawerStore } from 'src/stores/drawer';
 import MiLoading from 'components/base/MiLoading.vue';
 import API from 'src/api/satic';
 
@@ -84,24 +84,24 @@ const SpecDetailTraceability = defineAsyncComponent({
   timeout: 15000,
 });
 
-const store = useSpecStore();
+const drawerStore = useDrawerStore();
 const isUpdating = ref(false);
 
 function editDescription() {
   if (window.getSelection()?.toString()) {
     return
   }
-  store.showDetailSpec.edit_content = store.showDetailSpec.description;
-  store.showDetailSpec.isInEdit = true;
+  drawerStore.DetailSpecDrawer.data.edit_content = drawerStore.DetailSpecDrawer.data.description;
+  drawerStore.DetailSpecDrawer.data.isInEdit = true;
 }
 
 function cancelEditDescription() {
-  store.showDetailSpec.isInEdit = false
-  store.showDetailSpec.edit_content = '';
+  drawerStore.DetailSpecDrawer.data.isInEdit = false
+  drawerStore.DetailSpecDrawer.data.edit_content = '';
 }
 
 async function updateEditDescription() {
-  const item = store.showDetailSpec;
+  const item = drawerStore.DetailSpecDrawer.data;
   if (item.edit_content === item.description) {
     // 没有修改内容
     item.isInEdit = false;
@@ -119,6 +119,7 @@ async function updateEditDescription() {
   }
   isUpdating.value = false;
 }
+
 
 </script>
 

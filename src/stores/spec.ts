@@ -6,8 +6,6 @@ export const useSpecStore = defineStore('spec', {
   state: () => ({
     curSpec: new SpecTree(),
     contentDetailVisible: false,
-    showDetailSpec: {} as SpecItem,
-    specDetailTap: 'comment',
   }),
 
   actions: {

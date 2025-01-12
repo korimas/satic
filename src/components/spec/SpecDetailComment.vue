@@ -50,7 +50,7 @@
 import { ref, defineAsyncComponent, onMounted } from 'vue';
 import MiLoading from 'components/base/MiLoading.vue';
 import API from 'src/api/satic';
-import { useSpecStore } from 'src/stores/spec';
+import { useDrawerStore } from 'src/stores/drawer';
 import { formatLocalTime } from 'src/utils/time';
 import { SpecComment } from 'src/data/structs';
 
@@ -65,8 +65,7 @@ const MiEditor = defineAsyncComponent({
 const comment = ref('');
 const isOpenCommentEdit = ref(false);
 const isUpdating = ref(false);
-// const commentContent = ref('Lorem ipsum dolor sit amet consectetur adipisicing elit.');
-const store = useSpecStore();
+const drawerStore = useDrawerStore();
 const comments = ref<any>([]);
 
 function openCommentUpdate(item: SpecComment) {
@@ -107,10 +106,10 @@ async function updateComment(item: SpecComment) {
 
 async function getAllComments() {
     console.log('get all comments');
-    if (!store.showDetailSpec) {
+    if (!drawerStore.DetailSpecDrawer.show) {
         return;
     }
-    const resp = await API.getSpecComments(store.showDetailSpec.id);
+    const resp = await API.getSpecComments(drawerStore.DetailSpecDrawer.data.id);
     if (resp.success) {
         comments.value = resp.result;
     }
@@ -126,11 +125,12 @@ async function deleteComment(item: SpecComment) {
 
 async function createComment() {
     console.log('create comment');
+    isUpdating.value = true;
     const resp = await API.createSpecComment({
         content: comment.value,
-        spec_item_id: store.showDetailSpec.id,
+        spec_item_id: drawerStore.DetailSpecDrawer.data.id,
         reporter_id: 'a621d1d7-30d9-4f19-89fc-efe5126ca8a4',
-        spec_id: store.showDetailSpec.spec_id,
+        spec_id: drawerStore.DetailSpecDrawer.data.spec_id,
         parent_id: -1,
     });
     if (resp.success) {
@@ -138,6 +138,7 @@ async function createComment() {
         isOpenCommentEdit.value = false;
         comments.value.push(resp.result);
     }
+    isUpdating.value = false;
 }
 
 onMounted(() => {

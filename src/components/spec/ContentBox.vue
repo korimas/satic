@@ -29,7 +29,7 @@
                   <q-tooltip class="bg-grey-3 text-black">编辑</q-tooltip>
                 </q-btn>
 
-                <q-btn round size="sm" flat icon="visibility" @click="showSpecDetail(item)">
+                <q-btn round size="sm" flat icon="visibility" @click="drawerStore.DetailSpecDrawer.openDrawer(item)">
                   <q-tooltip class="bg-grey-3 text-black">详情</q-tooltip>
                 </q-btn>
 
@@ -75,12 +75,10 @@
         </div>
       </div>
 
-      <q-drawer side="left" overlay v-model="isSpecDetailShow" bordered
+      <q-drawer side="left" overlay v-model="drawerStore.DetailSpecDrawer.show" bordered
         :width="$q.screen.width > 1000 ? $q.screen.width - 200 : $q.screen.width" :breakpoint="1000"
-        style="z-index: 1000">
-        <MiWindow title="Detail" @close="closeSpecDetail">
-          <SpecDetail v-if="isSpecDetailShow"/>
-        </MiWindow>
+        style="z-index: 1000" v-if="drawerStore.DetailSpecDrawer.alive">
+        <SpecDetail />
       </q-drawer>
     </template>
 
@@ -93,6 +91,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, defineAsyncComponent } from 'vue';
 import { useSpecStore } from 'src/stores/spec';
+import { useDrawerStore } from 'src/stores/drawer';
 import { sleep } from 'src/utils/time';
 import MiLoading from 'components/base/MiLoading.vue';
 import { SpecItem } from 'src/data/structs';
@@ -113,15 +112,8 @@ const SpecDetail = defineAsyncComponent({
   timeout: 15000,
 });
 
-const MiWindow = defineAsyncComponent({
-  loader: () => import('components/base/MiWindow.vue'),
-  loadingComponent: MiLoading,
-  delay: 0,
-  timeout: 15000,
-});
-
-
 const specStore = useSpecStore();
+const drawerStore = useDrawerStore();
 const scrollTargetRef = ref();
 const topSentinel = ref();
 const bottomSentinel = ref();
@@ -131,7 +123,6 @@ const splitterMin = 330;
 const splitterModel = ref(splitterMin);
 const splitterLimits = ref([splitterMin, Infinity]);
 const isUpdating = ref(false);
-const isSpecDetailShow = ref(false);
 
 let hightTimer: ReturnType<typeof setTimeout> | null = null;
 let preTargetElement: any = null;
@@ -139,18 +130,6 @@ let preTargetElement: any = null;
 let topObserver: IntersectionObserver | null = null;
 let bottomObserver: IntersectionObserver | null = null;
 
-function closeSpecDetail() {
-  isSpecDetailShow.value = false
-  specStore.showDetailSpec.isInEdit = false;
-  specStore.showDetailSpec.edit_content = '';
-  specStore.showDetailSpec.edit_summary = '';
-  specStore.specDetailTap = 'comment'
-}
-
-function showSpecDetail(item: SpecItem) {
-  specStore.showDetailSpec = item;
-  isSpecDetailShow.value = true;
-}
 
 function openEdit(item: SpecItem) {
   item.edit_content = item.description;
@@ -186,6 +165,7 @@ async function updateSpecItem(item: SpecItem) {
   isUpdating.value = false;
 }
 
+// 无限滚动加载内容
 async function loadContent(isReverse: boolean) {
   let loadingFlag = isReverse ? isReverseLoading : isLoading
   if (isReverseLoading.value || isLoading.value) return;

@@ -15,11 +15,11 @@
 
         <div class="q-mt-md text-grey-7 text-subtitle2 q-gutter-sm">
             <div>
-                Created {{ store.showDetailSpec.created_at }}
+                Created {{ drawerStore.DetailSpecDrawer.data.created_at }}
             </div>
 
             <div>
-                Updated {{ store.showDetailSpec.updated_at }}
+                Updated {{ drawerStore.DetailSpecDrawer.data.updated_at }}
             </div>
 
         </div>
@@ -31,9 +31,9 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { useSpecStore } from 'src/stores/spec';
+import { useDrawerStore } from 'src/stores/drawer';
 
-const store = useSpecStore();
+const drawerStore = useDrawerStore();
 
 const attributes = ref({
     FoundVia: 'Software Tester',
