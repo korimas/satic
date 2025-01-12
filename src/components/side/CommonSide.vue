@@ -3,12 +3,7 @@
     <div class="column q-mx-sm q-mt-md full-height">
       <!-- Project Title -->
       <q-item dense class="q-my-lg">
-        <q-item-section
-          avatar
-          top
-          style="margin: auto; min-width: 30px"
-          v-if="curProjectIcon"
-        >
+        <q-item-section avatar top style="margin: auto; min-width: 30px" v-if="curProjectIcon">
           <q-avatar square style="width: 35px; height: 35px">
             <img :src="'/icons/random/' + curProjectIcon" />
           </q-avatar>
@@ -25,40 +20,33 @@
       <div class="text-grey-7 text-weight-bold q-pt-md q-pb-sm">
         DEVELOPMENT
       </div>
-      <q-expansion-item
-        v-model="SpecificationOpen"
-        expand-separator
-        label="Specifications"
-        header-class="bg-grey-4"
-      >
+      <q-expansion-item v-model="SpecificationOpen" expand-separator label="Specifications" header-class="bg-grey-4">
         <q-list class="bg-grey-3">
-          <q-item
-            v-ripple
-            v-for="spec in SpecList"
-            :key="spec.name"
-            clickable
-            class="q-pl-lg"
-            :to="GenerateSpecTo(spec)"
-            active-class="menu-active"
-          >
+          <!-- list all specs -->
+          <q-item v-ripple v-for="spec in SpecList" :key="spec.name" clickable class="q-pl-lg"
+            :to="GenerateSpecTo(spec)" active-class="menu-active">
             <q-item-section avatar style="margin: auto; min-width: 30px">
-              <q-icon :name="spec.icon" />
+              <q-icon :name="spec.icon ?? 'article'" />
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ spec.name }}</q-item-label>
             </q-item-section>
           </q-item>
+
+          <!-- create spec -->
+          <q-item v-ripple clickable class="q-pl-lg bg-grey-2" @click="OpenSpecCreateDrawer">
+            <q-item-section avatar style="margin: auto; min-width: 30px">
+              <q-icon name="add" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Create Specification</q-item-label>
+            </q-item-section>
+          </q-item>
         </q-list>
       </q-expansion-item>
       <q-list class="q-mt-sm">
-        <q-item
-          v-ripple
-          v-for="menu in DevelopMenuList"
-          :key="menu.name"
-          :to="GenerateMenuTo(menu)"
-          active-class="menu-active"
-          clickable
-        >
+        <q-item v-ripple v-for="menu in DevelopMenuList" :key="menu.name" :to="GenerateMenuTo(menu)"
+          active-class="menu-active" clickable>
           <q-item-section avatar style="margin: auto; min-width: 30px">
             <q-icon :name="menu.icon" />
           </q-item-section>
@@ -71,14 +59,8 @@
       <!-- Issues -->
       <div class="text-grey-7 text-weight-bold q-py-sm">PLANNING</div>
       <q-list>
-        <q-item
-          v-ripple
-          v-for="menu in PlanMenuList"
-          :key="menu.name"
-          clickable
-          :to="GenerateMenuTo(menu)"
-          active-class="menu-active"
-        >
+        <q-item v-ripple v-for="menu in PlanMenuList" :key="menu.name" clickable :to="GenerateMenuTo(menu)"
+          active-class="menu-active">
           <q-item-section avatar style="margin: auto; min-width: 30px">
             <q-icon :name="menu.icon" />
           </q-item-section>
@@ -89,12 +71,7 @@
       </q-list>
       <q-space />
       <q-list class="q-mb-md">
-        <q-item
-          v-ripple
-          v-for="menu in OtherMenuList"
-          :key="menu.name"
-          clickable
-        >
+        <q-item v-ripple v-for="menu in OtherMenuList" :key="menu.name" clickable>
           <q-item-section avatar style="margin: auto; min-width: 30px">
             <q-icon :name="menu.icon" />
           </q-item-section>
@@ -105,19 +82,23 @@
       </q-list>
     </div>
   </div>
+
+
 </template>
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useStateStore } from 'src/stores/state';
+import { useDrawerStore } from 'src/stores/drawer';
 import { useRoute, useRouter } from 'vue-router';
 import API from 'src/api/satic';
 
 const route = useRoute();
 const router = useRouter();
 const store = useStateStore();
+const drawerStore = useDrawerStore();
 const SpecificationOpen = ref(true);
-let curProjectIcon = ref('');
-let curProjectName = ref('');
+const curProjectIcon = ref('');
+const curProjectName = ref('');
 
 const SpecList = ref([
   { name: 'System Requirement', icon: 'article', ID: '1' },
@@ -152,6 +133,12 @@ const OtherMenuList = ref([
   },
 ]);
 
+// functions
+function OpenSpecCreateDrawer() {
+  drawerStore.CreateSpecDrawer.openDrawer();
+}
+
+// 生成跳转路由参数
 function GenerateMenuTo(menu: any) {
   return {
     name: menu.to,

@@ -29,7 +29,7 @@
 
         <q-separator />
 
-        <q-tab-panels v-model="store.specDetailTap">
+        <q-tab-panels v-model="store.specDetailTap" keep-alive>
           <q-tab-panel name="traceability">
             <SpecDetailTraceability />
           </q-tab-panel>

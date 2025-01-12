@@ -141,7 +141,7 @@ async function createComment() {
 }
 
 onMounted(() => {
-    getAllComments();
+    getAllComments(); // TODO: tab生命周期只执行一次
 });
 </script>
 

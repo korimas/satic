@@ -51,8 +51,8 @@ let simulation: d3.Simulation<d3.SimulationNodeDatum, undefined>
 // 测试数据  
 const graphData = {
     nodes: [
-        { id: "SA001", name: "上游item1", type: "系统架构", group: "系统架构" },
-        { id: "SR002", name: "上游item2", type: "系统需求", group: "系统需求" },
+        { id: "SA001", name: "上游item111111111111111111111111111111", type: "系统架构", group: "系统架构" },
+        { id: "SR002", name: "上游item212222222222222222222222222222222222222222222222222222222222", type: "系统需求", group: "系统需求" },
         { id: "SR003", name: "上游item2", type: "系统需求", group: "系统需求" },
         { id: "SR001", name: "当前item", type: "软件需求", group: "软件需求" },
         { id: "SD001", name: "下游item2", type: "软件设计", group: "软件设计" },
@@ -142,12 +142,12 @@ const groupingForce = (alpha: number) => {
 }
 
 // 预热模拟  
-const warmup = () => {
-    for (let i = 0; i < 100; ++i) {
-        simulation.tick();
-    }
-    simulation.restart();
-}
+// const warmup = () => {
+//     for (let i = 0; i < 100; ++i) {
+//         simulation.tick();
+//     }
+//     simulation.restart();
+// }
 
 const initializeGraph = (width: number, height: number) => {
     if (!treeContainer.value) return

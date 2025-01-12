@@ -4,12 +4,16 @@ import { Project } from 'src/data/structs';
 interface State {
   curProject: Project;
   sideMenuShow: boolean;
+  // specCrateDrawerShow: boolean
 }
 
 export const useStateStore = defineStore('state', {
   state: () => ({
-    State: {} as State,
-    sideMenuShow: true,
+    State: {
+      curProject: {} as Project,
+      sideMenuShow: false,
+      // specCrateDrawerShow: false
+    } as State
   }),
 
   actions: {

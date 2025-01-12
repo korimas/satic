@@ -9,16 +9,36 @@
       <router-view />
     </template>
   </q-splitter>
+
+  <q-drawer side="right" overlay v-model="drawerStore.CreateSpecDrawer.show" bordered
+    :width="$q.screen.width > 800 ? 800 : $q.screen.width" :breakpoint="800" v-if="drawerStore.CreateSpecDrawer.alive">
+    <SpecCreate />
+  </q-drawer>
+
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import CommonSide from 'src/components/side/CommonSide.vue';
 import { useStateStore } from 'src/stores/state';
+import { useDrawerStore } from 'src/stores/drawer';
+
+import MiLoading from 'components/base/MiLoading.vue';
+
+// lazy load
+const SpecCreate = defineAsyncComponent({
+  loader: () => import('components/spec/SpecCreate.vue'),
+  loadingComponent: MiLoading,
+  delay: 0,
+  timeout: 15000,
+});
+
+
 const splitterMin = 280;
 let splitterModel = ref(splitterMin);
 let splitterLimits = ref([splitterMin, Infinity]);
-let store = useStateStore();
+const store = useStateStore();
+const drawerStore = useDrawerStore();
 
 store.State.sideMenuShow = true;
 
