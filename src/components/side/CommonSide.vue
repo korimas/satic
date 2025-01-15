@@ -171,9 +171,11 @@ async function LoadCurProject() {
 watch(
   () => route.params.projectId,
   (newId, oldId) => {
-    console.log('ID参数变化：', { newId, oldId });
+    console.log('Switch Project:', { newId, oldId });
     curProjectName.value = '';
     curProjectIcon.value = '';
+    drawerStore.CreateSpecDrawer.show = false
+    drawerStore.DetailSpecDrawer.show = false
     LoadCurProject();
   }
 );

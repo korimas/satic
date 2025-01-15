@@ -1,4 +1,5 @@
 import { BaseApiHandler } from './base';
+import { ProjectsDB, ProjectModel } from '../db/projects';
 
 export class ProjectsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
@@ -6,11 +7,12 @@ export class ProjectsHandler extends BaseApiHandler {
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
     if (id) {
-      const result = await this.sql`SELECT * FROM projects WHERE id = ${id}`;
-      if (!Array.isArray(result) || result.length === 0) {
-        throw new Error(`Project not found: ${id}`);
-      }
-      return result[0];
+      // const result = await this.sql`SELECT * FROM projects WHERE id = ${id}`;
+      // if (!Array.isArray(result) || result.length === 0) {
+      //   throw new Error(`Project not found: ${id}`);
+      // }
+      // return result[0];
+      return new ProjectsDB().get(this.sql, { id });
     }
 
     const result = await this.sql`SELECT * FROM projects`;
