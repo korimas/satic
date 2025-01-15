@@ -3,7 +3,7 @@ import { NeonQueryFunction } from '@neondatabase/serverless';
 export abstract class BaseDB<T> {
     protected abstract tableName: string;
 
-    protected buildQuery(
+    protected buildQuerySql(
         params?: Partial<T>,
         orderBy?: keyof T,
         orderType?: 'ASC' | 'DESC',
@@ -30,14 +30,23 @@ export abstract class BaseDB<T> {
             whereCmd = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
         }
         return {
-            query: `SELECT * FROM ${this.tableName} ${whereCmd} ${orderCmd} ${limitCmd} ${offsetCmd}`,
+            text: `SELECT * FROM ${this.tableName} ${whereCmd} ${orderCmd} ${limitCmd} ${offsetCmd}`,
             values: values
         };
     }
 
+    protected buildCreateSql(data: Partial<T>) {
+        const keys = Object.keys(data).join(', ');
+        const values = Object.values(data).map((_, index) => `$${index + 1}`).join(', ');
+        return {
+            text: `INSERT INTO ${this.tableName} (${keys}) VALUES (${values}) RETURNING *`,
+            values: Object.values(data)
+        };
+    }
+
     public async get(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T | null> {
-        const { query, values } = this.buildQuery(params);
-        const result = await sql(query, values);
+        const { text, values } = this.buildQuerySql(params);
+        const result = await sql(text, values);
 
         if (!Array.isArray(result) || result.length === 0) {
             return null;
@@ -54,16 +63,15 @@ export abstract class BaseDB<T> {
         offset?: number,
         limit?: number
     ): Promise<T[]> {
-        const { query, values } = this.buildQuery(params, orderBy, orderType, offset, limit);
-        return await sql(query, values) as T[];
+        const { text, values } = this.buildQuerySql(params, orderBy, orderType, offset, limit);
+        return await sql(text, values) as T[];
     }
 
     protected async create(sql: NeonQueryFunction<any, any>, data: Partial<T>): Promise<T> {
-        const result = (await sql`
-            INSERT INTO ${sql(this.tableName)} (${sql(Object.keys(data).join(', '))})
-            VALUES (${sql(Object.values(data).map(value => sql`${value}`).join(', '))})
-            RETURNING *
-        `) as T[];
+        const { text, values } = this.buildCreateSql(data);
+        console.log('text:', text);
+        console.log('values:', values);
+        const result = (await sql(text, values)) as T[];
 
         return result[0] as T;
     }
