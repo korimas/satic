@@ -3,34 +3,27 @@ import { NeonQueryFunction } from '@neondatabase/serverless';
 export abstract class BaseDB<T> {
     protected abstract tableName: string;
 
+    // 通用查询方法  
     public async get(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T | null> {
-        // 构建查询条件和参数数组  
-        const conditions: string[] = [];
-        const values: any[] = [];
 
-        console.log('params:', params)
-        Object.entries(params)
+        console.log('params:', params);
+        const conditions = Object.entries(params)
             .filter(([_, value]) => value !== undefined)
-            .forEach(([key, value]) => {
-                conditions.push(`${key} = $${conditions.length + 1}`);
-                values.push(value);
-            });
+            .map(([key, value]) => `${key} = ${value}`)
+            .join(' AND ')
+        console.log('conditions:', conditions);
 
-        console.log('conditions:', conditions)
-        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-        console.log('whereClause:', whereClause)
+        const whereClause = conditions ? `WHERE ${conditions}` : '';
+        console.log('whereClause:', whereClause);
 
-        // 使用 sql 标签模板构建查询  
-        const result = sql`  
-            SELECT * FROM ${sql(this.tableName)}  
-            ${sql(whereClause)}  
+        const result = await sql`  
+            SELECT * FROM ${sql(this.tableName)}   
+            ${sql(whereClause)}   
             ORDER BY created_at DESC  
         `;
 
-        // 将值数组展开到查询中  
-        console.log('result:', result)
         if (!Array.isArray(result) || result.length === 0) {
-            return null;
+            return null
         }
 
         return result[0] as T;
