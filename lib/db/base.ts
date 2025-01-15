@@ -23,8 +23,8 @@ export abstract class BaseDB<T> {
 
         // 使用 sql 标签模板构建查询  
         const result = sql(`  
-            SELECT * FROM ${sql(this.tableName)}  
-            ${sql(whereClause)}  
+            SELECT * FROM ${this.tableName}  
+            ${whereClause}  
             ORDER BY created_at DESC  
         `, values);
 
