@@ -6,12 +6,16 @@ export abstract class BaseDB<T> {
     // 通用查询方法  
     public async get(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T | null> {
 
+        console.log('params:', params);
         const conditions = Object.entries(params)
             .filter(([_, value]) => value !== undefined)
             .map(([key, value]) => `${key} = ${sql`${value}`}`)
             .join(' AND ');
 
+        console.log('conditions:', conditions);
+
         const whereClause = conditions ? `WHERE ${conditions}` : '';
+        console.log('whereClause:', whereClause);
 
         const result = await sql`  
             SELECT * FROM ${sql(this.tableName)}   
