@@ -13,3 +13,5 @@ export class ProjectsDB extends BaseDB<ProjectModel> {
     protected tableName = 'projects';
 
 }
+
+export const ProjectsDBInstance = new ProjectsDB();

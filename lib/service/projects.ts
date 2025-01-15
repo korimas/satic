@@ -1,5 +1,5 @@
 import { BaseApiHandler } from './base';
-import { ProjectsDB, ProjectModel } from '../db/projects';
+import { ProjectsDBInstance, ProjectModel } from '../db/projects';
 
 export class ProjectsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
@@ -7,10 +7,10 @@ export class ProjectsHandler extends BaseApiHandler {
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
     if (id) {
-      return new ProjectsDB().get(this.sql, { id });  // TODO: 单例模式
+      return ProjectsDBInstance.get(this.sql, { id });  // TODO: 单例模式
     }
 
-    return new ProjectsDB().list(this.sql);
+    return ProjectsDBInstance.list(this.sql);
   }
 
   protected async handlePost(req: Request) {
@@ -28,7 +28,7 @@ export class ProjectsHandler extends BaseApiHandler {
     // }
     // return (result as any[])[0];
 
-    return new ProjectsDB().create(this.sql, payload);
+    return ProjectsDBInstance.create(this.sql, payload);
   }
 
   protected async handleDelete(req: Request) {
