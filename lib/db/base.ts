@@ -26,7 +26,7 @@ export abstract class BaseDB<T> {
             SELECT * FROM ${sql(this.tableName)}  
             ${sql(whereClause)}  
             ORDER BY created_at DESC  
-        `, ...values);
+        `, values);
 
         // 将值数组展开到查询中  
         console.log('result:', result)
