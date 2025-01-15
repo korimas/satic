@@ -3,33 +3,42 @@ import { NeonQueryFunction } from '@neondatabase/serverless';
 export abstract class BaseDB<T> {
     protected abstract tableName: string;
 
-    public async get(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T | null> {
-        // 构建查询条件和参数数组  
+    protected buildQuery(
+        params?: Partial<T>,
+        orderBy?: keyof T,
+        orderType?: 'ASC' | 'DESC',
+        offset?: number,
+        limit?: number
+    ) {
         const conditions: string[] = [];
         const values: any[] = [];
+        orderType = orderType || 'ASC';
 
-        console.log('params:', params)
-        Object.entries(params)
-            .filter(([_, value]) => value !== undefined)
-            .forEach(([key, value]) => {
-                conditions.push(`${key} = $${conditions.length + 1}`);
-                values.push(value);
-            });
+        const orderCmd = orderBy ? `ORDER BY ${String(orderBy)} ${orderType}` : '';
+        const limitCmd = limit ? `LIMIT ${limit}` : '';
+        const offsetCmd = offset ? `OFFSET ${offset}` : '';
 
-        console.log('conditions:', conditions)
-        console.log('values:', values)
-        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-        console.log('whereClause:', whereClause)
+        let whereCmd = ''
+        if (params) {
+            Object.entries(params)
+                .filter(([_, value]) => value !== undefined)
+                .forEach(([key, value]) => {
+                    conditions.push(`${key} = $${conditions.length + 1}`);
+                    values.push(value);
+                });
 
-        // 使用 sql 标签模板构建查询  
-        const result = await sql(`  
-            SELECT * FROM ${this.tableName}  
-            ${whereClause}  
-            ORDER BY created_at DESC  
-        `, values);
+            whereCmd = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+        }
+        return {
+            query: `SELECT * FROM ${this.tableName} ${whereCmd} ${orderCmd} ${limitCmd} ${offsetCmd}`,
+            values: values
+        };
+    }
 
-        // 将值数组展开到查询中  
-        console.log('result:', result)
+    public async get(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T | null> {
+        const { query, values } = this.buildQuery(params);
+        const result = await sql(query, values);
+
         if (!Array.isArray(result) || result.length === 0) {
             return null;
         }
@@ -37,21 +46,16 @@ export abstract class BaseDB<T> {
         return result[0] as T;
     }
 
-    public async list(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T[]> {
-        const conditions = Object.entries(params)
-            .filter(([_, value]) => value !== undefined)
-            .map(([key, value]) => `${key} = ${sql`${value}`}`)
-            .join(' AND ');
-
-        const whereClause = conditions ? `WHERE ${conditions}` : '';
-
-        const result = await sql`  
-            SELECT * FROM ${sql(this.tableName)}   
-            ${sql(whereClause)}   
-            ORDER BY created_at DESC  
-        `;
-
-        return result as T[];
+    public async list(
+        sql: NeonQueryFunction<any, any>,
+        params: Partial<T> = {},
+        orderBy?: keyof T,
+        orderType?: 'ASC' | 'DESC',
+        offset?: number,
+        limit?: number
+    ): Promise<T[]> {
+        const { query, values } = this.buildQuery(params, orderBy, orderType, offset, limit);
+        return await sql(query, values) as T[];
     }
 
     protected async create(sql: NeonQueryFunction<any, any>, data: Partial<T>): Promise<T> {

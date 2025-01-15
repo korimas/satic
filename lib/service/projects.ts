@@ -7,16 +7,10 @@ export class ProjectsHandler extends BaseApiHandler {
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
     if (id) {
-      // const result = await this.sql`SELECT * FROM projects WHERE id = ${id}`;
-      // if (!Array.isArray(result) || result.length === 0) {
-      //   throw new Error(`Project not found: ${id}`);
-      // }
-      // return result[0];
-      return new ProjectsDB().get(this.sql, { id });
+      return new ProjectsDB().get(this.sql, { id });  // TODO: 单例模式
     }
 
-    const result = await this.sql`SELECT * FROM projects`;
-    return result;
+    return new ProjectsDB().list(this.sql);
   }
 
   protected async handlePost(req: Request) {
