@@ -4,7 +4,8 @@ export interface ProjectModel {
     id: string;
     key: string;
     name: string;
-    desc: string;
+    icon: string;
+    description: string;
 }
 
 

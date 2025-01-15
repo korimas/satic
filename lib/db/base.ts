@@ -67,7 +67,7 @@ export abstract class BaseDB<T> {
         return await sql(text, values) as T[];
     }
 
-    protected async create(sql: NeonQueryFunction<any, any>, data: Partial<T>): Promise<T> {
+    public async create(sql: NeonQueryFunction<any, any>, data: Partial<T>): Promise<T> {
         const { text, values } = this.buildCreateSql(data);
         console.log('text:', text);
         console.log('values:', values);

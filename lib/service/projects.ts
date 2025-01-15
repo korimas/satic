@@ -14,19 +14,21 @@ export class ProjectsHandler extends BaseApiHandler {
   }
 
   protected async handlePost(req: Request) {
-    const payload = await req.json();
+    const payload = await req.json() as ProjectModel;
 
-    const result = (await this.sql`  
-        INSERT INTO projects (name, key, icon, description)  
-        VALUES (${payload.name}, ${payload.key}, ${payload.icon}, ${payload.description})  
-        RETURNING *  
-      `) as any[];
+    // const result = (await this.sql`  
+    //     INSERT INTO projects (name, key, icon, description)  
+    //     VALUES (${payload.name}, ${payload.key}, ${payload.icon}, ${payload.description})  
+    //     RETURNING *  
+    //   `) as any[];
 
-    // 判断成功
-    if (result.length === 0) {
-      throw new Error('Failed to insert project');
-    }
-    return (result as any[])[0];
+    // // 判断成功
+    // if (result.length === 0) {
+    //   throw new Error('Failed to insert project');
+    // }
+    // return (result as any[])[0];
+
+    return new ProjectsDB().create(this.sql, payload);
   }
 
   protected async handleDelete(req: Request) {
