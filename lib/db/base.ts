@@ -9,7 +9,7 @@ export abstract class BaseDB<T> {
         console.log('params:', params);
         const conditions = Object.entries(params)
             .filter(([_, value]) => value !== undefined)
-            .map(([key, value]) => `${key} = ${sql`${value}`}`)
+            .map(async ([key, value]) => `${key} = ${await sql`${value}`}`)
             .join(' AND ');
 
         console.log('conditions:', conditions);
