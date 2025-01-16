@@ -3,6 +3,39 @@ import { NeonQueryFunction } from '@neondatabase/serverless';
 export abstract class BaseDB<T> {
     protected abstract tableName: string;
 
+    protected buildBatchDeleteSql(key: keyof T) {
+
+        return `DELETE FROM ${this.tableName}
+                WHERE ${String(key)} = ANY($1)
+                RETURNING *`;
+    }
+
+
+    protected buildConditionSql(params?: Partial<T>) {
+
+        if (!params) {
+            return {
+                where: '',
+                values: []
+            };
+        }
+
+        const conditions: string[] = [];
+        const values: any[] = [];
+
+        Object.entries(params)
+            .filter(([_, value]) => value !== undefined)
+            .forEach(([key, value]) => {
+                conditions.push(`${key} = $${conditions.length + 1}`);
+                values.push(value);
+            });
+
+        return {
+            where: conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '',
+            values: values
+        };
+    }
+
     protected buildQuerySql(
         params?: Partial<T>,
         orderBy?: keyof T,
@@ -10,27 +43,15 @@ export abstract class BaseDB<T> {
         offset?: number,
         limit?: number
     ) {
-        const conditions: string[] = [];
-        const values: any[] = [];
         orderType = orderType || 'ASC';
 
         const orderCmd = orderBy ? `ORDER BY ${String(orderBy)} ${orderType}` : '';
         const limitCmd = limit ? `LIMIT ${limit}` : '';
         const offsetCmd = offset ? `OFFSET ${offset}` : '';
+        const { where, values } = this.buildConditionSql(params);
 
-        let whereCmd = ''
-        if (params) {
-            Object.entries(params)
-                .filter(([_, value]) => value !== undefined)
-                .forEach(([key, value]) => {
-                    conditions.push(`${key} = $${conditions.length + 1}`);
-                    values.push(value);
-                });
-
-            whereCmd = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-        }
         return {
-            text: `SELECT * FROM ${this.tableName} ${whereCmd} ${orderCmd} ${limitCmd} ${offsetCmd}`,
+            text: `SELECT * FROM ${this.tableName} ${where} ${orderCmd} ${limitCmd} ${offsetCmd}`,
             values: values
         };
     }
@@ -52,6 +73,10 @@ export abstract class BaseDB<T> {
             return null;
         }
 
+        if (result.length > 1) {
+            throw new Error(`More than one record found in ${this.tableName}`);
+        }
+
         return result[0] as T;
     }
 
@@ -69,10 +94,58 @@ export abstract class BaseDB<T> {
 
     public async create(sql: NeonQueryFunction<any, any>, data: Partial<T>): Promise<T> {
         const { text, values } = this.buildCreateSql(data);
-        console.log('text:', text);
-        console.log('values:', values);
-        const result = (await sql(text, values)) as T[];
+        const result = await sql(text, values) as T[];
 
         return result[0] as T;
+    }
+
+    public async update(sql: NeonQueryFunction<any, any>, id: string, data: Partial<T>): Promise<T> {
+        const keys = Object.keys(data).map((key, index) => `${key} = $${index + 1}`).join(', ');
+        const values = Object.values(data);
+        const result = await sql(`
+            UPDATE ${this.tableName}
+            SET ${keys}
+            WHERE id = $${values.length + 1}
+            RETURNING *
+        `, [...values, id]) as T[];
+
+        if (result.length === 0) {
+            throw new Error(`Failed to update ${this.tableName}`);
+        }
+        return result[0] as T;
+    }
+
+    public async delete(sql: NeonQueryFunction<any, any>, params: Partial<T>): Promise<T[]> {
+
+        const { where, values } = this.buildConditionSql(params);
+
+        const result = await sql(`
+            DELETE FROM ${this.tableName}
+            ${where}
+            RETURNING *
+        `, values) as T[];
+
+        return result;
+    }
+
+    public async batchDelete(sql: NeonQueryFunction<any, any>, key: keyof T, values: any[]): Promise<T[]> {
+
+        if (!Array.isArray(values) || values.length === 0) {
+            throw new Error('Invalid values array');
+        }
+
+        const result = await sql(this.buildBatchDeleteSql(key), [values]) as T[];
+        return result;
+    }
+
+    public async count(sql: NeonQueryFunction<any, any>, params?: Partial<T>): Promise<number> {
+        const { where, values } = this.buildConditionSql(params);
+
+        const result = await sql(`
+            SELECT COUNT(*) FROM ${this.tableName}
+            ${where}
+        `, values) as Record<string, any>[];
+
+        return parseInt(result[0].count, 10);
     }
 } 
