@@ -7,7 +7,7 @@ export class ProjectsHandler extends BaseApiHandler {
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
     if (id) {
-      return ProjectsDBInstance.get(this.sql, { id });  // TODO: 单例模式
+      return ProjectsDBInstance.get(this.sql, { id });
     }
     return ProjectsDBInstance.list(this.sql);
   }

@@ -1,60 +1,81 @@
+import { BaseDB } from "./base";
 import { NeonQueryFunction } from '@neondatabase/serverless';
-import { SpecItem } from 'src/data/structs';
 
-export class SpecItemDB {
+export interface SpecItemModel {
+    id: number;
+    key: string;
+    project_id: string;
+    spec_id: number;
+    summary: string;
+    description: string;
+    priority: string;
+    status: string;
+    reporter_id: string;
+    type: string;
+    sequence: number;
+    has_children: boolean;
 
-    static async getSpecItemsByParentId(sql: NeonQueryFunction<any, any>, parent_id: string) {
-        const result = await sql`SELECT * FROM spec_items WHERE parent_id = ${parent_id} ORDER BY sequence ASC`;
-        if (!Array.isArray(result) || result.length === 0) {
-            return [];
-        }
-        return result as SpecItem[];
-    }
+    path: string;
+    depth: number;
+    parent_id: number;
+    custom_fields: any;
+    created_at: string;
+    updated_at: string;
+}
 
-    static async getSpecItemById(sql: NeonQueryFunction<any, any>, id: string | number) {
-        const result = await sql`SELECT * FROM spec_items WHERE id = ${id}`;
-        if (!Array.isArray(result) || result.length === 0) {
-            return null;
-        }
-        return result[0] as SpecItem;
-    }
+export class SpecItemDB extends BaseDB<SpecItemModel> {
+    protected tableName = 'spec_items';
 
-    static async getNextPageItems(sql: NeonQueryFunction<any, any>, next: number, limit: number = 25) {
+    public async getNextPageItems(sql: NeonQueryFunction<any, any>, next: number, limit: number = 25) {
         const result = await sql`SELECT * FROM spec_items WHERE sequence > ${next} ORDER BY sequence ASC LIMIT ${limit}`;
         if (!Array.isArray(result) || result.length === 0) {
             return [];
         }
-        return result as SpecItem[];
+        return result as SpecItemModel[];
     }
 
-    static async getPrevPageItems(sql: NeonQueryFunction<any, any>, prev: number, limit: number = 25) {
+    public async getPrevPageItems(sql: NeonQueryFunction<any, any>, prev: number, limit: number = 25) {
         const result = await sql`SELECT * FROM spec_items WHERE sequence < ${prev} ORDER BY sequence DESC LIMIT ${limit}`;
         if (!Array.isArray(result) || result.length === 0) {
             return [];
         }
-        return result as SpecItem[];
+        return result as SpecItemModel[];
     }
 
-    static async getTopSpecItems(sql: NeonQueryFunction<any, any>, limit: number) {
+    public async getTopSpecItems(sql: NeonQueryFunction<any, any>, limit: number) {
         const result = await sql`SELECT * FROM spec_items ORDER BY sequence ASC LIMIT ${limit}`;
         if (!Array.isArray(result) || result.length === 0) {
             return [];
         }
-        return result as SpecItem[];
+        return result as SpecItemModel[];
     }
 
-    static async getSpecItemsByNearId(sql: NeonQueryFunction<any, any>, near_id: string, limit: number = 12) {
-        const near = await SpecItemDB.getSpecItemById(sql, near_id);
+    public async getSpecItemsByNearId(sql: NeonQueryFunction<any, any>, near_id: string, limit: number = 12) {
+        // TODO: 指定spec_id
+        const near = await this.get(sql, { id: parseInt(near_id) });
         if (!near) {
             throw new Error('Item not found');
         }
         // 查询near_id上面12条数据
-        let above = await sql`SELECT * FROM spec_items WHERE sequence < 
-          ${near.sequence} ORDER BY sequence DESC LIMIT ${limit}`; // 12
+        let above = await sql`SELECT * 
+            FROM 
+                ${this.tableName} 
+            WHERE 
+                sequence < ${near.sequence} AND
+                spec_id = ${near.spec_id}
+            ORDER BY sequence DESC
+            LIMIT ${limit}`;
 
         // 查询near_id下面12条数据
-        let below = await sql`SELECT * FROM spec_items WHERE sequence > 
-          ${near.sequence} ORDER BY sequence ASC LIMIT ${limit}`; // 12
+        let below = await sql`SELECT * 
+            FROM 
+                ${this.tableName} 
+            WHERE 
+                sequence > ${near.sequence}  AND
+                spec_id = ${near.spec_id}
+            ORDER BY sequence ASC 
+            LIMIT ${limit}`;
+
         if (!Array.isArray(above)) {
             above = [];
         }
@@ -62,7 +83,9 @@ export class SpecItemDB {
             below = [];
         }
         const result = [...above.reverse(), near, ...below];
-        return result as SpecItem[];
+        return result as SpecItemModel[];
     }
 
 }
+
+export const SpecItemDBInstance = new SpecItemDB();

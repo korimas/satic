@@ -1,5 +1,6 @@
 import { SpecItem } from 'src/data/structs';
 import { BaseApiHandler } from './base';
+import { SpecItemModel, SpecItemDBInstance } from '../db/spec_items';
 
 const SequenceStep = 100;
 export class SpecItemsHandler extends BaseApiHandler {
@@ -9,31 +10,31 @@ export class SpecItemsHandler extends BaseApiHandler {
     const id = url.searchParams.get('id');
     if (id) {
       // get detail
-      return await this.getSpecItem(id);
+      return await SpecItemDBInstance.get(this.sql, { id: parseInt(id) });
     }
 
     const depth = url.searchParams.get('depth');
     if (depth) {
       // get list by depth
-      return await this.getRootItems();
+      return await SpecItemDBInstance.list(this.sql, { depth: parseInt(depth) }, 'sequence', 'ASC');
     }
 
     const parent_id = url.searchParams.get('parent_id');
     if (parent_id) {
       // get list by parent_id
-      return await this.getSpecItemsByParentId(parent_id);
+      return await SpecItemDBInstance.list(this.sql, { parent_id: parseInt(parent_id) }, 'sequence', 'ASC');
     }
 
     const near_id = url.searchParams.get('near_id');
     if (near_id) {
       // get list by near_id
-      return await this.getSpecItemsByNearId(near_id);
+      return await SpecItemDBInstance.getSpecItemsByNearId(this.sql, near_id);
     }
 
     const top = url.searchParams.get('top');
     if (top) {
       // get top list
-      return await this.getTopSpecItems(Number(top));
+      return await SpecItemDBInstance.list(this.sql, undefined, 'sequence', 'ASC', 0, Number(top));
     }
 
     const next = url.searchParams.get('next');
