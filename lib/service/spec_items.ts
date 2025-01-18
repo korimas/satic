@@ -1,4 +1,3 @@
-import { SpecItem } from 'src/data/structs';
 import { BaseApiHandler } from './base';
 import { SpecItemModel, SpecItemDBInstance } from '../db/spec_items';
 
@@ -26,96 +25,12 @@ export class SpecItemsHandler extends BaseApiHandler {
     return result;
   }
 
-  protected async getNextPageItems(next: number) {
-    const result = await this
-      .sql`SELECT * FROM spec_items WHERE sequence > ${next} ORDER BY sequence ASC LIMIT 25`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return [];
-    }
-    return result as SpecItem[];
-  }
-
-  protected async getPrevPageItems(prev: number) {
-    const result = await this
-      .sql`SELECT * FROM spec_items WHERE sequence < ${prev} ORDER BY sequence DESC LIMIT 25`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return [];
-    }
-    return result as SpecItem[];
-  }
-
-  protected async getTopSpecItems(limit: number) {
-    const result = await this
-      .sql`SELECT * FROM spec_items ORDER BY sequence ASC LIMIT ${limit}`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return [];
-    }
-    return result as SpecItem[];
-  }
-
-  protected async getSpecItemsByNearId(near_id: string) {
-    const near = await this.getItem(near_id);
-    if (!near) {
-      throw new Error('Item not found');
-    }
-    // 查询near_id上面12条数据
-    let above = await this.sql`SELECT * FROM spec_items WHERE sequence < 
-      ${near.sequence} ORDER BY sequence DESC LIMIT 12`; // 12
-
-    // 查询near_id下面12条数据
-    let below = await this.sql`SELECT * FROM spec_items WHERE sequence > 
-      ${near.sequence} ORDER BY sequence ASC LIMIT 12`; // 12
-    if (!Array.isArray(above)) {
-      above = [];
-    }
-    if (!Array.isArray(below)) {
-      below = [];
-    }
-    const result = [...above.reverse(), near, ...below];
-    return result as SpecItem[];
-  }
-
-  protected async getSpecItemsByParentId(parent_id: string) {
-    const result = await this
-      .sql`SELECT * FROM spec_items WHERE parent_id = ${parent_id} ORDER BY sequence ASC`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return [];
-    }
-    return result as SpecItem[];
-  }
-
-  protected async getSpecItem(id: string) {
-    const result = await this.sql`SELECT * FROM spec_items WHERE id = ${id}`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return null;
-    }
-    return result[0] as SpecItem;
-  }
-
-  protected async getRootItems() {
-    const result = await this
-      .sql`SELECT * FROM spec_items WHERE depth = 1 ORDER BY sequence ASC`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return [];
-    }
-    return result as SpecItem[];
-  }
-
   protected async getLastItem(depth: number) {
-    const last = await this
-      .sql`SELECT * FROM spec_items WHERE depth = ${depth} ORDER BY sequence DESC LIMIT 1`;
+    const last = await SpecItemDBInstance.list(this.sql, { depth: depth }, 'sequence', 'DESC', undefined, 1)
     if (!Array.isArray(last) || last.length === 0) {
       return null;
     }
-    return last[0] as SpecItem;
-  }
-
-  protected async getItem(id: string) {
-    const result = await this.sql`SELECT * FROM spec_items WHERE id = ${id}`;
-    if (!Array.isArray(result) || result.length === 0) {
-      return null;
-    }
-    return result[0] as SpecItem;
+    return last[0] as SpecItemModel;
   }
 
   protected async getPrevItem(sequence: number) {
@@ -124,7 +39,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!Array.isArray(pre) || pre.length === 0) {
       return null;
     }
-    return pre[0] as SpecItem;
+    return pre[0] as SpecItemModel;
   }
 
   protected async getNextItem(sequence: number, depth: number) {
@@ -133,14 +48,14 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!Array.isArray(next) || next.length === 0) {
       return null;
     }
-    return next[0] as SpecItem;
+    return next[0] as SpecItemModel;
   }
 
   protected async resortAllItems() {
     // TODO: 优化，不要每次都更新所有的item
     console.log('resortAllItems');
     let items = (await this
-      .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItem[];
+      .sql`SELECT * FROM spec_items ORDER BY sequence ASC`) as SpecItemModel[];
     console.log('items:', items);
     let sequence = 0;
     let failed = [];
@@ -175,7 +90,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     console.log('success resort, retry count:', retry);
   }
 
-  protected async getSequence(type: string, ref_item: SpecItem) {
+  protected async getSequence(type: string, ref_item: SpecItemModel) {
     switch (type) {
       case 'above':
         let ref_pre = await this.getPrevItem(ref_item.sequence);
@@ -247,7 +162,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!Array.isArray(last) || last.length === 0) {
       return null;
     }
-    return last[0] as SpecItem
+    return last[0] as SpecItemModel
   }
 
   protected async getTheLastItem() {
@@ -256,7 +171,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (!Array.isArray(last) || last.length === 0) {
       return null;
     }
-    return last[0] as SpecItem;
+    return last[0] as SpecItemModel;
   }
 
   protected async handlePost(req: Request) {
@@ -289,7 +204,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
     console.log('insert as position');
     // get ref item
-    let ref_item = await this.getItem(payload.position.item);
+    let ref_item = await SpecItemDBInstance.get(this.sql, { id: payload.position.item });
     if (!ref_item) {
       throw new Error('Ref item not found');
     }
@@ -298,7 +213,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (sequence === -1) {
       await this.resortAllItems();
       // 重新获取ref_item
-      ref_item = await this.getItem(payload.position.item);
+      ref_item = await SpecItemDBInstance.get(this.sql, { id: payload.position.item });
       if (!ref_item) {
         throw new Error('Ref item not found');
       }
@@ -331,13 +246,13 @@ export class SpecItemsHandler extends BaseApiHandler {
   }
 
   protected async moveItem(id: number, position: string, ref_item_id: number) {
-    let item = await this.getItem(id.toString());
+    let item = await SpecItemDBInstance.get(this.sql, { id });
     if (!item) {
       throw new Error('Item not found');
     }
     const old_parent_id = item.parent_id;
 
-    let ref_item = await this.getItem(ref_item_id.toString());
+    let ref_item = await SpecItemDBInstance.get(this.sql, { id: ref_item_id });
     if (!ref_item) {
       throw new Error('Ref item not found');
     }
@@ -346,7 +261,7 @@ export class SpecItemsHandler extends BaseApiHandler {
     if (sequence === -1) {
       await this.resortAllItems();
       // 重新获取ref_item
-      ref_item = await this.getItem(ref_item_id.toString());
+      ref_item = await SpecItemDBInstance.get(this.sql, { id: ref_item_id });
       if (!ref_item) {
         throw new Error('Ref item not found');
       }
@@ -377,9 +292,7 @@ export class SpecItemsHandler extends BaseApiHandler {
 
     // 更新原来的parent item的has_children状态
     if (item.parent_id) {
-      let children = await this.getSpecItemsByParentId(
-        old_parent_id.toString()
-      );
+      let children = await SpecItemDBInstance.list(this.sql, { parent_id: old_parent_id });
       if (children.length === 0) {
         await this
           .sql`UPDATE spec_items SET has_children = false WHERE id = ${item.parent_id}`;
@@ -445,43 +358,6 @@ export class SpecItemsHandler extends BaseApiHandler {
     return deletedIds;
   }
 
-  private sqlifyObject(obj: any): string {
-    return Object.keys(obj)
-      .map(key => {
-        const value = obj[key];
-        // 处理 null 值  
-        if (value === null) {
-          return `${key} = NULL`;
-        }
-        // 根据值的类型决定是否添加引号  
-        const formattedValue = typeof value === 'string'
-          ? `'${value.replace(/'/g, "''")}'` // 字符串类型加引号，并转义单引号  
-          : value;
-        return `${key} = ${formattedValue}`;
-      })
-      .join(', ');
-  }
-
-  private escapeSqlQuotes<T extends Record<string, any>>(obj: T): T {
-    const result = { ...obj };
-
-    for (const key in result) {
-      if (Object.prototype.hasOwnProperty.call(result, key)) {
-        const value = result[key];
-
-        // 检查值是否为字符串类型  
-        if (typeof value === 'string') {
-          // 将单引号替换为两个单引号  
-          result[key] = value.replace(/'/g, "''");
-        } else if (value !== null && typeof value === 'object') {
-          // 如果值是对象或数组，递归处理  
-          result[key] = this.escapeSqlQuotes(value);
-        }
-      }
-    }
-
-    return result;
-  }
   protected async handlePut(req: Request) {
     const payload = await req.json();
     if (!payload.id) {

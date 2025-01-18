@@ -26,30 +26,6 @@ export interface SpecItemModel {
 export class SpecItemDB extends BaseDB<SpecItemModel> {
     protected tableName = 'spec_items';
 
-    public async getNextPageItems(sql: NeonQueryFunction<any, any>, next: number, limit: number = 25) {
-        const result = await sql`SELECT * FROM spec_items WHERE sequence > ${next} ORDER BY sequence ASC LIMIT ${limit}`;
-        if (!Array.isArray(result) || result.length === 0) {
-            return [];
-        }
-        return result as SpecItemModel[];
-    }
-
-    public async getPrevPageItems(sql: NeonQueryFunction<any, any>, prev: number, limit: number = 25) {
-        const result = await sql`SELECT * FROM spec_items WHERE sequence < ${prev} ORDER BY sequence DESC LIMIT ${limit}`;
-        if (!Array.isArray(result) || result.length === 0) {
-            return [];
-        }
-        return result as SpecItemModel[];
-    }
-
-    public async getTopSpecItems(sql: NeonQueryFunction<any, any>, limit: number) {
-        const result = await sql`SELECT * FROM spec_items ORDER BY sequence ASC LIMIT ${limit}`;
-        if (!Array.isArray(result) || result.length === 0) {
-            return [];
-        }
-        return result as SpecItemModel[];
-    }
-
     public async getSpecItemsByNearId(sql: NeonQueryFunction<any, any>, near_id: string, limit: number = 12) {
         // TODO: 指定spec_id
         const near = await this.get(sql, { id: parseInt(near_id) });
