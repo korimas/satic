@@ -7,6 +7,14 @@ export class SpecItemsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
     //get query params
     const url = new URL(req.url);
+
+    const query = url.searchParams.get('query');
+    if (query) {
+      // get list by query
+      return await SpecItemDBInstance.filterByQuery(this.sql, JSON.parse(query));
+    }
+
+
     const id = url.searchParams.get('id');
     if (id) {
       // get detail

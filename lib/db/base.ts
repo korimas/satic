@@ -1,18 +1,40 @@
 import { NeonQueryFunction } from '@neondatabase/serverless';
 
+interface Condition {
+    field: string;
+    operator: '=' | '!=' | '>' | '<' | '>=' | '<=' | 'LIKE' | 'IN' | 'NOT IN' | 'IS NULL' | 'IS NOT NULL';
+    value: any;
+    conjunction?: 'AND' | 'OR';
+}
+
+interface Sort {
+    field: string;
+    order: 'ASC' | 'DESC';
+}
+
+interface Page {
+    index: number;
+    size: number;
+}
+
+export interface Query {
+    conditions?: Condition[];
+    sort?: Sort;
+    page?: Page;
+    limit?: number;
+}
+
+
 export abstract class BaseDB<T> {
     protected abstract tableName: string;
 
     protected buildBatchDeleteSql(key: keyof T) {
-
         return `DELETE FROM ${this.tableName}
                 WHERE ${String(key)} = ANY($1)
                 RETURNING *`;
     }
 
-
     protected buildConditionSql(params?: Partial<T>) {
-
         if (!params) {
             return {
                 where: '',
@@ -63,6 +85,55 @@ export abstract class BaseDB<T> {
             text: `INSERT INTO ${this.tableName} (${keys}) VALUES (${values}) RETURNING *`,
             values: Object.values(data)
         };
+    }
+
+    public buildFilterSql(query: Query) {
+        let whereClause = '';
+        const values: any[] = [];
+
+        // 1. 拼装条件  
+        if (query.conditions && query.conditions.length > 0) {
+            query.conditions.forEach((condition, index) => {
+                if (index > 0) {
+                    whereClause += ` ${condition.conjunction} `;
+                }
+                whereClause += `${condition.field} ${condition.operator} $${index + 1}`;
+                values.push(condition.value);
+            });
+        }
+
+        // 2. 在主查询文本中依次拼装各部分  
+        let text = `SELECT * FROM ${this.tableName} `;
+
+        if (whereClause) {
+            text += `WHERE ${whereClause} `;
+        }
+
+        if (query.sort) {
+            text += `ORDER BY ${query.sort.field} ${query.sort.order} `;
+        }
+
+        if (query.page) {
+            text += `LIMIT ${query.page.size} OFFSET ${(query.page.index - 1) * query.page.size} `;
+        } else if (query.limit) {
+            text += `LIMIT ${query.limit} `;
+        }
+
+        console.log('query text:', text);
+        return {
+            text: text.trim(),  // 去除末尾空格  
+            values
+        };
+    }
+
+    public async filterByQuery(sql: NeonQueryFunction<any, any>, querys: Query[]): Promise<T[]> {
+        let result: T[] = [];
+        for (let query of querys) {
+            const { text, values } = this.buildFilterSql(query);
+            const r = await sql(text, values) as T[];
+            result = result.concat(r);
+        }
+        return result;
     }
 
     public async get(sql: NeonQueryFunction<any, any>, params: Partial<T> = {}): Promise<T | null> {
