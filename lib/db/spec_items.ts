@@ -58,24 +58,24 @@ export class SpecItemDB extends BaseDB<SpecItemModel> {
         }
         console.log('near:', near);
         // 查询near_id上面12条数据
-        let above = await sql`SELECT * 
+        let above = await sql(`SELECT * 
             FROM 
                 ${this.tableName} 
             WHERE 
-                sequence < ${near.sequence} AND
-                spec_id = ${near.spec_id}
+                sequence < $1 AND
+                spec_id = $2
             ORDER BY sequence DESC
-            LIMIT ${limit}`;
+            LIMIT ${limit}`, [near.sequence, near.spec_id]) as SpecItemModel[];
 
         // 查询near_id下面12条数据
-        let below = await sql`SELECT * 
+        let below = await sql(`SELECT * 
             FROM 
                 ${this.tableName} 
             WHERE 
-                sequence > ${near.sequence}  AND
-                spec_id = ${near.spec_id}
+                sequence > $1  AND
+                spec_id = $2
             ORDER BY sequence ASC 
-            LIMIT ${limit}`;
+            LIMIT ${limit}`, [near.sequence, near.spec_id]) as SpecItemModel[];
 
         if (!Array.isArray(above)) {
             above = [];
