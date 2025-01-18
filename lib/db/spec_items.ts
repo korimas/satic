@@ -56,6 +56,7 @@ export class SpecItemDB extends BaseDB<SpecItemModel> {
         if (!near) {
             throw new Error('Item not found');
         }
+        console.log('near:', near);
         // 查询near_id上面12条数据
         let above = await sql`SELECT * 
             FROM 

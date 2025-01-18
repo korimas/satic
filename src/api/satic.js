@@ -1,4 +1,5 @@
 import request from './requests';
+import { Filter } from './filter';
 
 let API = {
   // Projects
@@ -49,7 +50,7 @@ let API = {
   getSpecRootItems() {
     return request('/spec_items', 'get', {
       params: {
-        depth: 1,
+        query: [new Filter().condition('depth', '=', 1).sort('sequence', 'ASC').build()],
       },
     });
   },
@@ -57,7 +58,7 @@ let API = {
   getSpecChildItems(parentId) {
     return request('/spec_items', 'get', {
       params: {
-        parent_id: parentId,
+        query: [new Filter().condition('parent_id', '=', parentId).sort('sequence', 'ASC').build()],
       },
     });
   },
@@ -73,7 +74,7 @@ let API = {
   getTopSpecItems() {
     return request('/spec_items', 'get', {
       params: {
-        top: 25,
+        query: [new Filter().sort('sequence', 'ASC').limit(25).build()],
       },
     });
   },
@@ -86,18 +87,18 @@ let API = {
     });
   },
 
-  getNextPageSpecItems(id) {
+  getNextPageSpecItems(sequence) {
     return request('/spec_items', 'get', {
       params: {
-        next: id,
+        query: [new Filter().condition('sequence', '>', sequence).sort('sequence', 'ASC').limit(25).build()],
       },
     });
   },
 
-  getPrevPageSpecItems(id) {
+  getPrevPageSpecItems(sequence) {
     return request('/spec_items', 'get', {
       params: {
-        prev: id,
+        query: [new Filter().condition('sequence', '<', sequence).sort('sequence', 'DESC').limit(25).build()],
       },
     });
   },

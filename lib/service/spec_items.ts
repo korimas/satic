@@ -14,48 +14,12 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await SpecItemDBInstance.filterByQuery(this.sql, JSON.parse(query));
     }
 
-
-    const id = url.searchParams.get('id');
-    if (id) {
-      // get detail
-      return await SpecItemDBInstance.get(this.sql, { id: parseInt(id) });
-    }
-
-    const depth = url.searchParams.get('depth');
-    if (depth) {
-      // get list by depth
-      return await SpecItemDBInstance.list(this.sql, { depth: parseInt(depth) }, 'sequence', 'ASC');
-    }
-
-    const parent_id = url.searchParams.get('parent_id');
-    if (parent_id) {
-      // get list by parent_id
-      return await SpecItemDBInstance.list(this.sql, { parent_id: parseInt(parent_id) }, 'sequence', 'ASC');
-    }
-
     const near_id = url.searchParams.get('near_id');
     if (near_id) {
       // get list by near_id
       return await SpecItemDBInstance.getSpecItemsByNearId(this.sql, near_id);
     }
 
-    const top = url.searchParams.get('top');
-    if (top) {
-      // get top list
-      return await SpecItemDBInstance.list(this.sql, undefined, 'sequence', 'ASC', 0, Number(top));
-    }
-
-    const next = url.searchParams.get('next');
-    if (next) {
-      // get next item
-      return await this.getNextPageItems(Number(next));
-    }
-
-    const prev = url.searchParams.get('prev');
-    if (prev) {
-      // get prev item
-      return await this.getPrevPageItems(Number(prev));
-    }
 
     // get list
     const result = await this.sql`SELECT * FROM spec_items`;

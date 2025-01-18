@@ -88,6 +88,7 @@ export abstract class BaseDB<T> {
     }
 
     public buildFilterSql(query: Query) {
+        // TODO: 增加field的安全检查
         let whereClause = '';
         const values: any[] = [];
 
