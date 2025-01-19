@@ -104,7 +104,10 @@ export class SpecItemDB extends BaseDB<SpecItemModel> {
         return last[0] as SpecItemModel;
     }
 
-
+    public async create(sql: NeonQueryFunction<any, any>, item: Partial<SpecItemModel>) {
+        delete item.id;
+        return super.create(sql, item);
+    }
 }
 
 export const SpecItemDBInstance = new SpecItemDB();

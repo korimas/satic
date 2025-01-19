@@ -230,6 +230,7 @@ export abstract class BaseDB<T> {
 
     public async create(sql: NeonQueryFunction<any, any>, data: Partial<T>): Promise<T> {
         const { text, values } = this.buildCreateSql(data);
+        console.log('create sql:', text);
         const result = await sql(text, values) as T[];
 
         return result[0] as T;
