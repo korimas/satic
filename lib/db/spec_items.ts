@@ -106,6 +106,8 @@ export class SpecItemDB extends BaseDB<SpecItemModel> {
 
     public async create(sql: NeonQueryFunction<any, any>, item: Partial<SpecItemModel>) {
         delete item.id;
+        delete item.created_at;
+        delete item.updated_at;
         return super.create(sql, item);
     }
 }
