@@ -109,6 +109,7 @@ function deleteItems() {
     return;
   }
   store.curSpec.deleteSpecItems(tickedItems.value);
+  tickedItems.value = [];
 }
 
 function switchTick() {
