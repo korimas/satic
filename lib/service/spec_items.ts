@@ -96,7 +96,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         let next_item = await SpecItemDBInstance.getNextItem(this.sql, ref_item.sequence, ref_item.depth);
         let belowSequence = 0;
         if (!next_item) {
-          const lastItem = await this.getTheLastItem();
+          const lastItem = await SpecItemDBInstance.getTheLastItem(this.sql);
           if (!lastItem) {
             belowSequence = SequenceStep; // first item
           } else {
@@ -104,7 +104,7 @@ export class SpecItemsHandler extends BaseApiHandler {
           }
         } else {
           if (ref_item.has_children) {
-            const lastChild = await this.getTheLastChild(ref_item.id);
+            const lastChild = await SpecItemDBInstance.getTheLastChild(this.sql, ref_item.id);
             if (!lastChild) {
               throw new Error('No last child found');
             } else {
@@ -129,24 +129,6 @@ export class SpecItemsHandler extends BaseApiHandler {
       default:
         throw new Error('Invalid position type');
     }
-  }
-
-  protected async getTheLastChild(parent_id: number) {
-    const last = await this
-      .sql`SELECT * FROM spec_items WHERE parent_id = ${parent_id} ORDER BY sequence DESC LIMIT 1`;
-    if (!Array.isArray(last) || last.length === 0) {
-      return null;
-    }
-    return last[0] as SpecItemModel
-  }
-
-  protected async getTheLastItem() {
-    const last = await this
-      .sql`SELECT * FROM spec_items ORDER BY sequence DESC LIMIT 1`;
-    if (!Array.isArray(last) || last.length === 0) {
-      return null;
-    }
-    return last[0] as SpecItemModel;
   }
 
   protected async handlePost(req: Request) {

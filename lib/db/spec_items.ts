@@ -88,6 +88,23 @@ export class SpecItemDB extends BaseDB<SpecItemModel> {
         return next[0] as SpecItemModel;
     }
 
+    public async getTheLastChild(sql: NeonQueryFunction<any, any>, parent_id: number) {
+        const last = await sql`SELECT * FROM ${this.tableName} WHERE parent_id = ${parent_id} ORDER BY sequence DESC LIMIT 1`;
+        if (!Array.isArray(last) || last.length === 0) {
+            return null;
+        }
+        return last[0] as SpecItemModel
+    }
+
+    public async getTheLastItem(sql: NeonQueryFunction<any, any>) {
+        const last = await sql`SELECT * FROM ${this.tableName} ORDER BY sequence DESC LIMIT 1`;
+        if (!Array.isArray(last) || last.length === 0) {
+            return null;
+        }
+        return last[0] as SpecItemModel;
+    }
+
+
 }
 
 export const SpecItemDBInstance = new SpecItemDB();
