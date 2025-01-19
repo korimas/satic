@@ -147,7 +147,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         spec_item.depth = 1;
         spec_item.parent_id = null;
         spec_item.has_children = false;
-        return await this.createSpecItem(spec_item);
+        return await SpecItemDBInstance.create(this.sql, spec_item);
       } else {
         console.log('insert as last, pre last:', lastItem);
         let spec_item = payload.item;
@@ -156,7 +156,7 @@ export class SpecItemsHandler extends BaseApiHandler {
         spec_item.depth = 1;
         spec_item.parent_id = null;
         spec_item.has_children = false;
-        return await this.createSpecItem(spec_item);
+        return await SpecItemDBInstance.create(this.sql, spec_item);
       }
     }
     console.log('insert as position');
@@ -191,7 +191,7 @@ export class SpecItemsHandler extends BaseApiHandler {
       spec_item.parent_id = ref_item.id;
     }
     spec_item.has_children = false;
-    let result = await this.createSpecItem(spec_item);
+    let result = await SpecItemDBInstance.create(this.sql, spec_item);
     if (payload.position.type === 'child') {
       await this.setSpecHasChildren(ref_item.id);
     }
@@ -257,21 +257,21 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
   }
 
-  protected async createSpecItem(spec_item: any) {
-    const result = (await this.sql`  
-      INSERT INTO spec_items (key, type, summary, reporter_id, spec_id, description, status, priority, project_id, path, depth, parent_id, sequence, has_children)  
-      VALUES ( ${spec_item.key} ,${spec_item.type}, ${spec_item.summary}, ${spec_item.reporter_id}, ${spec_item.spec_id},  ${spec_item.description}, 
-      ${spec_item.status}, ${spec_item.priority}, ${spec_item.project_id}, ${spec_item.path}, ${spec_item.depth}, ${spec_item.parent_id},
-      ${spec_item.sequence}, ${spec_item.has_children} )  
-      RETURNING *  
-    `) as any[];
+  // protected async createSpecItem(spec_item: any) {
+  //   const result = (await this.sql`  
+  //     INSERT INTO spec_items (key, type, summary, reporter_id, spec_id, description, status, priority, project_id, path, depth, parent_id, sequence, has_children)  
+  //     VALUES ( ${spec_item.key} ,${spec_item.type}, ${spec_item.summary}, ${spec_item.reporter_id}, ${spec_item.spec_id},  ${spec_item.description}, 
+  //     ${spec_item.status}, ${spec_item.priority}, ${spec_item.project_id}, ${spec_item.path}, ${spec_item.depth}, ${spec_item.parent_id},
+  //     ${spec_item.sequence}, ${spec_item.has_children} )  
+  //     RETURNING *  
+  //   `) as any[];
 
-    // 判断成功
-    if (result.length === 0) {
-      throw new Error('Failed to insert spec item');
-    }
-    return (result as any[])[0];
-  }
+  //   // 判断成功
+  //   if (result.length === 0) {
+  //     throw new Error('Failed to insert spec item');
+  //   }
+  //   return (result as any[])[0];
+  // }
 
   protected async handleDelete(req: Request) {
     const payload = await req.json();
