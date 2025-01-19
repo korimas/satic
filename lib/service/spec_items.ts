@@ -257,22 +257,6 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
   }
 
-  // protected async createSpecItem(spec_item: any) {
-  //   const result = (await this.sql`  
-  //     INSERT INTO spec_items (key, type, summary, reporter_id, spec_id, description, status, priority, project_id, path, depth, parent_id, sequence, has_children)  
-  //     VALUES ( ${spec_item.key} ,${spec_item.type}, ${spec_item.summary}, ${spec_item.reporter_id}, ${spec_item.spec_id},  ${spec_item.description}, 
-  //     ${spec_item.status}, ${spec_item.priority}, ${spec_item.project_id}, ${spec_item.path}, ${spec_item.depth}, ${spec_item.parent_id},
-  //     ${spec_item.sequence}, ${spec_item.has_children} )  
-  //     RETURNING *  
-  //   `) as any[];
-
-  //   // 判断成功
-  //   if (result.length === 0) {
-  //     throw new Error('Failed to insert spec item');
-  //   }
-  //   return (result as any[])[0];
-  // }
-
   protected async handleDelete(req: Request) {
     const payload = await req.json();
 
@@ -280,12 +264,14 @@ export class SpecItemsHandler extends BaseApiHandler {
       throw new Error('Invalid ids array');
     }
 
-    const result = (await this.sql`
-      DELETE FROM spec_items
-      WHERE id = ANY(${payload.ids}::bigint[])
-      AND has_children = false
-      RETURNING id, parent_id
-      `) as any[];
+    const result = await SpecItemDBInstance.batchDelete(this.sql, 'id', payload.ids);
+
+    // const result = (await this.sql`
+    //   DELETE FROM spec_items
+    //   WHERE id = ANY(${payload.ids}::bigint[])
+    //   AND has_children = false
+    //   RETURNING id, parent_id
+    //   `) as any[];
 
     console.log('result:', result);
     const deletedIds = result.map(
