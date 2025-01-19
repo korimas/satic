@@ -2,6 +2,7 @@ import { BaseApiHandler } from './base';
 import { SpecItemModel, SpecItemDBInstance } from '../db/spec_items';
 
 const SequenceStep = 100;
+
 export class SpecItemsHandler extends BaseApiHandler {
   protected async handleGet(req: Request) {
     //get query params
@@ -19,37 +20,11 @@ export class SpecItemsHandler extends BaseApiHandler {
       return await SpecItemDBInstance.getSpecItemsByNearId(this.sql, near_id);
     }
 
-
     // get list
-    const result = await this.sql`SELECT * FROM spec_items`;
+    const result = await SpecItemDBInstance.list(this.sql);
     return result;
   }
 
-  protected async getLastItem(depth: number) {
-    const last = await SpecItemDBInstance.list(this.sql, { depth: depth }, 'sequence', 'DESC', undefined, 1)
-    if (!Array.isArray(last) || last.length === 0) {
-      return null;
-    }
-    return last[0] as SpecItemModel;
-  }
-
-  protected async getPrevItem(sequence: number) {
-    const pre = await this
-      .sql`SELECT * FROM spec_items WHERE sequence < ${sequence} ORDER BY sequence DESC LIMIT 1`;
-    if (!Array.isArray(pre) || pre.length === 0) {
-      return null;
-    }
-    return pre[0] as SpecItemModel;
-  }
-
-  protected async getNextItem(sequence: number, depth: number) {
-    const next = await this
-      .sql`SELECT * FROM spec_items WHERE sequence > ${sequence} and depth = ${depth} ORDER BY sequence ASC LIMIT 1`;
-    if (!Array.isArray(next) || next.length === 0) {
-      return null;
-    }
-    return next[0] as SpecItemModel;
-  }
 
   protected async resortAllItems() {
     // TODO: 优化，不要每次都更新所有的item
@@ -93,7 +68,7 @@ export class SpecItemsHandler extends BaseApiHandler {
   protected async getSequence(type: string, ref_item: SpecItemModel) {
     switch (type) {
       case 'above':
-        let ref_pre = await this.getPrevItem(ref_item.sequence);
+        let ref_pre = await SpecItemDBInstance.getPrevItem(this.sql, ref_item.sequence);
         let aboveSequence = 0;
         if (!ref_pre) {
           aboveSequence = Math.floor((ref_item.sequence + 0) / 2); // first item
@@ -118,7 +93,7 @@ export class SpecItemsHandler extends BaseApiHandler {
       case 'below':
       case 'child':
         let pre_item = ref_item;
-        let next_item = await this.getNextItem(ref_item.sequence, ref_item.depth);
+        let next_item = await SpecItemDBInstance.getNextItem(this.sql, ref_item.sequence, ref_item.depth);
         let belowSequence = 0;
         if (!next_item) {
           const lastItem = await this.getTheLastItem();
@@ -180,7 +155,7 @@ export class SpecItemsHandler extends BaseApiHandler {
 
     if (!payload.position || payload.position.item === -1) {
       // insert to root
-      const lastItem = await this.getLastItem(1);
+      const lastItem = await SpecItemDBInstance.getLastItem(this.sql, 1);
       if (!lastItem) {
         // insert as first
         console.log('insert as first');

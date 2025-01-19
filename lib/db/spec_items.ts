@@ -63,6 +63,31 @@ export class SpecItemDB extends BaseDB<SpecItemModel> {
         return result as SpecItemModel[];
     }
 
+    public async getLastItem(sql: NeonQueryFunction<any, any>, depth: number) {
+        const last = await this.list(sql, { depth: depth }, 'sequence', 'DESC', undefined, 1)
+        if (!Array.isArray(last) || last.length === 0) {
+            return null;
+        }
+        return last[0] as SpecItemModel;
+    }
+
+    public async getPrevItem(sql: NeonQueryFunction<any, any>, sequence: number) {
+        const pre = await sql(`SELECT * FROM ${this.tableName} WHERE sequence < ${sequence} ORDER BY sequence DESC LIMIT 1`);
+
+        if (!Array.isArray(pre) || pre.length === 0) {
+            return null;
+        }
+        return pre[0] as SpecItemModel;
+    }
+
+    public async getNextItem(sql: NeonQueryFunction<any, any>, sequence: number, depth: number) {
+        const next = await sql(`SELECT * FROM ${this.tableName} WHERE sequence > ${sequence} and depth = ${depth} ORDER BY sequence ASC LIMIT 1`);
+        if (!Array.isArray(next) || next.length === 0) {
+            return null;
+        }
+        return next[0] as SpecItemModel;
+    }
+
 }
 
 export const SpecItemDBInstance = new SpecItemDB();

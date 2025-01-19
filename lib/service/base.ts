@@ -14,7 +14,7 @@ export abstract class BaseApiHandler {
       throw new Error(`Failed to get DATABASE_URL`);
     }
 
-    this.sql = neon(process.env.DATABASE_URL);
+    this.sql = neon(process.env.DATABASE_URL); // TODO(important): 每个 handler 都会创建一个新的连接，有性能问题
   }
 
   protected abstract handleGet(req: Request): any;

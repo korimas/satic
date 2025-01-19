@@ -1,8 +1,14 @@
 import { NeonQueryFunction } from '@neondatabase/serverless';
 
+type ComparisonOperator = '=' | '!=' | '>' | '<' | '>=' | '<=';
+type SetOperator = 'IN' | 'NOT IN';
+type NullOperator = 'IS NULL' | 'IS NOT NULL';
+type LikeOperator = 'LIKE';
+type SqlOperator = ComparisonOperator | SetOperator | NullOperator | LikeOperator;
+
 interface Condition {
     field: string;
-    operator: '=' | '!=' | '>' | '<' | '>=' | '<=' | 'LIKE' | 'IN' | 'NOT IN' | 'IS NULL' | 'IS NOT NULL';
+    operator: SqlOperator;
     value: any;
     conjunction?: 'AND' | 'OR';
 }
@@ -24,6 +30,64 @@ export interface Query {
     limit?: number;
 }
 
+
+export class Filter {
+    protected query: Query;
+
+    constructor(private db: BaseDB<any>) {
+        this.query = {
+            conditions: []
+        }
+    }
+
+    public condition(field: string, operator: SqlOperator, value: any) {
+        if (!this.query.conditions) {
+            this.query.conditions = [];
+        }
+
+        this.query.conditions.push({
+            field,
+            operator,
+            value,
+        });
+        return this;
+    }
+
+    public and() {
+        if (!this.query.conditions) {
+            return this
+        }
+        this.query.conditions[this.query.conditions.length - 1].conjunction = 'AND';
+        return this;
+    }
+
+    public or() {
+        if (!this.query.conditions) {
+            return this
+        }
+        this.query.conditions[this.query.conditions.length - 1].conjunction = 'OR';
+        return this;
+    }
+
+    public sort(field: string, order: 'ASC' | 'DESC') {
+        this.query.sort = { field, order };
+        return this;
+    }
+
+    public page(index: number, size: number) {
+        this.query.page = { index, size };
+        return this;
+    }
+
+    public limit(limit: number) {
+        this.query.limit = limit;
+        return this;
+    }
+
+    public async execute(sql: NeonQueryFunction<any, any>) {
+        return await this.db.filterByQuery(sql, [this.query]);
+    }
+}
 
 export abstract class BaseDB<T> {
     protected abstract tableName: string;
@@ -88,7 +152,7 @@ export abstract class BaseDB<T> {
     }
 
     public buildFilterSql(query: Query) {
-        // TODO: 增加field的安全检查
+        // TODO(important): 增加field的安全检查
         let whereClause = '';
         const values: any[] = [];
 
@@ -154,7 +218,7 @@ export abstract class BaseDB<T> {
 
     public async list(
         sql: NeonQueryFunction<any, any>,
-        params: Partial<T> = {},
+        params?: Partial<T>,
         orderBy?: keyof T,
         orderType?: 'ASC' | 'DESC',
         offset?: number,
@@ -219,5 +283,9 @@ export abstract class BaseDB<T> {
         `, values) as Record<string, any>[];
 
         return parseInt(result[0].count, 10);
+    }
+
+    public filter() {
+        return new Filter(this);
     }
 } 
