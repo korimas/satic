@@ -265,14 +265,6 @@ export class SpecItemsHandler extends BaseApiHandler {
     }
 
     const result = await SpecItemDBInstance.batchDelete(this.sql, 'id', payload.ids);
-
-    // const result = (await this.sql`
-    //   DELETE FROM spec_items
-    //   WHERE id = ANY(${payload.ids}::bigint[])
-    //   AND has_children = false
-    //   RETURNING id, parent_id
-    //   `) as any[];
-
     console.log('result:', result);
     const deletedIds = result.map(
       (item: { id: number; parent_id: number }) => item.id
