@@ -1,4 +1,4 @@
-import { ProjectsHandler } from '../lib/service/projects';
+import { ProjectsHandler } from '../server/service/projects';
 
 export const config = {
   runtime: 'edge',

@@ -1,4 +1,4 @@
-import { IssuesHandler } from '../lib/service/issues';
+import { IssuesHandler } from '../server/service/issues';
 export const config = {
   runtime: 'edge',
   regions: ['sin1', 'iad1'],

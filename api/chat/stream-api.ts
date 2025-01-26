@@ -1,4 +1,4 @@
-import { RequestStream, GPTAPIMessage, GPTAPIRequest } from '../../lib/openai/api';
+import { RequestStream, GPTAPIMessage, GPTAPIRequest } from '../../server/client/openai';
 export const config = {
   runtime: 'edge',
   regions: ['sin1', 'iad1']

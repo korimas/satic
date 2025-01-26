@@ -1,4 +1,4 @@
-import { SpecCommentsHandler } from "../lib/service/spec_comments";
+import { SpecCommentsHandler } from "../server/service/spec_comments";
 export const config = {
   runtime: 'edge',
   regions: ['sin1', 'iad1'],

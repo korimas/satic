@@ -1,4 +1,4 @@
-import { SpecItemsHandler } from '../lib/service/spec_items';
+import { SpecItemsHandler } from '../server/service/spec_items';
 export const config = {
   runtime: 'edge',
   regions: ['sin1', 'iad1'],
