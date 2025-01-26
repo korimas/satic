@@ -1,5 +1,5 @@
 <template>
-    <div class="traceability-container fit">
+    <div class="traceability-container fit" style="min-height: 300px;">
         <!-- 工具栏 -->
         <div class="bg-white">
             <div class="row q-gutter-sm">

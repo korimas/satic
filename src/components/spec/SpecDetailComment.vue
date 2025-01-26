@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <div class="comment-list">
+        <div class="comment-list" style="min-height: 300px;">
             <div v-for="(item, index) in comments" :key="index" class="comment-item row no-wrap q-mt-md">
                 <q-avatar size="md">
                     <img src="/avatar/128.png" alt="avatar">
@@ -42,6 +42,11 @@
                 </div>
 
             </div>
+
+            <q-inner-loading :showing="isLoadingComments">
+                <q-spinner-gears size="50px" color="primary" />
+                <span>Loading Comments ...</span>
+            </q-inner-loading>
         </div>
     </div>
 </template>
@@ -67,6 +72,7 @@ const isOpenCommentEdit = ref(false);
 const isUpdating = ref(false);
 const drawerStore = useDrawerStore();
 const comments = ref<any>([]);
+const isLoadingComments = ref(false);
 
 function openCommentUpdate(item: SpecComment) {
     console.log('open comment update');
@@ -109,10 +115,12 @@ async function getAllComments() {
     if (!drawerStore.DetailSpecDrawer.show) {
         return;
     }
+    isLoadingComments.value = true;
     const resp = await API.getSpecComments(drawerStore.DetailSpecDrawer.data.id);
     if (resp.success) {
         comments.value = resp.result;
     }
+    isLoadingComments.value = false;
 }
 
 async function deleteComment(item: SpecComment) {
