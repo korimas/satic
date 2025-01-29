@@ -84,7 +84,7 @@ module.exports = configure(function (/* ctx */) {
       open: true, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'http://satic.zpzhou.com',
+          target: 'https://satic.zpzhou.com',
           changeOrigin: true,
         },
       },

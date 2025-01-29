@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    name: "signin",
+    name: 'signin',
     path: '/satic/signin',
     component: () => import('pages/signIn.vue'),
   },
